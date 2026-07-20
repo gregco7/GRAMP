@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Content Tool Manager</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">▦</span>
+      <span>Content&nbsp;Tool&nbsp;Manager</span>
+    </div>
+    <nav id="tabs" class="tabs"></nav>
+    <button id="pkg-btn" class="pkg-btn" type="button" title="Clip packages from the agent">
+      📦<span id="pkg-badge" class="pkg-badge hidden">0</span>
+    </button>
+  </header>
+
+  <main id="panels">
+    <!-- ===== Valorant channel overview (live YouTube stats) ===== -->
+    <section class="panel" data-niche="valorant">
+      <div id="ov-valorant" class="overview"></div>
+    </section>
+
+    <!-- ===== Cars channel overview (empty placeholder) ===== -->
+    <section class="panel hidden" data-niche="cars">
+      <div id="ov-cars" class="overview"></div>
+    </section>
+
+    <!-- ===== Library: folder + file management system ===== -->
+    <section class="panel hidden" data-niche="library">
+      <div id="library-panel"></div>
+    </section>
+
+    <!-- ===== Search: clip searcher + Auto-Layout editor (was the Valorant tab) ===== -->
+    <section class="panel hidden" data-niche="search">
+      <nav class="subtabs" id="search-subtabs">
+        <button class="subtab active" type="button" data-sub="valorant">Valorant</button>
+        <button class="subtab" type="button" data-sub="experimental">🧪 Experimental</button>
+        <span class="subtabs-hint">Clip search + Auto-Layout. More niches slot in here later.</span>
+      </nav>
+      <div class="subpanel" data-sub="valorant">
+      <div class="grid">
+        <!-- LEFT: find / import / library -->
+        <div class="col">
+          <div class="card">
+            <h2>Find clips</h2>
+            <div class="row">
+              <input id="v-creator" placeholder="Creator (e.g. TenZ)" />
+              <input id="v-query" placeholder="Query (e.g. ace clutch)" />
+            </div>
+            <div class="row">
+              <button id="v-search" class="primary">Search</button>
+              <button id="v-nb1" class="ghost" type="button" title="Browse Im_Nb1 compilations and grab a section">📺 Nb1</button>
+              <span class="hint">Ranked for shorts · YouTube + Twitch</span>
+            </div>
+            <div class="row search-tools">
+              <label class="mini">Sort
+                <select id="v-sort">
+                  <option value="smart">Best for shorts</option>
+                  <option value="short">Shortest first</option>
+                  <option value="views">Most viewed</option>
+                </select>
+              </label>
+              <label class="mini chk"><input type="checkbox" id="v-twitch" checked /> Twitch clips</label>
+              <label class="mini chk" title="Off = ephemeral (auto-clears once 20 newer clips arrive). On = keep long-term."><input type="checkbox" id="v-keep" /> Keep long-term</label>
+            </div>
+            <p class="hint">Use ✂ on a result to grab just a section. Downloads are ephemeral by default (newest 20 kept); pin one 📌 to hold it.</p>
+            <div id="v-results" class="results"></div>
+          </div>
+
+          <div class="card">
+            <h2>Import a clip</h2>
+            <input type="file" id="v-file" accept="video/*" />
+            <p class="hint">Drops into your local library below.</p>
+          </div>
+
+          <div class="card">
+            <h2>Your clips <span class="badge">pick to edit</span></h2>
+            <p class="hint">Click a clip to load it into Auto-Layout. Full folder management lives in the <b>Library</b> tab.</p>
+            <div id="v-library" class="library"></div>
+          </div>
+        </div>
+
+        <!-- RIGHT: auto-layout tool -->
+        <div class="col">
+          <div class="card">
+            <div class="tool-head">
+              <h2>Auto-Layout <span class="badge">9:16</span></h2>
+              <p class="hint">Detects the facecam, then builds a vertical: top 35% facecam (full), bottom 65% gameplay (cropped, never stretched).</p>
+            </div>
+
+            <div id="al-empty" class="empty">Select a clip from your library to begin.</div>
+
+            <div id="al-tool" class="hidden">
+              <div class="selected-clip">Editing: <strong id="al-name"></strong></div>
+
+              <div class="editor">
+                <div class="stage-wrap">
+                  <div class="stage-label">Source — play/scrub to pick your clip, drag the boxes onto the cams</div>
+                  <div id="al-stage" class="stage">
+                    <video id="al-video" playsinline preload="metadata" controls></video>
+                    <div id="al-box" class="facecam-box cam-box">
+                      <span class="box-label">facecam</span>
+                      <div class="handle"></div>
+                    </div>
+                    <div id="al-box-mc" class="mousecam-box cam-box hidden">
+                      <span class="box-label">mousecam</span>
+                      <div class="handle"></div>
+                    </div>
+                  </div>
+                  <div id="al-trim-bar" class="trim-bar hidden" title="Click to seek · drag the handles to trim">
+                    <div id="al-trim-range" class="trim-sel"></div>
+                    <div id="al-trim-pending" class="trim-pending hidden"></div>
+                    <div id="al-trim-h-start" class="trim-handle" data-edge="start"></div>
+                    <div id="al-trim-h-end" class="trim-handle" data-edge="end"></div>
+                    <div id="al-trim-playhead" class="trim-ph"></div>
+                    <div id="al-trim-fx" class="trim-fx"></div>
+                    <div id="al-trim-moment" class="trim-moment hidden" title="Moment to render — drag to move, drag the edges to resize">
+                      <div class="trim-moment-h" data-edge="start"></div>
+                      <div class="trim-moment-h" data-edge="end"></div>
+                      <span class="trim-moment-lb">🎯</span>
+                    </div>
+                  </div>
+                  <div id="al-cut-quick" class="cut-quick">
+                    <span class="coord-tag cut-tag">✂ Quick cut</span>
+                    <button id="al-cut-start" class="ghost" type="button" title="Mark the cut's start at the current playhead">⟦ Cut start @ playhead</button>
+                    <button id="al-cut-end" class="ghost" type="button" disabled title="Mark the cut's end at the current playhead">Cut end @ playhead ⟧</button>
+                    <span id="al-cut-quick-info" class="hint"></span>
+                  </div>
+                </div>
+                <div class="preview-wrap">
+                  <div class="stage-label">Preview (9:16)</div>
+                  <div class="preview-frame">
+                    <img id="al-preview" alt="preview" />
+                    <div id="al-mc-ghost" class="mc-ghost hidden" title="Drag to place the mousecam overlay"><span>mousecam</span></div>
+                    <div id="al-preview-spin" class="spin hidden"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="toggles">
+                <label class="tg"><input id="al-fc-on" type="checkbox" checked /> Facecam (top pane)</label>
+                <label class="tg" title="Fix the facecam pane height instead of sizing it from the crop — so several clips share one split and the template lines up the same on all of them."><input id="al-fc-lock" type="checkbox" /> Lock facecam height</label>
+                <label class="tg"><input id="al-edges-on" type="checkbox" /> Blurred edges</label>
+                <label class="tg"><input id="al-mc-on" type="checkbox" /> Mousecam overlay</label>
+                <label class="tg"><input id="al-fade-on" type="checkbox" /> Fade audio out</label>
+              </div>
+
+              <div class="controls">
+                <button id="al-detect">Auto-detect facecam</button>
+                <button id="al-refresh">Update preview</button>
+                <label class="ctrl hidden" id="ctrl-fc-h">Facecam height %
+                  <input id="al-fc-h" type="range" min="15" max="62" value="35" />
+                  <span id="al-fc-h-val">35</span>
+                </label>
+                <label class="ctrl hidden" id="ctrl-bar">Edge blur %
+                  <input id="al-bar" type="range" min="0" max="30" value="12" />
+                  <span id="al-bar-val">12</span>
+                </label>
+              </div>
+
+              <div class="controls trim-controls" id="trim-controls">
+                <label class="ctrl">Start (s)
+                  <input id="al-trim-start" type="number" min="0" step="0.1" value="0" />
+                </label>
+                <label class="ctrl">End (s)
+                  <input id="al-trim-end" type="number" min="0" step="0.1" />
+                </label>
+                <button id="al-trim-set-start" class="ghost" type="button">⟵ In = playhead</button>
+                <button id="al-trim-set-end" class="ghost" type="button">Out = playhead ⟶</button>
+                <button id="al-trim-play" class="ghost" type="button">▶ Play selection</button>
+                <button id="al-trim-full" class="ghost" type="button">Full length</button>
+                <button id="al-trim-zoom" class="ghost hidden" type="button">⤢ Zoom to selection</button>
+                <span id="al-trim-info" class="hint"></span>
+              </div>
+
+              <div class="controls length-controls">
+                <label class="ctrl">Speed
+                  <input id="al-speed" type="range" min="0.5" max="3" step="0.25" value="1" />
+                  <span id="al-speed-val">1×</span>
+                </label>
+                <label class="ctrl hidden" id="ctrl-fade">Fade length (s)
+                  <input id="al-fade-dur" type="range" min="0.2" max="3" step="0.1" value="0.8" />
+                  <span id="al-fade-dur-val">0.8</span>
+                </label>
+                <span id="al-length-info" class="hint"></span>
+              </div>
+
+              <!-- Transition FX studio: pick + preview the sound/swipe applied to new cuts -->
+              <div class="fx-studio" id="fx-studio">
+                <div class="fx-head">
+                  <span class="coord-tag cut-tag">🎬 Transition FX</span>
+                  <div class="fx-mini-tabs">
+                    <button class="fx-mtab active" type="button" data-fxtab="sound">Sound</button>
+                    <button class="fx-mtab" type="button" data-fxtab="swipe">Swipe</button>
+                  </div>
+                  <label class="tg fx-on-tg" title="Apply this transition to cuts you add"><input id="fx-default-on" type="checkbox" checked /> auto-apply to new cuts</label>
+                </div>
+
+                <div class="fx-pane" data-fxpane="sound">
+                  <div id="fx-sound-grid" class="fx-grid"></div>
+                  <div class="fx-row">
+                    <label class="ctrl">Volume
+                      <input id="fx-vol" type="range" min="0" max="200" value="100" />
+                      <span id="fx-vol-val">100%</span>
+                    </label>
+                    <span class="hint">Click a sound to select · ▶ to audition.</span>
+                  </div>
+                </div>
+
+                <div class="fx-pane hidden" data-fxpane="swipe">
+                  <div id="fx-swipe-grid" class="fx-grid"></div>
+                  <div class="fx-demo-wrap">
+                    <div id="fx-demo" class="fx-demo">
+                      <div class="fx-demo-pane a">A</div>
+                      <div class="fx-demo-pane b">B</div>
+                    </div>
+                    <button id="fx-demo-play" class="ghost" type="button">▶ Preview swipe</button>
+                    <span class="hint">Eased CapCut-style push where the clip rejoins.</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- B-roll effects: drag a moment onto the trim bar (or ⊕ at playhead) -->
+              <div class="controls broll-controls" id="broll-controls">
+                <span class="coord-tag broll-tag">✨ B-roll</span>
+                <div id="broll-tray" class="broll-tray"></div>
+                <span class="hint">Drag a moment onto the scrubber (or ⊕ to drop it at the playhead). It fires a flash + sound at that point.</span>
+                <div id="broll-list" class="broll-list"></div>
+              </div>
+
+              <!-- Render just one moment (e.g. to eyeball a B-roll punch) -->
+              <div class="controls moment-controls" id="moment-controls">
+                <span class="coord-tag broll-tag">🎯 Moment</span>
+                <button id="al-moment-set" class="ghost" type="button" title="Highlight a short span at the playhead to render on its own">＋ Moment @ playhead</button>
+                <button id="al-moment-in" class="ghost hidden" type="button" title="Set the moment's start to the playhead">⟵ In = playhead</button>
+                <button id="al-moment-out" class="ghost hidden" type="button" title="Set the moment's end to the playhead">Out = playhead ⟶</button>
+                <button id="al-moment-render" class="primary hidden" type="button">▶ Render moment</button>
+                <button id="al-moment-clear" class="ghost hidden" type="button" title="Clear the moment">✕</button>
+                <span id="al-moment-info" class="hint"></span>
+                <span class="hint">Renders just this span (full layout + B-roll) and plays it in the popup — no need to render the whole clip.</span>
+              </div>
+
+              <div class="controls cut-controls">
+                <span class="coord-tag cut-tag">✂ Cut out</span>
+                <button id="al-cut-add" class="ghost" type="button">Add cut @ playhead</button>
+                <span class="hint">Remove dead time from the middle — or set a cut's <b>Effect</b> to <b>Speed up</b> to keep that span and play it faster. New cuts pick up the Transition FX above.</span>
+                <div id="al-cut-list" class="cut-list"></div>
+              </div>
+
+              <div class="controls mc-controls hidden" id="mc-controls">
+                <label class="ctrl">Mousecam corner
+                  <select id="al-mc-pos">
+                    <option value="bottom-right">bottom-right</option>
+                    <option value="bottom-left">bottom-left</option>
+                    <option value="top-right">top-right</option>
+                    <option value="top-left">top-left</option>
+                  </select>
+                </label>
+                <label class="ctrl">Size %
+                  <input id="al-mc-scale" type="range" min="12" max="45" value="28" />
+                  <span id="al-mc-scale-val">28</span>
+                </label>
+                <span class="hint">Drag the green box on the preview to place it anywhere; a corner is just a quick preset.</span>
+              </div>
+
+              <div class="coords">
+                <span class="coord-tag facecam-tag">facecam</span>
+                <label>X<input id="al-x" type="number" /></label>
+                <label>Y<input id="al-y" type="number" /></label>
+                <label>W<input id="al-w" type="number" /></label>
+                <label>H<input id="al-h" type="number" /></label>
+                <span id="al-status" class="det-status"></span>
+              </div>
+
+              <div class="coords mc-coords hidden" id="mc-coords">
+                <span class="coord-tag mousecam-tag">mousecam</span>
+                <label>X<input id="al-mc-x" type="number" /></label>
+                <label>Y<input id="al-mc-y" type="number" /></label>
+                <label>W<input id="al-mc-w" type="number" /></label>
+                <label>H<input id="al-mc-h" type="number" /></label>
+              </div>
+
+              <div class="row render-row">
+                <button id="al-render" class="primary">Render vertical clip</button>
+                <button id="al-save-slot" class="primary hidden" type="button">✓ Save to rank</button>
+                <button id="al-cancel-slot" class="ghost hidden" type="button">Cancel</button>
+                <span id="al-render-status" class="hint"></span>
+              </div>
+              <div id="al-progress" class="render-progress hidden" role="progressbar" aria-label="Render progress">
+                <div class="rp-track"><div class="rp-fill"></div></div>
+                <span class="rp-label"></span>
+              </div>
+              <div id="al-slot-banner" class="slot-banner hidden"></div>
+
+              <div id="al-output" class="output hidden">
+                <div class="stage-label">Result</div>
+                <video id="al-out-video" controls></video>
+                <a id="al-download" class="dl-btn" download>Download</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div><!-- /.subpanel -->
+
+      <!-- Experimental engine: AI-parsed, multi-source, vision-verified search -->
+      <div class="subpanel hidden" data-sub="experimental">
+        <div class="card x-card">
+          <div class="tool-head">
+            <h2>Experimental Search <span class="badge">AI · vision</span></h2>
+            <p class="hint">Describe what you want in plain English. The engine parses your intent, searches YouTube + Twitch (+ Reddit), then <b>actually watches</b> the top clips to verify they're clean, croppable landscape gameplay — flagging edited/music-heavy clips and detecting a facecam.</p>
+          </div>
+          <div id="x-caps" class="x-caps"></div>
+          <div class="x-searchbar">
+            <textarea id="x-query" rows="2" placeholder="e.g. tenz operator aces on ascent with a facecam, recent — or — top prx clutches this year"></textarea>
+            <button id="x-run" class="primary">Deep Search</button>
+          </div>
+          <details class="x-filters">
+            <summary>Filters &amp; options</summary>
+            <div class="x-opts">
+              <label class="mini">Creator <input id="x-creator" placeholder="e.g. TenZ" /></label>
+              <label class="mini">When
+                <select id="x-recency">
+                  <option value="0">Any time</option>
+                  <option value="2">Last 48h</option>
+                  <option value="14">Last 2 weeks</option>
+                  <option value="31">Last month</option>
+                  <option value="365">This year</option>
+                </select>
+              </label>
+              <label class="mini">Max length
+                <select id="x-durmax">
+                  <option value="0">Any</option>
+                  <option value="30">≤ 30s</option>
+                  <option value="60">≤ 60s</option>
+                  <option value="90">≤ 90s</option>
+                </select>
+              </label>
+              <label class="mini chk"><input type="checkbox" id="x-facecam" /> Needs facecam</label>
+            </div>
+            <div class="x-opts">
+              <span class="mini-lbl">Sources</span>
+              <label class="mini chk"><input type="checkbox" id="x-src-youtube" checked /> YouTube</label>
+              <label class="mini chk"><input type="checkbox" id="x-src-twitch" checked /> Twitch</label>
+              <label class="mini chk"><input type="checkbox" id="x-src-reddit" /> Reddit</label>
+            </div>
+            <div class="x-opts">
+              <label class="mini chk"><input type="checkbox" id="x-vision" checked /> Watch clips to verify (AI vision)</label>
+              <label class="mini">Verify top
+                <select id="x-vcount">
+                  <option value="6">6</option>
+                  <option value="8" selected>8</option>
+                  <option value="12">12</option>
+                </select>
+              </label>
+            </div>
+            <div class="x-chips" id="x-chips"></div>
+          </details>
+          <div id="x-progress" class="x-progress hidden">
+            <div class="x-bar"><i></i></div>
+            <span class="x-stage"></span>
+          </div>
+          <div id="x-intent" class="x-intent hidden"></div>
+          <div id="x-results" class="results x-results"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Video Formatter panel: assemble many clips into one ranking video -->
+    <section class="panel hidden" data-niche="formatter">
+      <div class="grid fmt-grid">
+        <!-- LEFT: template + build -->
+        <div class="col">
+          <div class="card">
+            <div class="tool-head">
+              <h2>Video Formatter</h2>
+              <p class="hint">Pick a formatter, then assemble your clips. New formatter types (other niches / channels) slot in here later.</p>
+            </div>
+
+            <!-- Formatter type: a container for future formatters. Only the
+                 Valorant ranking builder exists today. -->
+            <div class="fmt-types" id="fmt-types">
+              <button type="button" class="fmt-type active" data-type="valorant_clip_ranking">
+                <span class="fmt-type-ico">🏆</span>
+                <span class="fmt-type-name">Valorant Clip Ranking</span>
+                <span class="fmt-type-sub">Top-N countdown with progressive reveal</span>
+              </button>
+              <button type="button" class="fmt-type add" disabled title="More formatter types coming">
+                <span class="fmt-type-ico">＋</span>
+                <span class="fmt-type-name">More coming</span>
+                <span class="fmt-type-sub">Tier-list · Versus · Stat-card …</span>
+              </button>
+            </div>
+
+            <div class="controls project-bar">
+              <label class="ctrl">Resume
+                <select id="proj-list"><option value="">— saved edits —</option></select>
+              </label>
+              <button class="ghost" type="button" id="proj-load" title="Load the selected saved edit">Load</button>
+              <button class="ghost" type="button" id="proj-delete" title="Delete the selected saved edit">🗑</button>
+              <span class="project-sep"></span>
+              <input id="proj-name" type="text" placeholder="Project name" class="proj-name-in" />
+              <button class="primary" type="button" id="proj-save" title="Save the current edit to resume later">💾 Save</button>
+              <span id="proj-status" class="hint"></span>
+            </div>
+
+            <!-- Valorant Clip Ranking editor (ported from the Claude Design
+                 "Shorts Ranking Templates" project). All state lives in AL.vce;
+                 the live canvas in the right column re-renders on any change. -->
+            <div class="vce" id="vce-panel">
+              <div class="vce-sec">
+                <label class="vce-lab">Template · Valorant Clip Ranking</label>
+                <div class="vce-segcol" data-seg="style">
+                  <button type="button" data-v="pill">Blue Pill <span class="dim">— original</span></button>
+                  <button type="button" data-v="minimal">Minimal List</button>
+                  <button type="button" data-v="editorial">Big Number</button>
+                </div>
+                <label class="vce-check-row" id="vce-medal-row" style="margin-top:10px">Medal numbers <span class="dim">— #1/2/3 gold·silver·bronze</span>
+                  <input type="checkbox" id="vce-medals-on" />
+                </label>
+                <label class="vce-check-row" id="vce-medal-text-row" style="margin-top:6px">Medal labels <span class="dim">— colour the #1/2/3 text too</span>
+                  <input type="checkbox" id="vce-medal-text-on" />
+                </label>
+              </div>
+
+              <div class="vce-sec">
+                <label class="vce-lab">Reveal</label>
+                <div class="vce-seg" data-seg="mode">
+                  <button type="button" data-v="intro">Intro</button>
+                  <button type="button" data-v="new_item">New item</button>
+                </div>
+                <p class="hint">Motion, Sound, Volume &amp; Reveal speed below apply to the
+                  <b>selected</b> reveal. Switch <b>Intro</b> ⇄ <b>New item</b> to give each
+                  its own settings. <b>Intro</b> plays on the first clip; <b>New item</b> on each later reveal.</p>
+              </div>
+              <div class="vce-sec hidden" id="vce-target-sec">
+                <label class="vce-lab">New item — which rank</label>
+                <select id="vce-target"></select>
+              </div>
+
+              <div class="vce-sec">
+                <label class="vce-lab">Motion <span class="vce-phase-tag dim"></span></label>
+                <div class="vce-seg" data-seg="motion">
+                  <button type="button" data-v="pop">Pop</button>
+                  <button type="button" data-v="slide">Slide</button>
+                  <button type="button" data-v="stagger">Stagger</button>
+                </div>
+              </div>
+
+              <div class="vce-sec vce-topline">
+                <label class="vce-lab">Widgets · General</label>
+                <p class="hint">Apply to the whole design.</p>
+                <div class="vce-box">
+                  <label class="vce-check-row">Bonus title
+                    <input type="checkbox" id="vce-bonus-on" />
+                  </label>
+                  <div id="vce-bonus-fields" class="hidden">
+                    <div class="emoji-field">
+                      <input type="text" id="vce-bonus-text" class="vce-in" />
+                      <button type="button" class="emoji-btn" data-emoji-for="vce-bonus-text" title="Add emoji">😀</button>
+                    </div>
+                    <div class="vce-seg vce-wrap" data-seg="bonusStyle">
+                      <button type="button" data-v="sticker">Sticker</button>
+                      <button type="button" data-v="marker">Marker</button>
+                      <button type="button" data-v="tag">Tag</button>
+                      <button type="button" data-v="spark">Spark</button>
+                    </div>
+                    <div class="vce-range"><span>Size</span>
+                      <input type="range" id="vce-bonus-size" min="0.4" max="2" step="0.05" value="1" />
+                      <output id="vce-bonus-size-out">100%</output>
+                    </div>
+                    <label class="vce-check"><input type="checkbox" id="vce-bonus-hide" checked /> Auto-hide after</label>
+                    <div class="vce-range" id="vce-bonus-hide-row">
+                      <input type="range" id="vce-bonus-secs" min="1" max="20" step="0.5" value="5" />
+                      <output id="vce-bonus-secs-out">5.0s</output>
+                    </div>
+                    <label class="vce-check" style="margin-top:8px"><input type="checkbox" id="vce-bonus-delay-on" /> Delay entrance</label>
+                    <div id="vce-bonus-delay-fields" class="hidden">
+                      <div class="vce-range"><span>After</span>
+                        <input type="range" id="vce-bonus-delay" min="0" max="6" step="0.1" value="1" />
+                        <output id="vce-bonus-delay-out">1.0s</output>
+                      </div>
+                      <div class="vce-range"><span>Speed</span>
+                        <input type="range" id="vce-bonus-speed" min="0.25" max="4" step="0.05" value="1" />
+                        <output id="vce-bonus-speed-out">1.00×</output>
+                      </div>
+                      <label class="vce-lab" style="margin-top:8px">Entrance sound</label>
+                      <div class="vce-row-inline">
+                        <select id="vce-bonus-sound" class="vce-in"></select>
+                        <button type="button" class="ghost" id="vce-bonus-sound-play" title="Audition sound">▶</button>
+                      </div>
+                      <div class="vce-range"><span>Vol</span>
+                        <input type="range" id="vce-bonus-vol" min="0" max="200" value="100" />
+                        <output id="vce-bonus-vol-out">100%</output>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="vce-box">
+                  <label class="vce-check-row">Valorant subtitle
+                    <input type="checkbox" id="vce-sub-on" />
+                  </label>
+                  <div id="vce-sub-fields" class="hidden">
+                    <input type="text" id="vce-sub-text" class="vce-in" value="VALORANT" placeholder="VALORANT" />
+                    <input type="text" id="vce-sub-after" class="vce-in" style="margin-top:6px" placeholder="Text after the mark — e.g. MOMENTS (optional)" />
+                    <div class="vce-range"><span>Size</span>
+                      <input type="range" id="vce-sub-size" min="0.4" max="2" step="0.05" value="0.7" />
+                      <output id="vce-sub-size-out">70%</output>
+                    </div>
+                    <label class="vce-check"><input type="checkbox" id="vce-sub-streamers" /> Show streamers react</label>
+                    <p class="hint">Sits under the title with the Valorant mark. “Streamers react” pulls in every streamer pinned on a list item’s clip info.</p>
+                  </div>
+                </div>
+                <div class="vce-box">
+                  <label class="vce-check-row">VCT icon backdrop
+                    <input type="checkbox" id="vce-icon-on" />
+                  </label>
+                  <div id="vce-icon-fields" class="hidden">
+                    <input type="color" id="vce-icon-color" value="#ffffff" class="vce-color-wide" />
+                    <div id="vce-icon-swatches" class="vce-swatches"></div>
+                    <div class="vce-range"><span>Opacity</span>
+                      <input type="range" id="vce-icon-opacity" min="2" max="30" value="7" />
+                      <output id="vce-icon-opacity-out">7%</output>
+                    </div>
+                    <div class="vce-range"><span>Size</span>
+                      <input type="range" id="vce-icon-size" min="240" max="900" value="468" />
+                      <output id="vce-icon-size-out">468</output>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="vce-box" id="fmt-hook">
+                  <label class="vce-check-row">🎬 Clip Hook <span class="dim">— cold-open</span>
+                    <input id="fmt-hook-on" type="checkbox" />
+                  </label>
+                  <div id="fmt-hook-ctrls" class="hidden">
+                    <p class="hint">Open on a moment from any clip in a framed box — it shrinks away, then the ranking reveals. The clip audio ducks under it.</p>
+                    <label class="vce-lab">Frame</label>
+                    <div class="vce-seg vce-wrap" id="fmt-hook-style" style="margin-bottom:8px">
+                      <button type="button" data-v="glow" class="active">Glow</button>
+                      <button type="button" data-v="shadow">Shadow</button>
+                      <button type="button" data-v="border">Border</button>
+                      <button type="button" data-v="brackets">Brackets</button>
+                    </div>
+                    <label class="vce-lab">Accent</label>
+                    <div id="fmt-hook-swatches" class="hook-swatches" style="margin-bottom:8px"></div>
+                    <label class="vce-lab">Source clip</label>
+                    <div id="fmt-hook-src" class="hook-src" style="margin-bottom:8px"></div>
+                    <div class="vce-range"><span>Moment</span>
+                      <input id="fmt-hook-moment" type="number" min="0" step="0.1" value="0" class="vce-in" style="max-width:90px" />
+                    </div>
+                    <div class="vce-range"><span>Length</span>
+                      <input id="fmt-hook-length" type="range" min="0.5" max="8" step="0.1" value="1.5" />
+                      <output id="fmt-hook-length-v">1.5s</output>
+                    </div>
+                    <div class="vce-range"><span>Shrink</span>
+                      <input id="fmt-hook-outspeed" type="range" min="0.5" max="3" step="0.1" value="1" />
+                      <output id="fmt-hook-outspeed-v">1.0×</output>
+                    </div>
+                    <label class="vce-lab" style="margin-top:8px">Sound</label>
+                    <select id="fmt-hook-sound" class="vce-in">
+                      <option value="whoosh">Whoosh</option>
+                      <option value="whoosh-soft">Whoosh soft</option>
+                      <option value="boom">Boom</option>
+                      <option value="riser">Riser</option>
+                      <option value="cinematic">Cinematic</option>
+                      <option value="none">None</option>
+                    </select>
+                    <div class="vce-range" style="margin-top:6px"><span>SFX vol</span>
+                      <input id="fmt-hook-vol" type="range" min="0" max="200" step="5" value="100" />
+                      <output id="fmt-hook-vol-v">100%</output>
+                    </div>
+                    <label class="vce-check" style="margin-top:10px" title="Pause the background on its first frame while the hook plays, then start the video (adds the hook's length). Off = the background plays under the hook.">
+                      <input type="checkbox" id="fmt-hook-freeze" /> Freeze background under hook
+                    </label>
+                    <button id="fmt-hook-preview" class="ghost" type="button" style="margin-top:10px">▶ Preview hook</button>
+                    <span id="fmt-hook-status" class="hint"></span>
+                  </div>
+                </div>
+
+                <div class="vce-box" id="fmt-sub">
+                  <label class="vce-check-row">🔔 Subscribe CTA <span class="dim">— last seconds</span>
+                    <input id="fmt-sub-on" type="checkbox" />
+                  </label>
+                  <div id="fmt-sub-ctrls" class="hidden">
+                    <p class="hint">Cursor clicks Subscribe → Subscribed + sparkle + SFX, timed to end with the video.</p>
+                    <div class="vce-segcol" id="fmt-sub-style" data-seg="substyle" style="margin-bottom:8px">
+                      <button type="button" data-v="classic" class="active">Classic</button>
+                      <button type="button" data-v="card">Card</button>
+                    </div>
+                    <div class="vce-range"><span>Persist</span>
+                      <input id="fmt-sub-dur" type="number" min="1" max="10" step="0.5" value="4" class="vce-in" style="max-width:90px" />
+                    </div>
+                    <div class="vce-range"><span>Size</span>
+                      <input id="fmt-sub-scale" type="range" min="0.5" max="2" step="0.02" value="1" />
+                      <output id="fmt-sub-scale-v">100%</output>
+                    </div>
+                    <div class="vce-range"><span>Click</span>
+                      <input id="fmt-sub-anim" type="range" min="0.3" max="2.5" step="0.05" value="0.7" />
+                      <output id="fmt-sub-anim-v">0.70s</output>
+                    </div>
+                    <label class="vce-lab" style="margin-top:8px">Sound</label>
+                    <select id="fmt-sub-sound" class="vce-in">
+                      <option value="pop">Pop</option>
+                      <option value="whoosh">Whoosh</option>
+                      <option value="boom">Boom</option>
+                      <option value="none">None</option>
+                    </select>
+                    <label class="vce-check-row" style="margin-top:10px">Match title accent <span class="dim">— use the title's accent colour</span>
+                      <input id="fmt-sub-match" type="checkbox" />
+                    </label>
+                    <label class="vce-lab-sm" id="fmt-sub-color-row" style="margin-top:6px">VD mark colour
+                      <input type="color" id="fmt-sub-color" value="#ff0033" class="vce-color-wide" />
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="vce-sec vce-topline">
+                <label class="vce-lab">Title text</label>
+                <div class="emoji-field">
+                  <input id="vce-title" type="text" class="vce-in" placeholder="Top 5 s0m Moments" />
+                  <button type="button" class="emoji-btn" data-emoji-for="vce-title" title="Add emoji">😀</button>
+                </div>
+                <div class="vce-box" id="vce-colorbox" style="margin-top:10px">
+                  <span class="vce-lab-sm">Accent colour <span class="dim">— list numbers &amp; accented words</span></span>
+                  <input type="color" id="vce-accent-color" value="#2ea6ff" class="vce-color-wide" />
+                  <div id="vce-accent-swatches" class="vce-swatches"></div>
+                  <div id="vce-pill-row" style="margin-top:12px">
+                    <span class="vce-lab-sm">Pill colour</span>
+                    <input type="color" id="vce-pill-color" value="#a9c9ec" class="vce-color-wide" />
+                  </div>
+                  <p class="hint" style="margin-top:8px">Tip: <b>click a word in the title on the canvas</b> to accent it (click again to un-accent).</p>
+                </div>
+                <label class="vce-lab" style="margin-top:12px">Widgets · List items</label>
+                <p class="hint"><b>◈</b> icon (<b>/plrs</b> · <b>/weapon</b>) &nbsp;·&nbsp; <b>▦</b> clip info (per item). Each shows when its rank reveals. Labels are shared with the rank slots.</p>
+                <div id="vce-list-inputs" class="vce-list-inputs"></div>
+                <div class="vce-box" id="vce-clipstyle">
+                  <span class="vce-lab-sm">Clip Info · shared style</span>
+                  <div class="vce-colors">
+                    <label>Box<input type="color" id="vce-clip-bg" value="#0c0f15" /></label>
+                    <label>Accent<input type="color" id="vce-clip-accent" value="#2ea6ff" /></label>
+                    <label>Text<input type="color" id="vce-clip-text" value="#ffffff" /></label>
+                  </div>
+                  <div class="vce-range"><span>Size</span>
+                    <input type="range" id="vce-clip-size" min="0.35" max="1.8" step="0.05" value="1" />
+                    <output id="vce-clip-size-out">100%</output>
+                  </div>
+                  <div class="vce-range"><span>Text</span>
+                    <input type="range" id="vce-clip-textsize" min="0.6" max="1.8" step="0.05" value="1" />
+                    <output id="vce-clip-textsize-out">100%</output>
+                  </div>
+                  <div class="vce-range"><span>Trans.</span>
+                    <input type="range" id="vce-clip-opacity" min="0" max="100" value="78" />
+                    <output id="vce-clip-opacity-out">22%</output>
+                  </div>
+                </div>
+              </div>
+
+              <div class="vce-sec vce-topline">
+                <label class="vce-lab">Title position</label>
+                <div class="vce-range"><span>X</span><input type="range" id="vce-titleX" min="-500" max="500" value="0" /><output id="vce-titleX-out">0px</output></div>
+                <div class="vce-range"><span>Y</span><input type="range" id="vce-titleY" min="-800" max="800" value="0" /><output id="vce-titleY-out">0px</output></div>
+                <label class="vce-lab" style="margin-top:10px">List position</label>
+                <div class="vce-range"><span>X</span><input type="range" id="vce-listX" min="-500" max="500" value="0" /><output id="vce-listX-out">0px</output></div>
+                <div class="vce-range"><span>Y</span><input type="range" id="vce-listY" min="-900" max="900" value="0" /><output id="vce-listY-out">0px</output></div>
+                <label class="vce-lab" style="margin-top:10px">Title lines</label>
+                <div class="vce-seg" data-seg="titleLines">
+                  <button type="button" data-v="2">Double</button>
+                  <button type="button" data-v="1">Single</button>
+                </div>
+                <p class="hint"><b>Single</b> forces the title onto one line, shrinking it to fit; <b>Double</b> wraps to up to two lines.</p>
+                <label class="vce-lab" style="margin-top:10px">Title size</label>
+                <div class="vce-range"><input type="range" id="vce-titleS" min="0.4" max="2.5" step="0.05" value="1" /><output id="vce-titleS-out">100%</output></div>
+                <label class="vce-lab" style="margin-top:10px">List size</label>
+                <div class="vce-range"><input type="range" id="vce-listS" min="0.4" max="2.5" step="0.05" value="1" /><output id="vce-listS-out">100%</output></div>
+                <label class="vce-check" style="margin-top:10px"><input type="checkbox" id="vce-resize" checked /> show drag-resize handles</label>
+                <p class="hint">Tip: drag the title or list on the canvas to move it; drag the <span class="vce-dot-hint">●</span> corner handle to resize.</p>
+              </div>
+
+              <div class="vce-sec vce-topline">
+                <label class="vce-lab">Sound <span class="vce-phase-tag dim"></span></label>
+                <select id="vce-sound" class="vce-in"></select>
+                <label class="vce-lab" style="margin-top:10px">Volume <span class="vce-phase-tag dim"></span></label>
+                <div class="vce-range"><input type="range" id="vce-volume" min="0" max="200" value="100" /><output id="vce-volume-out">100%</output></div>
+                <label class="vce-lab" style="margin-top:10px">Reveal speed <span class="vce-phase-tag dim"></span></label>
+                <div class="vce-range"><input type="range" id="vce-speed" min="0.25" max="4" step="0.05" value="1" /><output id="vce-speed-out">1.00×</output></div>
+              </div>
+
+              <div class="fmt-preview-head" style="margin-top:14px">
+                <label class="tg anim-bake-tg"><input type="checkbox" id="anim-bake" checked /> ✨ Bake reveals into final video</label>
+              </div>
+              <div class="row anim-run-row">
+                <button class="primary" type="button" id="anim-preview-btn" title="Render a real mp4 preview of the reveal (the canvas Play button is instant but approximate)">🎬 Render preview (mp4)</button>
+                <span id="anim-status" class="hint"></span>
+              </div>
+              <div class="preview-frame fmt-preview-frame anim-video-wrap hidden" id="anim-video-wrap">
+                <video id="anim-video" controls playsinline></video>
+              </div>
+              <p class="hint"><strong>Intro</strong> plays on the first segment (title + list land); <strong>New item</strong> plays on each later segment as its rank pops in. With <strong>Bake reveals</strong> on, the reveals (and widget/sparkle idle motion) are rendered into the built video; off falls back to the static overlay.</p>
+            </div>
+
+            <div class="controls fmt-order-row">
+              <label class="ctrl">Count reveal
+                <select id="fmt-order">
+                  <option value="desc">Countdown (#N → #1)</option>
+                  <option value="asc">Ascending (#1 → #N)</option>
+                  <option value="custom">Custom (set play # per rank)</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="fmt-music" id="fmt-music">
+              <div class="fmt-music-head">
+                <span class="coord-tag">♪ Music bed</span>
+                <span id="fmt-music-sel" class="hint">No track — clip audio only.</span>
+                <button id="fmt-music-pick" class="ghost" type="button">Choose track</button>
+                <button id="fmt-music-clear" class="ghost hidden" type="button">Remove</button>
+              </div>
+              <div id="fmt-music-ctrls" class="fmt-music-ctrls hidden">
+                <audio id="fmt-music-audio" controls preload="none"></audio>
+                <div class="fmt-music-grid">
+                  <label class="ctrl">Music vol
+                    <input id="fmt-music-vol" type="range" min="0" max="100" value="28" />
+                    <span id="fmt-music-vol-v">28%</span>
+                  </label>
+                  <label class="ctrl chk" title="On = music sits UNDER the clip audio (game + reactions). Off = music replaces it.">
+                    <input id="fmt-music-keep" type="checkbox" checked /> Keep clip audio
+                  </label>
+                  <label class="ctrl" id="fmt-music-clipvol-wrap">Clip vol
+                    <input id="fmt-music-clipvol" type="range" min="0" max="150" value="100" />
+                    <span id="fmt-music-clipvol-v">100%</span>
+                  </label>
+                  <label class="ctrl">Start @ (s)
+                    <input id="fmt-music-start" type="number" min="0" step="1" value="0" />
+                  </label>
+                  <button id="fmt-music-start-set" class="ghost" type="button" title="Set start to the preview player's position">⤓ from preview</button>
+                  <label class="ctrl">Fade out (s)
+                    <input id="fmt-music-fade" type="number" min="0" step="0.5" value="2" />
+                  </label>
+                </div>
+                <p class="hint" id="fmt-music-note"></p>
+              </div>
+            </div>
+
+            <div class="row render-row">
+              <button id="fmt-build" class="primary">Build ranking video</button>
+              <span id="fmt-status" class="hint"></span>
+            </div>
+            <div id="fmt-progress" class="render-progress hidden" role="progressbar" aria-label="Build progress">
+              <div class="rp-track"><div class="rp-fill"></div></div>
+              <span class="rp-label"></span>
+            </div>
+            <div id="fmt-output" class="output hidden">
+              <div class="stage-label">Result</div>
+              <video id="fmt-out-video" controls></video>
+              <a id="fmt-download" class="dl-btn" download>Download</a>
+              <div id="fmt-credit" class="fmt-credit hidden">
+                <span class="coord-tag">Credit — paste into your YouTube description</span>
+                <code id="fmt-credit-text"></code>
+                <button id="fmt-credit-copy" class="ghost" type="button">Copy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: live canvas + rank slots -->
+        <div class="col">
+          <div class="card">
+            <div class="tool-head vce-stage-head">
+              <h2>Live preview <span class="badge">1080×1920</span></h2>
+              <div class="vce-stage-tgs">
+                <label class="tg"><input type="checkbox" id="vce-overclip" /> over the video clip</label>
+                <label class="tg"><input type="checkbox" id="vce-phone-tg" /> 📱 iPhone view</label>
+                <button class="primary vce-play-btn" type="button" id="vce-play">▶ Play reveal</button>
+              </div>
+            </div>
+            <div class="vce-holder" id="vce-holder">
+              <div id="vce-box">
+                <div id="vce-stage">
+                  <img id="vce-bg" alt="" />
+                  <div id="vce-scrim"></div>
+                  <div id="vce-host"></div>
+                </div>
+                <!-- iPhone (Dynamic Island) + YouTube Shorts UI overlay, traced 1:1
+                     from a real capture. Built by vceBuildPhone(); shown when the
+                     "iPhone view" toggle is on. Extends BELOW the 1920 video into
+                     the phone's bottom chrome (contain-by-width fit). -->
+                <div id="vce-phone" class="hidden"></div>
+              </div>
+            </div>
+            <p class="hint">Instant in-browser preview — motion &amp; timing match the render engine. Drag the title/list to move them; use 🎬 Render preview for the exact server output.</p>
+          </div>
+          <div class="card">
+            <div class="tool-head">
+              <h2>Ranks</h2>
+              <p class="hint">Each rank = one clip + its list label. Open the editor to trim / lay out / cut each clip.</p>
+            </div>
+            <div id="fmt-empty" class="empty hidden">Add ranks to start building your ranking.</div>
+            <div id="fmt-ranks" class="fmt-ranks"></div>
+            <div class="row fmt-add-row" id="fmt-add-row">
+              <button id="fmt-add-rank" class="ghost" type="button">＋ Add rank</button>
+              <span class="hint">3–10 ranks.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Per-rank clip finder: search + download a section, or upload your own, then
+       assign straight to a rank (kept long-term so the project can't lose it). -->
+  <div id="rank-search" class="modal-backdrop hidden">
+    <div class="modal">
+      <div class="modal-head">
+        <h3>Find a clip for rank <span id="rs-rank">1</span></h3>
+        <button id="rs-close" class="ghost" type="button" title="Close">✕</button>
+      </div>
+      <div class="row rs-modes">
+        <button class="rs-mode active" type="button" data-mode="basic">Search</button>
+        <button class="rs-mode" type="button" data-mode="deep">🧪 Deep <span class="badge">AI · vision</span></button>
+        <span class="modal-sep"></span>
+        <label class="mini chk"><input type="checkbox" id="rs-open" checked /> Open editor after adding</label>
+      </div>
+
+      <!-- Basic clip searcher (clips.search + Nb1 + upload) -->
+      <div class="rs-pane" data-mode="basic">
+        <div class="row">
+          <input id="rs-creator" placeholder="Creator (e.g. TenZ)" />
+          <input id="rs-query" placeholder="Query (e.g. ace clutch)" />
+          <button id="rs-search" class="primary" type="button">Search</button>
+          <button id="rs-nb1" class="ghost" type="button" title="Grab from an Im_Nb1 compilation">📺 Nb1</button>
+        </div>
+        <div class="row search-tools">
+          <label class="mini chk"><input type="checkbox" id="rs-twitch" checked /> Twitch clips</label>
+          <span class="modal-sep"></span>
+          <label class="mini upload-lbl">or upload your own <input type="file" id="rs-file" accept="video/*" /></label>
+        </div>
+        <p class="hint">Clips added here are kept long-term. Use ▶ to preview, ✂ to grab just a section.</p>
+        <div id="rs-results" class="results"></div>
+      </div>
+
+      <!-- Deep (experimental) searcher — SAME engine as the Search tab's 🧪 Experimental
+           sub-tab (backend/search2.py). Elements are prefixed "rx-"; the assign-to-rank
+           destination is injected in openRankSearch. Keep the two in sync — see CLAUDE.md
+           "Search feature parity". -->
+      <div class="rs-pane hidden" data-mode="deep">
+        <div id="rx-caps" class="x-caps"></div>
+        <div class="x-searchbar">
+          <textarea id="rx-query" rows="2" placeholder="e.g. tenz operator aces on ascent with a facecam, recent"></textarea>
+          <button id="rx-run" class="primary">Deep Search</button>
+        </div>
+        <details class="x-filters">
+          <summary>Filters &amp; options</summary>
+          <div class="x-opts">
+            <label class="mini">Creator <input id="rx-creator" placeholder="e.g. TenZ" /></label>
+            <label class="mini">When
+              <select id="rx-recency">
+                <option value="0">Any time</option>
+                <option value="2">Last 48h</option>
+                <option value="14">Last 2 weeks</option>
+                <option value="31">Last month</option>
+                <option value="365">This year</option>
+              </select>
+            </label>
+            <label class="mini">Max length
+              <select id="rx-durmax">
+                <option value="0">Any</option>
+                <option value="30">≤ 30s</option>
+                <option value="60">≤ 60s</option>
+                <option value="90">≤ 90s</option>
+              </select>
+            </label>
+            <label class="mini chk"><input type="checkbox" id="rx-facecam" /> Needs facecam</label>
+          </div>
+          <div class="x-opts">
+            <span class="mini-lbl">Sources</span>
+            <label class="mini chk"><input type="checkbox" id="rx-src-youtube" checked /> YouTube</label>
+            <label class="mini chk"><input type="checkbox" id="rx-src-twitch" checked /> Twitch</label>
+            <label class="mini chk"><input type="checkbox" id="rx-src-reddit" /> Reddit</label>
+          </div>
+          <div class="x-opts">
+            <label class="mini chk"><input type="checkbox" id="rx-vision" checked /> Watch clips to verify (AI vision)</label>
+            <label class="mini">Verify top
+              <select id="rx-vcount">
+                <option value="6">6</option>
+                <option value="8" selected>8</option>
+                <option value="12">12</option>
+              </select>
+            </label>
+          </div>
+          <div class="x-chips" id="rx-chips"></div>
+        </details>
+        <div id="rx-progress" class="x-progress hidden">
+          <div class="x-bar"><i></i></div>
+          <span class="x-stage"></span>
+        </div>
+        <div id="rx-intent" class="x-intent hidden"></div>
+        <p class="hint">Deep-searched clips are kept long-term &amp; assigned to this rank. ▶ preview · ✂ grab a section.</p>
+        <div id="rx-results" class="results x-results"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nb1 grabber: browse the Im_Nb1 compilation channel, scrub a video, and grab
+       just the moment (or one reaction). Launched from Find clips + the rank finder;
+       the destination (library vs. rank) is decided by whoever opened it. -->
+  <div id="nb1-modal" class="modal-backdrop hidden">
+    <div class="modal modal-wide">
+      <div class="modal-head">
+        <h3>📺 Nb1 compilations <span id="nb1-ctx" class="modal-ctx"></span></h3>
+        <button id="nb1-close" class="ghost" type="button" title="Close">✕</button>
+      </div>
+
+      <!-- BROWSE view: sort/filter + a grid of the channel's uploads -->
+      <div id="nb1-browse">
+        <div class="row search-tools">
+          <input id="nb1-filter" placeholder="Filter titles (e.g. TenZ, ace, benjyfishy)" />
+          <label class="mini">Sort
+            <select id="nb1-sort">
+              <option value="recent">Newest first</option>
+              <option value="views">Most viewed</option>
+              <option value="longest">Longest</option>
+              <option value="shortest">Shortest</option>
+            </select>
+          </label>
+          <button id="nb1-refresh" class="ghost" type="button" title="Re-fetch the channel">⟳</button>
+          <span id="nb1-count" class="hint"></span>
+        </div>
+        <p class="hint">Newest uploads first · titles name the play + streamers. Click a video to scrub and grab a section.</p>
+        <div id="nb1-grid" class="results"></div>
+        <div class="row">
+          <button id="nb1-more" class="ghost hidden" type="button">Load more</button>
+        </div>
+      </div>
+
+      <!-- GRAB view: scrub the streamed source, set in/out, grab the section -->
+      <div id="nb1-grab" class="hidden">
+        <div class="row">
+          <button id="nb1-back" class="ghost" type="button">← Back</button>
+          <div class="nb1-grab-title" id="nb1-grab-title"></div>
+        </div>
+        <video id="nb1-video" class="nb1-video" playsinline preload="auto"></video>
+        <div id="nb1-scrub" class="nb1-scrub">
+          <div class="nb1-scrub-sel"></div>
+          <div class="nb1-handle nb1-handle-in" data-h="in"></div>
+          <div class="nb1-handle nb1-handle-out" data-h="out"></div>
+          <div class="nb1-playhead"></div>
+        </div>
+        <div class="row nb1-grab-ctrls">
+          <button id="nb1-play" class="ghost" type="button" title="Play / pause">▶</button>
+          <label class="mini">In <input id="nb1-in" type="text" placeholder="0:00" /></label>
+          <button id="nb1-set-in" class="ghost mini" type="button" title="Set in-point to playhead">⇤ set</button>
+          <label class="mini">Out <input id="nb1-out" type="text" placeholder="end" /></label>
+          <button id="nb1-set-out" class="ghost mini" type="button" title="Set out-point to playhead">set ⇥</button>
+          <span id="nb1-sel-len" class="hint"></span>
+        </div>
+        <div class="row">
+          <button id="nb1-do-grab" class="primary" type="button">Grab section</button>
+          <label class="mini chk"><input type="checkbox" id="nb1-keep" checked /> Keep long-term</label>
+          <span class="hint">Grabs only the selected span into your library.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Music-bed picker: browse the license-checked catalog, grab a track locally,
+       preview it, and use it as the Formatter's background bed. -->
+  <div id="music-modal" class="modal-backdrop hidden">
+    <div class="modal modal-wide">
+      <div class="modal-head">
+        <h3>♪ Choose a music bed</h3>
+        <button id="music-close" class="ghost" type="button" title="Close">✕</button>
+      </div>
+      <div class="row search-tools">
+        <input id="music-filter" placeholder="Filter by title or artist" />
+        <label class="mini">Tier
+          <select id="music-tier">
+            <option value="">All tiers</option>
+            <option value="A">A · Bundle-safe</option>
+            <option value="B">B · NCS (credit)</option>
+            <option value="C">C · Pixabay</option>
+          </select>
+        </label>
+        <span id="music-hint" class="hint"></span>
+      </div>
+      <p class="hint"><b>A</b> = CC-BY, safe to keep · <b>B</b> = NCS, shows a paste-ready credit after render · <b>C</b> = Pixabay (may need a manual grab). <b>Grab</b> downloads the track locally; <b>Use</b> sets it as the bed.</p>
+      <div id="music-list" class="results"></div>
+    </div>
+  </div>
+
+  <!-- Lightweight video player — preview a clip without opening the editor
+       (Library thumbnails, package candidates). -->
+  <div id="player-modal" class="modal-backdrop hidden">
+    <div class="modal">
+      <div class="modal-head">
+        <h3 id="player-title">Preview</h3>
+        <button id="player-close" class="ghost" type="button" title="Close">✕</button>
+      </div>
+      <video id="player-video" class="player-video" controls playsinline preload="metadata"></video>
+      <div id="player-actions" class="row player-actions"></div>
+    </div>
+  </div>
+
+  <!-- Clip packages: the agent's curated deliveries. List → detail (preview /
+       select candidates, open in Formatter) + a critiques box that trains the agent. -->
+  <div id="pkg-modal" class="modal-backdrop hidden">
+    <div class="modal modal-wide">
+      <div class="modal-head">
+        <h3>📦 Clip packages <span id="pkg-ctx" class="modal-ctx"></span></h3>
+        <button id="pkg-modal-close" class="ghost" type="button" title="Close">✕</button>
+      </div>
+
+      <!-- LIST view -->
+      <div id="pkg-list-view">
+        <div class="row pkg-request">
+          <input id="pkg-prompt" placeholder="Ask the agent for a package (e.g. TenZ ace clutches)" />
+          <label class="mini">Clips <input id="pkg-count" type="number" min="1" max="50" value="20" /></label>
+          <button id="pkg-request" class="primary" type="button">Request package</button>
+        </div>
+        <p class="hint">The agent searches YouTube + Twitch and delivers a package to preview + pick from. A <b>•</b> badge means it's new.</p>
+        <div id="pkg-list" class="results"></div>
+      </div>
+
+      <!-- DETAIL view -->
+      <div id="pkg-detail-view" class="hidden">
+        <div class="row pkg-detail-head">
+          <button id="pkg-back" class="ghost" type="button">← Packages</button>
+          <div class="pkg-detail-title" id="pkg-detail-title"></div>
+          <span class="modal-sep"></span>
+          <button id="pkg-del" class="ghost" type="button" title="Delete this package">🗑</button>
+        </div>
+        <p class="hint" id="pkg-detail-note"></p>
+        <div class="row pkg-detail-tools">
+          <label class="mini chk"><input type="checkbox" id="pkg-selall" /> Select all</label>
+          <span id="pkg-selcount" class="hint"></span>
+          <span class="modal-sep"></span>
+          <button id="pkg-open" class="primary" type="button">Open selected in Formatter →</button>
+        </div>
+        <div id="pkg-clips" class="results pkg-clips"></div>
+
+        <!-- Critiques: what you write here trains the agent for next time -->
+        <div class="pkg-crit">
+          <div class="pkg-crit-head">🗣 Critiques <span class="hint">— the agent learns from these for future packages</span></div>
+          <div id="pkg-crit-list" class="pkg-crit-list"></div>
+          <div class="row">
+            <input id="pkg-crit-in" placeholder="e.g. more clutches, fewer settings clips, prefer recent Vandal aces" />
+            <button id="pkg-crit-add" class="ghost" type="button">Add critique</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+  <script src="/app.js"></script>
+</body>
+</html>

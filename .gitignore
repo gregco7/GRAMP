@@ -1,0 +1,32 @@
+# ── Python ──────────────────────────────────────────────
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# ── Secrets (OAuth clients, cached tokens, API creds) ────
+secrets/
+*.env
+.env
+
+# ── User data / runtime storage (per-user, never tracked) ─
+storage/*
+!storage/.gitkeep
+!storage/**/.gitkeep
+
+# ── Review artifacts Claude drops for eyeballing ─────────
+outputs/*
+!outputs/**/.gitkeep
+
+# ── Generated / regenerable assets ───────────────────────
+# minimal/ is a mock-up-only subset rebuilt by scripts/build_minimal_assets.py
+assets/minimal/
+
+# ── Stray renders / scratch ──────────────────────────────
+Valorant/
+SFX/
+
+# ── OS / editor cruft ────────────────────────────────────
+.DS_Store
+*.swp
+*~

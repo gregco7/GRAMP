@@ -1,0 +1,2423 @@
+{
+  "supamen": {
+    "alias": "supamen",
+    "real_name": "Phat Le",
+    "team": "Evil Geniuses",
+    "team_slug": "evil-geniuses",
+    "league": "americas",
+    "vlr_id": 826,
+    "file": "supamen.png"
+  },
+  "bao": {
+    "alias": "bao",
+    "real_name": "Bao Nguyen",
+    "team": "Evil Geniuses",
+    "team_slug": "evil-geniuses",
+    "league": "americas",
+    "vlr_id": 34400,
+    "file": null
+  },
+  "dgzin": {
+    "alias": "dgzin",
+    "real_name": "Douglas Silva",
+    "team": "Evil Geniuses",
+    "team_slug": "evil-geniuses",
+    "league": "americas",
+    "vlr_id": 8873,
+    "file": "dgzin.png"
+  },
+  "paincakes": {
+    "alias": "Paincakes",
+    "real_name": "Jake Hass",
+    "team": "Evil Geniuses",
+    "team_slug": "evil-geniuses",
+    "league": "americas",
+    "vlr_id": 2164,
+    "file": "paincakes.png"
+  },
+  "zerona": {
+    "alias": "zerona",
+    "real_name": "Javan Varela",
+    "team": "Evil Geniuses",
+    "team_slug": "evil-geniuses",
+    "league": "americas",
+    "vlr_id": 14048,
+    "file": "zerona.png"
+  },
+  "artzin": {
+    "alias": "artzin",
+    "real_name": "Arthur Araujo",
+    "team": "FURIA",
+    "team_slug": "furia",
+    "league": "americas",
+    "vlr_id": 5957,
+    "file": "artzin.png"
+  },
+  "basic": {
+    "alias": "basic",
+    "real_name": "Luis Henrique Ferlin Tessaro",
+    "team": "FURIA",
+    "team_slug": "furia",
+    "league": "americas",
+    "vlr_id": 37354,
+    "file": "basic.png"
+  },
+  "shyy": {
+    "alias": "Shyy",
+    "real_name": "Fabian Usnayo",
+    "team": "FURIA",
+    "team_slug": "furia",
+    "league": "americas",
+    "vlr_id": 24007,
+    "file": "shyy.png"
+  },
+  "eeiu": {
+    "alias": "eeiu",
+    "real_name": "Daniel Vucenovic",
+    "team": "FURIA",
+    "team_slug": "furia",
+    "league": "americas",
+    "vlr_id": 796,
+    "file": "eeiu.png"
+  },
+  "koalanoob": {
+    "alias": "koalanoob",
+    "real_name": "Gianfranco Potestio",
+    "team": "FURIA",
+    "team_slug": "furia",
+    "league": "americas",
+    "vlr_id": 3722,
+    "file": "koalanoob.png"
+  },
+  "kingg": {
+    "alias": "kiNgg",
+    "real_name": "Francisco Aravena",
+    "team": "LEVIAT\u00c1N",
+    "team_slug": "leviat-n",
+    "league": "americas",
+    "vlr_id": 8549,
+    "file": "kingg.png"
+  },
+  "spike": {
+    "alias": "spike",
+    "real_name": "Rodrigo Lombardi",
+    "team": "LEVIAT\u00c1N",
+    "team_slug": "leviat-n",
+    "league": "americas",
+    "vlr_id": 21661,
+    "file": "spike.png"
+  },
+  "blowz": {
+    "alias": "blowz",
+    "real_name": "Guilherme Oliviera",
+    "team": "LEVIAT\u00c1N",
+    "team_slug": "leviat-n",
+    "league": "americas",
+    "vlr_id": 21251,
+    "file": "blowz.png"
+  },
+  "neon": {
+    "alias": "Neon",
+    "real_name": "Bruno Rodr\u00edguez",
+    "team": "LEVIAT\u00c1N",
+    "team_slug": "leviat-n",
+    "league": "americas",
+    "vlr_id": 29243,
+    "file": "neon.png"
+  },
+  "sato": {
+    "alias": "Sato",
+    "real_name": "Eduardo Kenzo Nagahama Sato",
+    "team": "LEVIAT\u00c1N",
+    "team_slug": "leviat-n",
+    "league": "americas",
+    "vlr_id": 21659,
+    "file": "sato.png"
+  },
+  "zekken": {
+    "alias": "zekken",
+    "real_name": "Zachary Patrone",
+    "team": "MIBR",
+    "team_slug": "mibr",
+    "league": "americas",
+    "vlr_id": 4004,
+    "file": "zekken.png"
+  },
+  "tex": {
+    "alias": "tex",
+    "real_name": "Ian Botsch",
+    "team": "MIBR",
+    "team_slug": "mibr",
+    "league": "americas",
+    "vlr_id": 1818,
+    "file": "tex.png"
+  },
+  "mazino": {
+    "alias": "Mazino",
+    "real_name": "Roberto Rivas",
+    "team": "MIBR",
+    "team_slug": "mibr",
+    "league": "americas",
+    "vlr_id": 7603,
+    "file": "mazino.png"
+  },
+  "verno": {
+    "alias": "Verno",
+    "real_name": "Andrew Maust",
+    "team": "MIBR",
+    "team_slug": "mibr",
+    "league": "americas",
+    "vlr_id": 21668,
+    "file": "verno.png"
+  },
+  "aspas": {
+    "alias": "aspas",
+    "real_name": "Erick Santos",
+    "team": "MIBR",
+    "team_slug": "mibr",
+    "league": "americas",
+    "vlr_id": 8480,
+    "file": "aspas.png"
+  },
+  "ethan": {
+    "alias": "Ethan",
+    "real_name": "Ethan Arnold",
+    "team": "NRG",
+    "team_slug": "nrg",
+    "league": "americas",
+    "vlr_id": 11225,
+    "file": "ethan.png"
+  },
+  "keiko": {
+    "alias": "keiko",
+    "real_name": "Georgio Sanassy",
+    "team": "NRG",
+    "team_slug": "nrg",
+    "league": "americas",
+    "vlr_id": 11494,
+    "file": "keiko.png"
+  },
+  "brawk": {
+    "alias": "brawk",
+    "real_name": "Brock Somerhalder",
+    "team": "NRG",
+    "team_slug": "nrg",
+    "league": "americas",
+    "vlr_id": 2172,
+    "file": "brawk.png"
+  },
+  "mada": {
+    "alias": "mada",
+    "real_name": "Adam Pampuch",
+    "team": "NRG",
+    "team_slug": "nrg",
+    "league": "americas",
+    "vlr_id": 5132,
+    "file": "mada.png"
+  },
+  "skuba": {
+    "alias": "skuba",
+    "real_name": "Logan Jenkins",
+    "team": "NRG",
+    "team_slug": "nrg",
+    "league": "americas",
+    "vlr_id": 11118,
+    "file": "skuba.png"
+  },
+  "eggsterr": {
+    "alias": "Eggsterr",
+    "real_name": "Evan Grady",
+    "team": "ENVY",
+    "team_slug": "envy",
+    "league": "americas",
+    "vlr_id": 35302,
+    "file": null
+  },
+  "demon1": {
+    "alias": "Demon1",
+    "real_name": "Max Mazanov",
+    "team": "ENVY",
+    "team_slug": "envy",
+    "league": "americas",
+    "vlr_id": 26171,
+    "file": null
+  },
+  "rossy": {
+    "alias": "Rossy",
+    "real_name": "Daniel Abedrabbo",
+    "team": "ENVY",
+    "team_slug": "envy",
+    "league": "americas",
+    "vlr_id": 1129,
+    "file": "rossy.png"
+  },
+  "keznit": {
+    "alias": "keznit",
+    "real_name": "Angelo Mori",
+    "team": "ENVY",
+    "team_slug": "envy",
+    "league": "americas",
+    "vlr_id": 2462,
+    "file": "keznit.png"
+  },
+  "glyph": {
+    "alias": "GLYPH",
+    "real_name": "Conner Garcia",
+    "team": "ENVY",
+    "team_slug": "envy",
+    "league": "americas",
+    "vlr_id": 8286,
+    "file": "glyph.png"
+  },
+  "ion": {
+    "alias": "ion",
+    "real_name": "Ayan Rastogi",
+    "team": "ENVY",
+    "team_slug": "envy",
+    "league": "americas",
+    "vlr_id": 29547,
+    "file": null
+  },
+  "p0ppin": {
+    "alias": "P0PPIN",
+    "real_name": "Matteo Weber",
+    "team": "ENVY",
+    "team_slug": "envy",
+    "league": "americas",
+    "vlr_id": 21778,
+    "file": null
+  },
+  "vora": {
+    "alias": "vora",
+    "real_name": "Jordan Pulwer",
+    "team": "100 Thieves",
+    "team_slug": "100-thieves",
+    "league": "americas",
+    "vlr_id": 20140,
+    "file": "vora.png"
+  },
+  "cryocells": {
+    "alias": "Cryocells",
+    "real_name": "Matthew Panganiban",
+    "team": "100 Thieves",
+    "team_slug": "100-thieves",
+    "league": "americas",
+    "vlr_id": 4147,
+    "file": "cryocells.png"
+  },
+  "asuna": {
+    "alias": "Asuna",
+    "real_name": "Peter Mazuryk",
+    "team": "100 Thieves",
+    "team_slug": "100-thieves",
+    "league": "americas",
+    "vlr_id": 601,
+    "file": "asuna.png"
+  },
+  "timotino": {
+    "alias": "Timotino",
+    "real_name": "Timoth\u00e9e Lavigne Dupont",
+    "team": "100 Thieves",
+    "team_slug": "100-thieves",
+    "league": "americas",
+    "vlr_id": 29893,
+    "file": "timotino.png"
+  },
+  "bang": {
+    "alias": "bang",
+    "real_name": "Sean Bezerra",
+    "team": "100 Thieves",
+    "team_slug": "100-thieves",
+    "league": "americas",
+    "vlr_id": 3880,
+    "file": "bang.png"
+  },
+  "fireballops": {
+    "alias": "FireBallOps",
+    "real_name": "Cameron Tomaselli",
+    "team": "Cloud9",
+    "team_slug": "cloud9",
+    "league": "americas",
+    "vlr_id": 10053,
+    "file": "fireballops.png"
+  },
+  "zellsis": {
+    "alias": "Zellsis",
+    "real_name": "Jordan Montemurro",
+    "team": "Cloud9",
+    "team_slug": "cloud9",
+    "league": "americas",
+    "vlr_id": 729,
+    "file": "zellsis.png"
+  },
+  "notexxd": {
+    "alias": "Notexxd",
+    "real_name": "Jaden Anderson",
+    "team": "Cloud9",
+    "team_slug": "cloud9",
+    "league": "americas",
+    "vlr_id": 39021,
+    "file": null
+  },
+  "jackk": {
+    "alias": "Jackk",
+    "real_name": "Jack Foote",
+    "team": "Cloud9",
+    "team_slug": "cloud9",
+    "league": "americas",
+    "vlr_id": 44842,
+    "file": null
+  },
+  "oxy": {
+    "alias": "OXY",
+    "real_name": "Francis Hoang",
+    "team": "Cloud9",
+    "team_slug": "cloud9",
+    "league": "americas",
+    "vlr_id": 18796,
+    "file": "oxy.png"
+  },
+  "saadhak": {
+    "alias": "saadhak",
+    "real_name": "Matias Delipetro",
+    "team": "KR\u00dc Esports",
+    "team_slug": "kr-esports",
+    "league": "americas",
+    "vlr_id": 727,
+    "file": "saadhak.png"
+  },
+  "mwzera": {
+    "alias": "mwzera",
+    "real_name": "Leonardo Serrati",
+    "team": "KR\u00dc Esports",
+    "team_slug": "kr-esports",
+    "league": "americas",
+    "vlr_id": 939,
+    "file": "mwzera.png"
+  },
+  "less": {
+    "alias": "Less",
+    "real_name": "Felipe de Loyola Basso",
+    "team": "KR\u00dc Esports",
+    "team_slug": "kr-esports",
+    "league": "americas",
+    "vlr_id": 8447,
+    "file": "less.png"
+  },
+  "dantedeu5": {
+    "alias": "Dantedeu5",
+    "real_name": "Jes\u00fas Federico Larrosa",
+    "team": "KR\u00dc Esports",
+    "team_slug": "kr-esports",
+    "league": "americas",
+    "vlr_id": 41135,
+    "file": "dantedeu5.png"
+  },
+  "heat": {
+    "alias": "heat",
+    "real_name": "Olavo Marcelo",
+    "team": "KR\u00dc Esports",
+    "team_slug": "kr-esports",
+    "league": "americas",
+    "vlr_id": 8673,
+    "file": "heat.png"
+  },
+  "lukxo": {
+    "alias": "lukxo",
+    "real_name": "Lucca Travaioli",
+    "team": "LOUD",
+    "team_slug": "loud",
+    "league": "americas",
+    "vlr_id": 28716,
+    "file": "lukxo.png"
+  },
+  "darker": {
+    "alias": "Darker",
+    "real_name": "Sebasti\u00e1n Castro Cicuamia",
+    "team": "LOUD",
+    "team_slug": "loud",
+    "league": "americas",
+    "vlr_id": 10557,
+    "file": "darker.png"
+  },
+  "virtyy": {
+    "alias": "Virtyy",
+    "real_name": "Leandro Moreno",
+    "team": "LOUD",
+    "team_slug": "loud",
+    "league": "americas",
+    "vlr_id": 3983,
+    "file": "virtyy.png"
+  },
+  "erde": {
+    "alias": "erde",
+    "real_name": "Roberto Lobos",
+    "team": "LOUD",
+    "team_slug": "loud",
+    "league": "americas",
+    "vlr_id": 29242,
+    "file": null
+  },
+  "cauanzin": {
+    "alias": "cauanzin",
+    "real_name": "Cauan Pereira",
+    "team": "LOUD",
+    "team_slug": "loud",
+    "league": "americas",
+    "vlr_id": 6193,
+    "file": "cauanzin.png"
+  },
+  "johnqt": {
+    "alias": "johnqt",
+    "real_name": "Mohamed Amine Ouarid",
+    "team": "Sentinels",
+    "team_slug": "sentinels",
+    "league": "americas",
+    "vlr_id": 1265,
+    "file": "johnqt.png"
+  },
+  "reduxx": {
+    "alias": "Reduxx",
+    "real_name": "Yassin Aboulalazm",
+    "team": "Sentinels",
+    "team_slug": "sentinels",
+    "league": "americas",
+    "vlr_id": 8419,
+    "file": "reduxx.png"
+  },
+  "jerrwin": {
+    "alias": "Jerrwin",
+    "real_name": "Gurjiwan Gill",
+    "team": "Sentinels",
+    "team_slug": "sentinels",
+    "league": "americas",
+    "vlr_id": 34057,
+    "file": null
+  },
+  "cortezia": {
+    "alias": "cortezia",
+    "real_name": "Gabriel Cortez",
+    "team": "Sentinels",
+    "team_slug": "sentinels",
+    "league": "americas",
+    "vlr_id": 5395,
+    "file": "cortezia.png"
+  },
+  "jonahp": {
+    "alias": "JonahP",
+    "real_name": "Jonah Pulice",
+    "team": "Sentinels",
+    "team_slug": "sentinels",
+    "league": "americas",
+    "vlr_id": 4581,
+    "file": "jonahp.png"
+  },
+  "victor": {
+    "alias": "Victor",
+    "real_name": "Victor Wong",
+    "team": "Sentinels",
+    "team_slug": "sentinels",
+    "league": "americas",
+    "vlr_id": 261,
+    "file": "victor.png"
+  },
+  "valyn": {
+    "alias": "valyn",
+    "real_name": "Jacob Batio",
+    "team": "G2 Esports",
+    "team_slug": "g2-esports",
+    "league": "americas",
+    "vlr_id": 3885,
+    "file": "valyn.png"
+  },
+  "jawgemo": {
+    "alias": "jawgemo",
+    "real_name": "Alexander Mor",
+    "team": "G2 Esports",
+    "team_slug": "g2-esports",
+    "league": "americas",
+    "vlr_id": 3993,
+    "file": "jawgemo.png"
+  },
+  "babybay": {
+    "alias": "BABYBAY",
+    "real_name": "Andrej Francisty",
+    "team": "G2 Esports",
+    "team_slug": "g2-esports",
+    "league": "americas",
+    "vlr_id": 2170,
+    "file": "babybay.png"
+  },
+  "trent": {
+    "alias": "trent",
+    "real_name": "Trent Cairns",
+    "team": "G2 Esports",
+    "team_slug": "g2-esports",
+    "league": "americas",
+    "vlr_id": 15500,
+    "file": "trent.png"
+  },
+  "leaf": {
+    "alias": "leaf",
+    "real_name": "Nathan Orf",
+    "team": "G2 Esports",
+    "team_slug": "g2-esports",
+    "league": "americas",
+    "vlr_id": 7873,
+    "file": "leaf.png"
+  },
+  "crewen": {
+    "alias": "Crewen",
+    "real_name": "Ali Eren Sargin",
+    "team": "BBL Esports",
+    "team_slug": "bbl-esports",
+    "league": "emea",
+    "vlr_id": 12795,
+    "file": "crewen.png"
+  },
+  "lar0k": {
+    "alias": "Lar0k",
+    "real_name": "Yusuf Kaan Kanber",
+    "team": "BBL Esports",
+    "team_slug": "bbl-esports",
+    "league": "emea",
+    "vlr_id": 31305,
+    "file": "lar0k.png"
+  },
+  "loita": {
+    "alias": "Loita",
+    "real_name": "Utku Kart",
+    "team": "BBL Esports",
+    "team_slug": "bbl-esports",
+    "league": "emea",
+    "vlr_id": 24344,
+    "file": "loita.png"
+  },
+  "ros": {
+    "alias": "Ros\u00e9",
+    "real_name": "Eren Erzan",
+    "team": "BBL Esports",
+    "team_slug": "bbl-esports",
+    "league": "emea",
+    "vlr_id": 5565,
+    "file": "ros.png"
+  },
+  "lovers-rock": {
+    "alias": "lovers rock",
+    "real_name": "Umut Pekdo\u011fan",
+    "team": "BBL Esports",
+    "team_slug": "bbl-esports",
+    "league": "emea",
+    "vlr_id": 40935,
+    "file": "lovers-rock.png"
+  },
+  "s0pp": {
+    "alias": "s0pp",
+    "real_name": "Efe Tur",
+    "team": "FUT Esports",
+    "team_slug": "fut-esports",
+    "league": "emea",
+    "vlr_id": 39357,
+    "file": null
+  },
+  "xeus": {
+    "alias": "xeus",
+    "real_name": "Do\u011fan G\u00f6zgen",
+    "team": "FUT Esports",
+    "team_slug": "fut-esports",
+    "league": "emea",
+    "vlr_id": 12793,
+    "file": "xeus.png"
+  },
+  "yetujey": {
+    "alias": "yetujey",
+    "real_name": "Eray Budak",
+    "team": "FUT Esports",
+    "team_slug": "fut-esports",
+    "league": "emea",
+    "vlr_id": 8369,
+    "file": "yetujey.png"
+  },
+  "krostaly": {
+    "alias": "KROSTALY",
+    "real_name": "Okan Ala\u00e7am",
+    "team": "FUT Esports",
+    "team_slug": "fut-esports",
+    "league": "emea",
+    "vlr_id": 15735,
+    "file": "krostaly.png"
+  },
+  "sociablee": {
+    "alias": "sociablEE",
+    "real_name": "Volkan Yonal",
+    "team": "FUT Esports",
+    "team_slug": "fut-esports",
+    "league": "emea",
+    "vlr_id": 5568,
+    "file": "sociablee.png"
+  },
+  "baha": {
+    "alias": "baha",
+    "real_name": "Baha G\u00f6zmen",
+    "team": "FUT Esports",
+    "team_slug": "fut-esports",
+    "league": "emea",
+    "vlr_id": 10114,
+    "file": "baha.png"
+  },
+  "atakaptan": {
+    "alias": "AtaKaptan",
+    "real_name": "Ata Tan",
+    "team": "FUT Esports",
+    "team_slug": "fut-esports",
+    "league": "emea",
+    "vlr_id": 6510,
+    "file": "atakaptan.png"
+  },
+  "qraxs": {
+    "alias": "qRaxs",
+    "real_name": "Do\u011fukan Balaban",
+    "team": "FUT Esports",
+    "team_slug": "fut-esports",
+    "league": "emea",
+    "vlr_id": 1139,
+    "file": "qraxs.png"
+  },
+  "mrfalin": {
+    "alias": "MrFaliN",
+    "real_name": "Furkan Ye\u011fen",
+    "team": "FUT Esports",
+    "team_slug": "fut-esports",
+    "league": "emea",
+    "vlr_id": 8044,
+    "file": "mrfalin.png"
+  },
+  "starxo": {
+    "alias": "starxo",
+    "real_name": "Patryk Kopczynski",
+    "team": "Gentle Mates",
+    "team_slug": "gentle-mates",
+    "league": "emea",
+    "vlr_id": 565,
+    "file": "starxo.png"
+  },
+  "proxh": {
+    "alias": "Proxh",
+    "real_name": "Yusuf Emre Tunc",
+    "team": "Gentle Mates",
+    "team_slug": "gentle-mates",
+    "league": "emea",
+    "vlr_id": 45494,
+    "file": "proxh.png"
+  },
+  "bipo": {
+    "alias": "bipo",
+    "real_name": "Taranvir Singh",
+    "team": "Gentle Mates",
+    "team_slug": "gentle-mates",
+    "league": "emea",
+    "vlr_id": 18400,
+    "file": "bipo.png"
+  },
+  "marteen": {
+    "alias": "marteen",
+    "real_name": "Martin P\u00e1tek",
+    "team": "Gentle Mates",
+    "team_slug": "gentle-mates",
+    "league": "emea",
+    "vlr_id": 10307,
+    "file": "marteen.png"
+  },
+  "minny": {
+    "alias": "Minny",
+    "real_name": "Patrik Hu\u0161ek",
+    "team": "Gentle Mates",
+    "team_slug": "gentle-mates",
+    "league": "emea",
+    "vlr_id": 23169,
+    "file": "minny.png"
+  },
+  "chloric": {
+    "alias": "chloric",
+    "real_name": "Caide Heaton",
+    "team": "Natus Vincere",
+    "team_slug": "natus-vincere",
+    "league": "emea",
+    "vlr_id": 15639,
+    "file": "chloric.png"
+  },
+  "exit": {
+    "alias": "ExiT",
+    "real_name": "Abdullah Al-Twaijri",
+    "team": "Natus Vincere",
+    "team_slug": "natus-vincere",
+    "league": "emea",
+    "vlr_id": 11917,
+    "file": null
+  },
+  "ruxic": {
+    "alias": "Ruxic",
+    "real_name": "U\u011fur G\u00fc\u00e7",
+    "team": "Natus Vincere",
+    "team_slug": "natus-vincere",
+    "league": "emea",
+    "vlr_id": 18677,
+    "file": "ruxic.png"
+  },
+  "hiro": {
+    "alias": "hiro",
+    "real_name": "Emirhan Kat",
+    "team": "Natus Vincere",
+    "team_slug": "natus-vincere",
+    "league": "emea",
+    "vlr_id": 29867,
+    "file": "hiro.png"
+  },
+  "cyvoph": {
+    "alias": "CyvOph",
+    "real_name": "Clement Millard",
+    "team": "Natus Vincere",
+    "team_slug": "natus-vincere",
+    "league": "emea",
+    "vlr_id": 13258,
+    "file": "cyvoph.png"
+  },
+  "shao": {
+    "alias": "Shao",
+    "real_name": "Andrey Kiprsky",
+    "team": "Natus Vincere",
+    "team_slug": "natus-vincere",
+    "league": "emea",
+    "vlr_id": 384,
+    "file": "shao.png"
+  },
+  "filu": {
+    "alias": "Filu",
+    "real_name": "Dawid Czarnecki",
+    "team": "Natus Vincere",
+    "team_slug": "natus-vincere",
+    "league": "emea",
+    "vlr_id": 4544,
+    "file": "filu.png"
+  },
+  "jamppi": {
+    "alias": "Jamppi",
+    "real_name": "Elias Olkkonen",
+    "team": "Team Vitality",
+    "team_slug": "team-vitality",
+    "league": "emea",
+    "vlr_id": 9780,
+    "file": "jamppi.png"
+  },
+  "profek": {
+    "alias": "PROFEK",
+    "real_name": "Dawid \u015awi\u0119\u0107",
+    "team": "Team Vitality",
+    "team_slug": "team-vitality",
+    "league": "emea",
+    "vlr_id": 5554,
+    "file": "profek.png"
+  },
+  "derke": {
+    "alias": "Derke",
+    "real_name": "Nikita Niko Sirmitev",
+    "team": "Team Vitality",
+    "team_slug": "team-vitality",
+    "league": "emea",
+    "vlr_id": 5022,
+    "file": "derke.png"
+  },
+  "chronicle": {
+    "alias": "Chronicle",
+    "real_name": "Timofey Khromov",
+    "team": "Team Vitality",
+    "team_slug": "team-vitality",
+    "league": "emea",
+    "vlr_id": 458,
+    "file": "chronicle.png"
+  },
+  "sayonara": {
+    "alias": "Sayonara",
+    "real_name": "\u0218tefan M\u00eetcu",
+    "team": "Team Vitality",
+    "team_slug": "team-vitality",
+    "league": "emea",
+    "vlr_id": 33902,
+    "file": "sayonara.png"
+  },
+  "qpert": {
+    "alias": "qpert",
+    "real_name": "Mateja Mijovic",
+    "team": "PCIFIC Esports",
+    "team_slug": "pcific-esports",
+    "league": "emea",
+    "vlr_id": 7105,
+    "file": "qpert.png"
+  },
+  "al0rante": {
+    "alias": "al0rante",
+    "real_name": "Felix Brandl",
+    "team": "PCIFIC Esports",
+    "team_slug": "pcific-esports",
+    "league": "emea",
+    "vlr_id": 5292,
+    "file": "al0rante.png"
+  },
+  "cned": {
+    "alias": "cNed",
+    "real_name": "Mehmet Ya\u011f\u0131z \u0130pek",
+    "team": "PCIFIC Esports",
+    "team_slug": "pcific-esports",
+    "league": "emea",
+    "vlr_id": 573,
+    "file": "cned.png"
+  },
+  "ninja": {
+    "alias": "NINJA",
+    "real_name": "Patryk Koczyba",
+    "team": "PCIFIC Esports",
+    "team_slug": "pcific-esports",
+    "league": "emea",
+    "vlr_id": 28948,
+    "file": "ninja.png"
+  },
+  "seven": {
+    "alias": "seven",
+    "real_name": "Johann Hernandez",
+    "team": "PCIFIC Esports",
+    "team_slug": "pcific-esports",
+    "league": "emea",
+    "vlr_id": 8376,
+    "file": "seven.png"
+  },
+  "boaster": {
+    "alias": "Boaster",
+    "real_name": "Jake Howlett",
+    "team": "FNATIC",
+    "team_slug": "fnatic",
+    "league": "emea",
+    "vlr_id": 438,
+    "file": "boaster.png"
+  },
+  "crashies": {
+    "alias": "crashies",
+    "real_name": "Austin Roberts",
+    "team": "FNATIC",
+    "team_slug": "fnatic",
+    "league": "emea",
+    "vlr_id": 4,
+    "file": "crashies.png"
+  },
+  "kaajak": {
+    "alias": "kaajak",
+    "real_name": "Kajetan Haremski",
+    "team": "FNATIC",
+    "team_slug": "fnatic",
+    "league": "emea",
+    "vlr_id": 9554,
+    "file": "kaajak.png"
+  },
+  "veqaj": {
+    "alias": "Veqaj",
+    "real_name": "Sylvain Pattyn",
+    "team": "FNATIC",
+    "team_slug": "fnatic",
+    "league": "emea",
+    "vlr_id": 12928,
+    "file": "veqaj.png"
+  },
+  "cloud": {
+    "alias": "Cloud",
+    "real_name": "Kirill Nehozhin",
+    "team": "FNATIC",
+    "team_slug": "fnatic",
+    "league": "emea",
+    "vlr_id": 4181,
+    "file": "cloud.png"
+  },
+  "alfajer": {
+    "alias": "Alfajer",
+    "real_name": "Emir Ali Beder",
+    "team": "FNATIC",
+    "team_slug": "fnatic",
+    "league": "emea",
+    "vlr_id": 9810,
+    "file": "alfajer.png"
+  },
+  "westside": {
+    "alias": "westside",
+    "real_name": "Mi\u0142osz Duda",
+    "team": "GIANTX",
+    "team_slug": "giantx",
+    "league": "emea",
+    "vlr_id": 34684,
+    "file": "westside.png"
+  },
+  "flickless": {
+    "alias": "Flickless",
+    "real_name": "Karel Maeckelbergh",
+    "team": "GIANTX",
+    "team_slug": "giantx",
+    "league": "emea",
+    "vlr_id": 6959,
+    "file": "flickless.png"
+  },
+  "ara": {
+    "alias": "ara",
+    "real_name": "Hanceriuc Eduard-George",
+    "team": "GIANTX",
+    "team_slug": "giantx",
+    "league": "emea",
+    "vlr_id": 11332,
+    "file": null
+  },
+  "tomaszy": {
+    "alias": "tomaszy",
+    "real_name": "Tom\u00e1s Machado",
+    "team": "GIANTX",
+    "team_slug": "giantx",
+    "league": "emea",
+    "vlr_id": 19691,
+    "file": "tomaszy.png"
+  },
+  "dos9": {
+    "alias": "dos9",
+    "real_name": "Zhumagali Dastan",
+    "team": "Karmine Corp",
+    "team_slug": "karmine-corp",
+    "league": "emea",
+    "vlr_id": 16215,
+    "file": "dos9.png"
+  },
+  "lewn": {
+    "alias": "LewN",
+    "real_name": "Burak Alkan",
+    "team": "Karmine Corp",
+    "team_slug": "karmine-corp",
+    "league": "emea",
+    "vlr_id": 20144,
+    "file": "lewn.png"
+  },
+  "avez": {
+    "alias": "Avez",
+    "real_name": "Hazem Khaled",
+    "team": "Karmine Corp",
+    "team_slug": "karmine-corp",
+    "league": "emea",
+    "vlr_id": 5654,
+    "file": "avez.png"
+  },
+  "suygetsu": {
+    "alias": "SUYGETSU",
+    "real_name": "Dmitry Ilyushin",
+    "team": "Karmine Corp",
+    "team_slug": "karmine-corp",
+    "league": "emea",
+    "vlr_id": 2858,
+    "file": "suygetsu.png"
+  },
+  "n4rrate": {
+    "alias": "N4RRATE",
+    "real_name": "Marshall Massey",
+    "team": "Karmine Corp",
+    "team_slug": "karmine-corp",
+    "league": "emea",
+    "vlr_id": 36245,
+    "file": "n4rrate.png"
+  },
+  "chaza": {
+    "alias": "Chaza",
+    "real_name": "Charlie Phillips",
+    "team": "Karmine Corp",
+    "team_slug": "karmine-corp",
+    "league": "emea",
+    "vlr_id": 48705,
+    "file": null
+  },
+  "sheydos": {
+    "alias": "sheydos",
+    "real_name": "Bogdan Naumov",
+    "team": "Karmine Corp",
+    "team_slug": "karmine-corp",
+    "league": "emea",
+    "vlr_id": 1428,
+    "file": "sheydos.png"
+  },
+  "boo": {
+    "alias": "Boo",
+    "real_name": "Ri\u010dardas Luka\u0161evi\u010dius",
+    "team": "Team Heretics",
+    "team_slug": "team-heretics",
+    "league": "emea",
+    "vlr_id": 1144,
+    "file": "boo.png"
+  },
+  "koshmaras": {
+    "alias": "koshmaras",
+    "real_name": "Martynas Namikas",
+    "team": "Team Heretics",
+    "team_slug": "team-heretics",
+    "league": "emea",
+    "vlr_id": 23365,
+    "file": null
+  },
+  "wo0t": {
+    "alias": "Wo0t",
+    "real_name": "Mert Alkan",
+    "team": "Team Heretics",
+    "team_slug": "team-heretics",
+    "league": "emea",
+    "vlr_id": 21328,
+    "file": "wo0t.png"
+  },
+  "riens": {
+    "alias": "RieNs",
+    "real_name": "Enes Ecirli",
+    "team": "Team Heretics",
+    "team_slug": "team-heretics",
+    "league": "emea",
+    "vlr_id": 10971,
+    "file": "riens.png"
+  },
+  "benjyfishy": {
+    "alias": "benjyfishy",
+    "real_name": "Benjamin David Fish",
+    "team": "Team Heretics",
+    "team_slug": "team-heretics",
+    "league": "emea",
+    "vlr_id": 29873,
+    "file": "benjyfishy.png"
+  },
+  "nats": {
+    "alias": "nAts",
+    "real_name": "Ayaz Akhmetshin",
+    "team": "Team Liquid",
+    "team_slug": "team-liquid",
+    "league": "emea",
+    "vlr_id": 457,
+    "file": "nats.png"
+  },
+  "purp0": {
+    "alias": "purp0",
+    "real_name": "Semyon Borchev",
+    "team": "Team Liquid",
+    "team_slug": "team-liquid",
+    "league": "emea",
+    "vlr_id": 1885,
+    "file": "purp0.png"
+  },
+  "kamo": {
+    "alias": "kamo",
+    "real_name": "Kamil Fr\u0105ckowiak",
+    "team": "Team Liquid",
+    "team_slug": "team-liquid",
+    "league": "emea",
+    "vlr_id": 14681,
+    "file": "kamo.png"
+  },
+  "wayne": {
+    "alias": "wayne",
+    "real_name": "Wayne Chang",
+    "team": "Team Liquid",
+    "team_slug": "team-liquid",
+    "league": "emea",
+    "vlr_id": 24628,
+    "file": "wayne.png"
+  },
+  "miniboo": {
+    "alias": "MiniBoo",
+    "real_name": "Dominykas Luka\u0161evi\u010dius",
+    "team": "Team Liquid",
+    "team_slug": "team-liquid",
+    "league": "emea",
+    "vlr_id": 18350,
+    "file": "miniboo.png"
+  },
+  "nekky": {
+    "alias": "nekky",
+    "real_name": "An\u0131l Da\u011fdeviren",
+    "team": "Eternal Fire",
+    "team_slug": "eternal-fire",
+    "league": "emea",
+    "vlr_id": 12670,
+    "file": "nekky.png"
+  },
+  "izzy": {
+    "alias": "Izzy",
+    "real_name": "Baran Y\u0131lmaz",
+    "team": "Eternal Fire",
+    "team_slug": "eternal-fire",
+    "league": "emea",
+    "vlr_id": 10160,
+    "file": "izzy.png"
+  },
+  "audaz": {
+    "alias": "audaz",
+    "real_name": "Soner Ekiz",
+    "team": "Eternal Fire",
+    "team_slug": "eternal-fire",
+    "league": "emea",
+    "vlr_id": 40843,
+    "file": "audaz.png"
+  },
+  "favian": {
+    "alias": "Favian",
+    "real_name": "Enes Yi\u011fiter",
+    "team": "Eternal Fire",
+    "team_slug": "eternal-fire",
+    "league": "emea",
+    "vlr_id": 41720,
+    "file": "favian.png"
+  },
+  "echo": {
+    "alias": "echo",
+    "real_name": "\u00d6m\u00fcr Serkan \u015eenol",
+    "team": "Eternal Fire",
+    "team_slug": "eternal-fire",
+    "league": "emea",
+    "vlr_id": 49346,
+    "file": "echo.png"
+  },
+  "killua": {
+    "alias": "Killua",
+    "real_name": "Tanate Teerasawad",
+    "team": "FULL SENSE",
+    "team_slug": "full-sense",
+    "league": "pacific",
+    "vlr_id": 13784,
+    "file": "killua.png"
+  },
+  "primmie": {
+    "alias": "primmie",
+    "real_name": "Papaphat Sriprapha",
+    "team": "FULL SENSE",
+    "team_slug": "full-sense",
+    "league": "pacific",
+    "vlr_id": 25255,
+    "file": "primmie.png"
+  },
+  "jitboys": {
+    "alias": "JitBoyS",
+    "real_name": "Jittana Nokngam",
+    "team": "FULL SENSE",
+    "team_slug": "full-sense",
+    "league": "pacific",
+    "vlr_id": 13788,
+    "file": "jitboys.png"
+  },
+  "seph1roth": {
+    "alias": "seph1roth",
+    "real_name": "Chinnakrit Phoojaroen",
+    "team": "FULL SENSE",
+    "team_slug": "full-sense",
+    "league": "pacific",
+    "vlr_id": 27244,
+    "file": "seph1roth.png"
+  },
+  "crws": {
+    "alias": "Crws",
+    "real_name": "Thanamethk Mahatthananuyut",
+    "team": "FULL SENSE",
+    "team_slug": "full-sense",
+    "league": "pacific",
+    "vlr_id": 3977,
+    "file": "crws.png"
+  },
+  "thyy": {
+    "alias": "thyy",
+    "real_name": "Anupong Preamsak",
+    "team": "FULL SENSE",
+    "team_slug": "full-sense",
+    "league": "pacific",
+    "vlr_id": 42901,
+    "file": "thyy.png"
+  },
+  "leviathan": {
+    "alias": "Leviathan",
+    "real_name": "Thanyathon Nakmee",
+    "team": "FULL SENSE",
+    "team_slug": "full-sense",
+    "league": "pacific",
+    "vlr_id": 27254,
+    "file": "leviathan.png"
+  },
+  "zynx": {
+    "alias": "ZynX",
+    "real_name": "Kim Dong-ha (\uae40\ub3d9\ud558)",
+    "team": "Gen.G",
+    "team_slug": "gen-g",
+    "league": "pacific",
+    "vlr_id": 51099,
+    "file": null
+  },
+  "ash": {
+    "alias": "Ash",
+    "real_name": "Ha Hyun-cheol (\ud558\ud604\ucca0)",
+    "team": "Gen.G",
+    "team_slug": "gen-g",
+    "league": "pacific",
+    "vlr_id": 25017,
+    "file": null
+  },
+  "karon": {
+    "alias": "Karon",
+    "real_name": "Kim Won-tae (\uae40\uc6d0\ud0dc)",
+    "team": "Gen.G",
+    "team_slug": "gen-g",
+    "league": "pacific",
+    "vlr_id": 34974,
+    "file": "karon.png"
+  },
+  "t3xture": {
+    "alias": "t3xture",
+    "real_name": "Kim Na-ra (\uae40\ub098\ub77c)",
+    "team": "Gen.G",
+    "team_slug": "gen-g",
+    "league": "pacific",
+    "vlr_id": 9196,
+    "file": "t3xture.png"
+  },
+  "xiesta": {
+    "alias": "Xiesta",
+    "real_name": "Jung Si-hwan (\uc815\uc2dc\ud658)",
+    "team": "Gen.G",
+    "team_slug": "gen-g",
+    "league": "pacific",
+    "vlr_id": 62291,
+    "file": null
+  },
+  "patmen": {
+    "alias": "PatMen",
+    "real_name": "Patrick Mendoza",
+    "team": "Global Esports",
+    "team_slug": "global-esports",
+    "league": "pacific",
+    "vlr_id": 13744,
+    "file": "patmen.png"
+  },
+  "udotan": {
+    "alias": "UdoTan",
+    "real_name": "Go Kyung-won (\uace0\uacbd\uc6d0)",
+    "team": "Global Esports",
+    "team_slug": "global-esports",
+    "league": "pacific",
+    "vlr_id": 4428,
+    "file": "udotan.png"
+  },
+  "kr1stal": {
+    "alias": "Kr1stal",
+    "real_name": "Savva Fedorov",
+    "team": "Global Esports",
+    "team_slug": "global-esports",
+    "league": "pacific",
+    "vlr_id": 5796,
+    "file": "kr1stal.png"
+  },
+  "xavi8k": {
+    "alias": "xavi8k",
+    "real_name": "Xavier Juan",
+    "team": "Global Esports",
+    "team_slug": "global-esports",
+    "league": "pacific",
+    "vlr_id": 7754,
+    "file": "xavi8k.png"
+  },
+  "autumn": {
+    "alias": "Autumn",
+    "real_name": "Kale Dunne",
+    "team": "Global Esports",
+    "team_slug": "global-esports",
+    "league": "pacific",
+    "vlr_id": 872,
+    "file": "autumn.png"
+  },
+  "crazyguy": {
+    "alias": "crazyguy",
+    "real_name": "Ng\u00f4 C\u00f4ng Anh",
+    "team": "Rex Regum Qeon",
+    "team_slug": "rex-regum-qeon",
+    "league": "pacific",
+    "vlr_id": 1430,
+    "file": "crazyguy.png"
+  },
+  "monyet": {
+    "alias": "Monyet",
+    "real_name": "Cahya Nugraha",
+    "team": "Rex Regum Qeon",
+    "team_slug": "rex-regum-qeon",
+    "league": "pacific",
+    "vlr_id": 8497,
+    "file": "monyet.png"
+  },
+  "xffero": {
+    "alias": "xffero",
+    "real_name": "David Monangin",
+    "team": "Rex Regum Qeon",
+    "team_slug": "rex-regum-qeon",
+    "league": "pacific",
+    "vlr_id": 4871,
+    "file": "xffero.png"
+  },
+  "xan": {
+    "alias": "Xan",
+    "real_name": "Xan Ng",
+    "team": "Rex Regum Qeon",
+    "team_slug": "rex-regum-qeon",
+    "league": "pacific",
+    "vlr_id": 11737,
+    "file": "xan.png"
+  },
+  "jemkin": {
+    "alias": "Jemkin",
+    "real_name": "Maksim Batorov",
+    "team": "Rex Regum Qeon",
+    "team_slug": "rex-regum-qeon",
+    "league": "pacific",
+    "vlr_id": 24895,
+    "file": "jemkin.png"
+  },
+  "kushy": {
+    "alias": "Kushy",
+    "real_name": "Bryan Carlos Setiawan",
+    "team": "Rex Regum Qeon",
+    "team_slug": "rex-regum-qeon",
+    "league": "pacific",
+    "vlr_id": 4866,
+    "file": "kushy.png"
+  },
+  "absol": {
+    "alias": "Absol",
+    "real_name": "Kazuki Fujinoki",
+    "team": "ZETA DIVISION",
+    "team_slug": "zeta-division",
+    "league": "pacific",
+    "vlr_id": 34776,
+    "file": "absol.png"
+  },
+  "syouta": {
+    "alias": "SyouTa",
+    "real_name": "Shota Aoki",
+    "team": "ZETA DIVISION",
+    "team_slug": "zeta-division",
+    "league": "pacific",
+    "vlr_id": 12990,
+    "file": "syouta.png"
+  },
+  "sugarz3ro": {
+    "alias": "SugarZ3ro",
+    "real_name": "Shota Watanabe",
+    "team": "ZETA DIVISION",
+    "team_slug": "zeta-division",
+    "league": "pacific",
+    "vlr_id": 6668,
+    "file": "sugarz3ro.png"
+  },
+  "eko": {
+    "alias": "eKo",
+    "real_name": "Yeom Wang-ryong (\uc5fc\uc655\ub8e1)",
+    "team": "ZETA DIVISION",
+    "team_slug": "zeta-division",
+    "league": "pacific",
+    "vlr_id": 1960,
+    "file": "eko.png"
+  },
+  "xdll": {
+    "alias": "Xdll",
+    "real_name": "Yuto Mizomori",
+    "team": "ZETA DIVISION",
+    "team_slug": "zeta-division",
+    "league": "pacific",
+    "vlr_id": 25221,
+    "file": "xdll.png"
+  },
+  "rb": {
+    "alias": "Rb",
+    "real_name": "Goo Sang-min (\uad6c\uc0c1\ubbfc)",
+    "team": "Nongshim RedForce",
+    "team_slug": "nongshim-redforce",
+    "league": "pacific",
+    "vlr_id": 488,
+    "file": "rb.png"
+  },
+  "woohyun": {
+    "alias": "WoohyuN",
+    "real_name": "Moon Woo-hyun (\ubb38\uc6b0\ud604)",
+    "team": "Nongshim RedForce",
+    "team_slug": "nongshim-redforce",
+    "league": "pacific",
+    "vlr_id": 66086,
+    "file": null
+  },
+  "xross": {
+    "alias": "Xross",
+    "real_name": "Jeonghwan (\uc815\ud658)",
+    "team": "Nongshim RedForce",
+    "team_slug": "nongshim-redforce",
+    "league": "pacific",
+    "vlr_id": 42772,
+    "file": "xross.png"
+  },
+  "francis": {
+    "alias": "Francis",
+    "real_name": "Kim Mu-bin (\uae40\ubb34\ube48)",
+    "team": "Nongshim RedForce",
+    "team_slug": "nongshim-redforce",
+    "league": "pacific",
+    "vlr_id": 31828,
+    "file": "francis.png"
+  },
+  "dambi": {
+    "alias": "Dambi",
+    "real_name": "Lee Hyuk-kyu (\uc774\ud601\uaddc)",
+    "team": "Nongshim RedForce",
+    "team_slug": "nongshim-redforce",
+    "league": "pacific",
+    "vlr_id": 31827,
+    "file": "dambi.png"
+  },
+  "ivy": {
+    "alias": "Ivy",
+    "real_name": "Park Sung-hyeon (\ubc15\uc131\ud604)",
+    "team": "Nongshim RedForce",
+    "team_slug": "nongshim-redforce",
+    "league": "pacific",
+    "vlr_id": 31829,
+    "file": "ivy.png"
+  },
+  "meiy": {
+    "alias": "Meiy",
+    "real_name": "Ibuki Seki",
+    "team": "DetonatioN FocusMe",
+    "team_slug": "detonation-focusme",
+    "league": "pacific",
+    "vlr_id": 6672,
+    "file": "meiy.png"
+  },
+  "ssees": {
+    "alias": "SSeeS",
+    "real_name": "Tomonori Okimura",
+    "team": "DetonatioN FocusMe",
+    "team_slug": "detonation-focusme",
+    "league": "pacific",
+    "vlr_id": 21438,
+    "file": "ssees.png"
+  },
+  "yatsuka": {
+    "alias": "yatsuka",
+    "real_name": "Kazuya Ikeda",
+    "team": "DetonatioN FocusMe",
+    "team_slug": "detonation-focusme",
+    "league": "pacific",
+    "vlr_id": 29843,
+    "file": "yatsuka.png"
+  },
+  "caedye": {
+    "alias": "Caedye",
+    "real_name": "Amon Mateus Okakura",
+    "team": "DetonatioN FocusMe",
+    "team_slug": "detonation-focusme",
+    "league": "pacific",
+    "vlr_id": 29841,
+    "file": "caedye.png"
+  },
+  "akame": {
+    "alias": "Akame",
+    "real_name": "Yu Gwang-hui (\uc720\uad11\ud76c)",
+    "team": "DetonatioN FocusMe",
+    "team_slug": "detonation-focusme",
+    "league": "pacific",
+    "vlr_id": 13002,
+    "file": "akame.png"
+  },
+  "mako": {
+    "alias": "MaKo",
+    "real_name": "Kim Myeong-gwan (\uae40\uba85\uad00)",
+    "team": "KIWOOM DRX",
+    "team_slug": "kiwoom-drx",
+    "league": "pacific",
+    "vlr_id": 4462,
+    "file": "mako.png"
+  },
+  "yong": {
+    "alias": "yong",
+    "real_name": "Kim Ho-yong (\uae40\ud638\uc6a9)",
+    "team": "KIWOOM DRX",
+    "team_slug": "kiwoom-drx",
+    "league": "pacific",
+    "vlr_id": 51238,
+    "file": null
+  },
+  "free1ng": {
+    "alias": "free1ng",
+    "real_name": "No Ha-jun (\ub178\ud558\uc900)",
+    "team": "KIWOOM DRX",
+    "team_slug": "kiwoom-drx",
+    "league": "pacific",
+    "vlr_id": 1916,
+    "file": "free1ng.png"
+  },
+  "hyunmin": {
+    "alias": "HYUNMIN",
+    "real_name": "Song Hyun-min (\uc1a1\ud604\ubbfc)",
+    "team": "KIWOOM DRX",
+    "team_slug": "kiwoom-drx",
+    "league": "pacific",
+    "vlr_id": 28400,
+    "file": "hyunmin.png"
+  },
+  "beyn": {
+    "alias": "BeYN",
+    "real_name": "Kang Ha-bin (\uac15\ud558\ube48)",
+    "team": "KIWOOM DRX",
+    "team_slug": "kiwoom-drx",
+    "league": "pacific",
+    "vlr_id": 4678,
+    "file": "beyn.png"
+  },
+  "flicker": {
+    "alias": "Flicker",
+    "real_name": "Kim Tae-hee (\uae40\ud0dc\ud76c)",
+    "team": "KIWOOM DRX",
+    "team_slug": "kiwoom-drx",
+    "league": "pacific",
+    "vlr_id": 51100,
+    "file": null
+  },
+  "invy": {
+    "alias": "invy",
+    "real_name": "Adrian Jiggs Reyes",
+    "team": "Paper Rex",
+    "team_slug": "paper-rex",
+    "league": "pacific",
+    "vlr_id": 8504,
+    "file": "invy.png"
+  },
+  "jinggg": {
+    "alias": "Jinggg",
+    "real_name": "Wang Jing Jie",
+    "team": "Paper Rex",
+    "team_slug": "paper-rex",
+    "league": "pacific",
+    "vlr_id": 7378,
+    "file": "jinggg.png"
+  },
+  "f0rsaken": {
+    "alias": "f0rsakeN",
+    "real_name": "Jason Susanto",
+    "team": "Paper Rex",
+    "team_slug": "paper-rex",
+    "league": "pacific",
+    "vlr_id": 9801,
+    "file": "f0rsaken.png"
+  },
+  "d4v41": {
+    "alias": "d4v41",
+    "real_name": "Khalish Rusyaidee",
+    "team": "Paper Rex",
+    "team_slug": "paper-rex",
+    "league": "pacific",
+    "vlr_id": 9803,
+    "file": "d4v41.png"
+  },
+  "something": {
+    "alias": "something",
+    "real_name": "Ilya Petrov",
+    "team": "Paper Rex",
+    "team_slug": "paper-rex",
+    "league": "pacific",
+    "vlr_id": 17086,
+    "file": "something.png"
+  },
+  "munchkin": {
+    "alias": "Munchkin",
+    "real_name": "Byeon Sang-beom (\ubcc0\uc0c1\ubc94)",
+    "team": "T1",
+    "team_slug": "t1",
+    "league": "pacific",
+    "vlr_id": 2489,
+    "file": "munchkin.png"
+  },
+  "stax": {
+    "alias": "stax",
+    "real_name": "Kim Gu-taek (\uae40\uad6c\ud0dd)",
+    "team": "T1",
+    "team_slug": "t1",
+    "league": "pacific",
+    "vlr_id": 485,
+    "file": "stax.png"
+  },
+  "meteor": {
+    "alias": "Meteor",
+    "real_name": "Kim Tae-oh (\uae40\ud0dc\uc624)",
+    "team": "T1",
+    "team_slug": "t1",
+    "league": "pacific",
+    "vlr_id": 13039,
+    "file": "meteor.png"
+  },
+  "buzz": {
+    "alias": "BuZz",
+    "real_name": "Yu Byeong-cheol (\uc720\ubcd1\ucca0)",
+    "team": "T1",
+    "team_slug": "t1",
+    "league": "pacific",
+    "vlr_id": 804,
+    "file": "buzz.png"
+  },
+  "dh": {
+    "alias": "DH",
+    "real_name": "Kang Dong-ho (\uac15\ub3d9\ud638)",
+    "team": "T1",
+    "team_slug": "t1",
+    "league": "pacific",
+    "vlr_id": 43057,
+    "file": "dh.png"
+  },
+  "izu": {
+    "alias": "iZu",
+    "real_name": "Ham Woo-ju (\ud568\uc6b0\uc8fc)",
+    "team": "T1",
+    "team_slug": "t1",
+    "league": "pacific",
+    "vlr_id": 29833,
+    "file": "izu.png"
+  },
+  "carpe": {
+    "alias": "carpe",
+    "real_name": "Lee Jae-hyeok (\uc774\uc7ac\ud601)",
+    "team": "T1",
+    "team_slug": "t1",
+    "league": "pacific",
+    "vlr_id": 31207,
+    "file": "carpe.png"
+  },
+  "kellys": {
+    "alias": "kellyS",
+    "real_name": "Kelly Sedillo",
+    "team": "Team Secret",
+    "team_slug": "team-secret",
+    "league": "pacific",
+    "vlr_id": 7437,
+    "file": "kellys.png"
+  },
+  "zeus": {
+    "alias": "Zeus",
+    "real_name": "Jhian Vega",
+    "team": "Team Secret",
+    "team_slug": "team-secret",
+    "league": "pacific",
+    "vlr_id": 46135,
+    "file": "zeus.png"
+  },
+  "sylvan": {
+    "alias": "Sylvan",
+    "real_name": "Go Young-sup (\uace0\uc601\uc12d)",
+    "team": "Team Secret",
+    "team_slug": "team-secret",
+    "league": "pacific",
+    "vlr_id": 4056,
+    "file": "sylvan.png"
+  },
+  "berserx": {
+    "alias": "BerserX",
+    "real_name": "Rizkie Adla Kusuma",
+    "team": "Team Secret",
+    "team_slug": "team-secret",
+    "league": "pacific",
+    "vlr_id": 4874,
+    "file": "berserx.png"
+  },
+  "rimuru": {
+    "alias": "Rimuru",
+    "real_name": "Dwine Enriquez",
+    "team": "Team Secret",
+    "team_slug": "team-secret",
+    "league": "pacific",
+    "vlr_id": 48439,
+    "file": "rimuru.png"
+  },
+  "foxy9": {
+    "alias": "Foxy9",
+    "real_name": "Jung Jae-sung (\uc815\uc7ac\uc131)",
+    "team": "VARREL",
+    "team_slug": "varrel",
+    "league": "pacific",
+    "vlr_id": 11600,
+    "file": "foxy9.png"
+  },
+  "c1nder": {
+    "alias": "C1ndeR",
+    "real_name": "Ko Jae-hyuk (\uace0\uc7ac\ud601)",
+    "team": "VARREL",
+    "team_slug": "varrel",
+    "league": "pacific",
+    "vlr_id": 2149,
+    "file": "c1nder.png"
+  },
+  "klaus": {
+    "alias": "Klaus",
+    "real_name": "Kim Min-hyuk (\uae40\ubbfc\ud601)",
+    "team": "VARREL",
+    "team_slug": "varrel",
+    "league": "pacific",
+    "vlr_id": 4426,
+    "file": null
+  },
+  "xuna": {
+    "alias": "XuNa",
+    "real_name": "Kim Tae-geon (\uae40\ud0dc\uac74)",
+    "team": "VARREL",
+    "team_slug": "varrel",
+    "league": "pacific",
+    "vlr_id": 42733,
+    "file": null
+  },
+  "oonzmlp": {
+    "alias": "oonzmlp",
+    "real_name": "Shin Sang-beom (\uc2e0\uc0c1\ubc94)",
+    "team": "VARREL",
+    "team_slug": "varrel",
+    "league": "pacific",
+    "vlr_id": 34926,
+    "file": null
+  },
+  "zexy": {
+    "alias": "Zexy",
+    "real_name": "Jang Suk-hyun (\uc7a5\uc11d\ud604)",
+    "team": "VARREL",
+    "team_slug": "varrel",
+    "league": "pacific",
+    "vlr_id": 37532,
+    "file": null
+  },
+  "nobody": {
+    "alias": "nobody",
+    "real_name": "Wang Senxu (\u738b\u68ee\u65ed)",
+    "team": "EDward Gaming",
+    "team_slug": "edward-gaming",
+    "league": "china",
+    "vlr_id": 3017,
+    "file": "nobody.png"
+  },
+  "zmjjkk": {
+    "alias": "ZmjjKK",
+    "real_name": "Zheng Yongkang (\u90d1\u6c38\u5eb7)",
+    "team": "EDward Gaming",
+    "team_slug": "edward-gaming",
+    "league": "china",
+    "vlr_id": 3520,
+    "file": "zmjjkk.png"
+  },
+  "chichoo": {
+    "alias": "CHICHOO",
+    "real_name": "Wan Shunzhi (\u4e07\u987a\u6cbb)",
+    "team": "EDward Gaming",
+    "team_slug": "edward-gaming",
+    "league": "china",
+    "vlr_id": 15559,
+    "file": "chichoo.png"
+  },
+  "smoggy": {
+    "alias": "Smoggy",
+    "real_name": "Zhang Zhao (\u5f20\u948a)",
+    "team": "EDward Gaming",
+    "team_slug": "edward-gaming",
+    "league": "china",
+    "vlr_id": 4742,
+    "file": "smoggy.png"
+  },
+  "jieni7": {
+    "alias": "Jieni7",
+    "real_name": "Zhang Juntai (\u5f20\u541b\u6cf0)",
+    "team": "EDward Gaming",
+    "team_slug": "edward-gaming",
+    "league": "china",
+    "vlr_id": 51244,
+    "file": "jieni7.png"
+  },
+  "zjc": {
+    "alias": "zjc",
+    "real_name": "Zhang Juncheng (\u5f20\u5cfb\u7a0b)",
+    "team": "EDward Gaming",
+    "team_slug": "edward-gaming",
+    "league": "china",
+    "vlr_id": 7135,
+    "file": "zjc.png"
+  },
+  "aaaay": {
+    "alias": "AAAAY",
+    "real_name": "Zhang Yang (\u5f20\u6768)",
+    "team": "FunPlus Phoenix",
+    "team_slug": "funplus-phoenix",
+    "league": "china",
+    "vlr_id": 19530,
+    "file": "aaaay.png"
+  },
+  "kovaq": {
+    "alias": "KovaQ",
+    "real_name": "Blendi Kovaci",
+    "team": "FunPlus Phoenix",
+    "team_slug": "funplus-phoenix",
+    "league": "china",
+    "vlr_id": 7987,
+    "file": "kovaq.png"
+  },
+  "setrod": {
+    "alias": "Setrod",
+    "real_name": "Ou Taigeng (\u6b27\u6cf0\u8d53)",
+    "team": "FunPlus Phoenix",
+    "team_slug": "funplus-phoenix",
+    "league": "china",
+    "vlr_id": 50025,
+    "file": null
+  },
+  "jkuro": {
+    "alias": "jkuro",
+    "real_name": "Yong Haochong (\u6768\u6d69\u806a)",
+    "team": "JDG Esports",
+    "team_slug": "jdg-esports",
+    "league": "china",
+    "vlr_id": 3519,
+    "file": "jkuro.png"
+  },
+  "zhe": {
+    "alias": "zhe",
+    "real_name": "Niu Zhe (\u725b\u54f2)",
+    "team": "JDG Esports",
+    "team_slug": "jdg-esports",
+    "league": "china",
+    "vlr_id": 49476,
+    "file": "zhe.png"
+  },
+  "yuicaw": {
+    "alias": "Yuicaw",
+    "real_name": "Huang Yung-chieh (\u9ec3\u6e67\u5091)",
+    "team": "JDG Esports",
+    "team_slug": "jdg-esports",
+    "league": "china",
+    "vlr_id": 11218,
+    "file": "yuicaw.png"
+  },
+  "crownfisher": {
+    "alias": "crownfisher",
+    "real_name": "Li Ao (\u674e\u7ff1)",
+    "team": "JDG Esports",
+    "team_slug": "jdg-esports",
+    "league": "china",
+    "vlr_id": 64969,
+    "file": null
+  },
+  "berlin": {
+    "alias": "BerLIN",
+    "real_name": "Zhang Bolin (\u5f35\u67cf\u9716)",
+    "team": "JDG Esports",
+    "team_slug": "jdg-esports",
+    "league": "china",
+    "vlr_id": 7857,
+    "file": "berlin.png"
+  },
+  "qiutian": {
+    "alias": "qiutiaN",
+    "real_name": "Bijan Moeinzadeh (\u6155\u82f1\u6bd5\u5f3a)",
+    "team": "Nova Esports",
+    "team_slug": "nova-esports",
+    "league": "china",
+    "vlr_id": 43007,
+    "file": "qiutian.png"
+  },
+  "kodeth": {
+    "alias": "kodeth",
+    "real_name": "Bo Li",
+    "team": "Nova Esports",
+    "team_slug": "nova-esports",
+    "league": "china",
+    "vlr_id": 39060,
+    "file": null
+  },
+  "cb": {
+    "alias": "cb",
+    "real_name": "Wang Qingchuan (\u738b\u5e86\u5ddd)",
+    "team": "Nova Esports",
+    "team_slug": "nova-esports",
+    "league": "china",
+    "vlr_id": 39697,
+    "file": "cb.png"
+  },
+  "ezeir": {
+    "alias": "Ezeir",
+    "real_name": "Zhao Zejun (\u8d75\u6cfd\u9a8f)",
+    "team": "Nova Esports",
+    "team_slug": "nova-esports",
+    "league": "china",
+    "vlr_id": 46460,
+    "file": "ezeir.png"
+  },
+  "green": {
+    "alias": "GREEN",
+    "real_name": "Qiu Jianzhi (\u90b1\u5efa\u667a)",
+    "team": "Nova Esports",
+    "team_slug": "nova-esports",
+    "league": "china",
+    "vlr_id": 34181,
+    "file": "green.png"
+  },
+  "guang": {
+    "alias": "GuanG",
+    "real_name": "Guang Honglin (\u5149\u6d2a\u9716)",
+    "team": "Nova Esports",
+    "team_slug": "nova-esports",
+    "league": "china",
+    "vlr_id": 41054,
+    "file": "guang.png"
+  },
+  "swagzor": {
+    "alias": "swagzor",
+    "real_name": "Mikhail Vaniushin",
+    "team": "Nova Esports",
+    "team_slug": "nova-esports",
+    "league": "china",
+    "vlr_id": 45492,
+    "file": null
+  },
+  "luok1ng": {
+    "alias": "LuoK1ng",
+    "real_name": "Zhang Zhanpeng (\u5f20\u5c55\u9e4f)",
+    "team": "Trace Esports",
+    "team_slug": "trace-esports",
+    "league": "china",
+    "vlr_id": 3045,
+    "file": "luok1ng.png"
+  },
+  "kai": {
+    "alias": "Kai",
+    "real_name": "Lu Zhinan (\u5362\u667a\u6960)",
+    "team": "Trace Esports",
+    "team_slug": "trace-esports",
+    "league": "china",
+    "vlr_id": 37494,
+    "file": "kai.png"
+  },
+  "abo": {
+    "alias": "Abo",
+    "real_name": "Han Bohao (\u97e9\u535a\u7693)",
+    "team": "Trace Esports",
+    "team_slug": "trace-esports",
+    "league": "china",
+    "vlr_id": 5011,
+    "file": "abo.png"
+  },
+  "delb": {
+    "alias": "deLb",
+    "real_name": "Delbert Tanoto",
+    "team": "Trace Esports",
+    "team_slug": "trace-esports",
+    "league": "china",
+    "vlr_id": 10821,
+    "file": "delb.png"
+  },
+  "fengf": {
+    "alias": "FengF",
+    "real_name": "Song Xuefeng (\u5b8b\u5b66\u950b)",
+    "team": "Trace Esports",
+    "team_slug": "trace-esports",
+    "league": "china",
+    "vlr_id": 4770,
+    "file": "fengf.png"
+  },
+  "splash": {
+    "alias": "splash",
+    "real_name": "Moses Christophe Jonathan",
+    "team": "TYLOO",
+    "team_slug": "tyloo",
+    "league": "china",
+    "vlr_id": 36685,
+    "file": null
+  },
+  "scales": {
+    "alias": "Scales",
+    "real_name": "Zhang Zhen (\u5f20\u9707)",
+    "team": "TYLOO",
+    "team_slug": "tyloo",
+    "league": "china",
+    "vlr_id": 39485,
+    "file": "scales.png"
+  },
+  "erv": {
+    "alias": "Erv",
+    "real_name": "Shen Zhiwei",
+    "team": "TYLOO",
+    "team_slug": "tyloo",
+    "league": "china",
+    "vlr_id": 55085,
+    "file": null
+  },
+  "slowly": {
+    "alias": "slowly",
+    "real_name": "Kelun Sun (\u5b59\u79d1\u4f26)",
+    "team": "TYLOO",
+    "team_slug": "tyloo",
+    "league": "china",
+    "vlr_id": 41739,
+    "file": "slowly.png"
+  },
+  "siufatbb": {
+    "alias": "SiuFatBB",
+    "real_name": "Pong Gaa Hei (\u5e9e\u52a0\u66e6)",
+    "team": "TYLOO",
+    "team_slug": "tyloo",
+    "league": "china",
+    "vlr_id": 7849,
+    "file": "siufatbb.png"
+  },
+  "xihe": {
+    "alias": "xihe",
+    "real_name": "Peng Wenbo (\u5f6d\u6587\u535a)",
+    "team": "TYLOO",
+    "team_slug": "tyloo",
+    "league": "china",
+    "vlr_id": 64854,
+    "file": null
+  },
+  "shr1mp": {
+    "alias": "Shr1mp",
+    "real_name": "Yang Yong (\u6768\u52c7)",
+    "team": "All Gamers",
+    "team_slug": "all-gamers",
+    "league": "china",
+    "vlr_id": 25494,
+    "file": "shr1mp.png"
+  },
+  "youze": {
+    "alias": "Youze",
+    "real_name": null,
+    "team": "All Gamers",
+    "team_slug": "all-gamers",
+    "league": "china",
+    "vlr_id": 46040,
+    "file": null
+  },
+  "k1ra": {
+    "alias": "K1ra",
+    "real_name": "Huang Zhihao (\u9ec4\u5fd7\u8c6a)",
+    "team": "All Gamers",
+    "team_slug": "all-gamers",
+    "league": "china",
+    "vlr_id": 46748,
+    "file": "k1ra.png"
+  },
+  "f4ngeer": {
+    "alias": "f4ngeer",
+    "real_name": "Roman Smirnov",
+    "team": "All Gamers",
+    "team_slug": "all-gamers",
+    "league": "china",
+    "vlr_id": 21216,
+    "file": null
+  },
+  "iamgrq": {
+    "alias": "iamgrq",
+    "real_name": "Gao Ruiqi (\u9ad8\u9510\u7426)",
+    "team": "All Gamers",
+    "team_slug": "all-gamers",
+    "league": "china",
+    "vlr_id": 58959,
+    "file": null
+  },
+  "whzy": {
+    "alias": "whzy",
+    "real_name": "Wang Haozhe (\u738b\u660a\u54f2)",
+    "team": "Bilibili Gaming",
+    "team_slug": "bilibili-gaming",
+    "league": "china",
+    "vlr_id": 4885,
+    "file": "whzy.png"
+  },
+  "rushia": {
+    "alias": "rushia",
+    "real_name": "Wang Xiaojie (\u738b\u6653\u6770)",
+    "team": "Bilibili Gaming",
+    "team_slug": "bilibili-gaming",
+    "league": "china",
+    "vlr_id": 48878,
+    "file": "rushia.png"
+  },
+  "nephh": {
+    "alias": "nephh",
+    "real_name": "Marcus Tan",
+    "team": "Bilibili Gaming",
+    "team_slug": "bilibili-gaming",
+    "league": "china",
+    "vlr_id": 10698,
+    "file": "nephh.png"
+  },
+  "yilai": {
+    "alias": "yilai",
+    "real_name": "Gu Yiming (\u987e\u4f9d\u94ed)",
+    "team": "Bilibili Gaming",
+    "team_slug": "bilibili-gaming",
+    "league": "china",
+    "vlr_id": 62947,
+    "file": null
+  },
+  "knight": {
+    "alias": "Knight",
+    "real_name": "Liu Yuxiang (\u5218\u5b87\u7fd4)",
+    "team": "Bilibili Gaming",
+    "team_slug": "bilibili-gaming",
+    "league": "china",
+    "vlr_id": 4774,
+    "file": "knight.png"
+  },
+  "bud": {
+    "alias": "bud",
+    "real_name": "Yang Renyu (\u6768\u97e7\u4f59)",
+    "team": "Bilibili Gaming",
+    "team_slug": "bilibili-gaming",
+    "league": "china",
+    "vlr_id": 56260,
+    "file": null
+  },
+  "ft": {
+    "alias": "FT",
+    "real_name": "Yan Shuaibo (\u95eb\u5e05\u535a)",
+    "team": "Bilibili Gaming",
+    "team_slug": "bilibili-gaming",
+    "league": "china",
+    "vlr_id": 64029,
+    "file": "ft.png"
+  },
+  "levius": {
+    "alias": "Levius",
+    "real_name": "Lu Yinzhong (\u5362\u80e4\u4e2d)",
+    "team": "Bilibili Gaming",
+    "team_slug": "bilibili-gaming",
+    "league": "china",
+    "vlr_id": 40845,
+    "file": "levius.png"
+  },
+  "haodong": {
+    "alias": "Haodong",
+    "real_name": "Guo Haodong (\u90ed\u6d69\u4e1c)",
+    "team": "Titan Esports Club",
+    "team_slug": "titan-esports-club",
+    "league": "china",
+    "vlr_id": 4720,
+    "file": "haodong.png"
+  },
+  "lucas": {
+    "alias": "lucas",
+    "real_name": "Yunkun Lu (\u8def\u6600\u6606)",
+    "team": "Titan Esports Club",
+    "team_slug": "titan-esports-club",
+    "league": "china",
+    "vlr_id": 19677,
+    "file": null
+  },
+  "spitfires": {
+    "alias": "Spitfires",
+    "real_name": "Xin Mingyan (\u8f9b\u660e\u9633)",
+    "team": "Titan Esports Club",
+    "team_slug": "titan-esports-club",
+    "league": "china",
+    "vlr_id": 4881,
+    "file": "spitfires.png"
+  },
+  "dynamite": {
+    "alias": "Dynamite",
+    "real_name": "Zhao Zihao (\u8d75\u6893\u6d69)",
+    "team": "Titan Esports Club",
+    "team_slug": "titan-esports-club",
+    "league": "china",
+    "vlr_id": 42235,
+    "file": "dynamite.png"
+  },
+  "ra1ny": {
+    "alias": "ra1ny",
+    "real_name": "Chen Baohuan (\u9648\u8446\u6853)",
+    "team": "Titan Esports Club",
+    "team_slug": "titan-esports-club",
+    "league": "china",
+    "vlr_id": 63107,
+    "file": null
+  },
+  "coco": {
+    "alias": "Coco",
+    "real_name": "Ding Dajian (\u4e01\u8fbe\u5efa)",
+    "team": "Titan Esports Club",
+    "team_slug": "titan-esports-club",
+    "league": "china",
+    "vlr_id": 47629,
+    "file": "coco.png"
+  },
+  "nothing": {
+    "alias": "nothing",
+    "real_name": "Xie Junzheng (\u8c22\u541b\u6b63)",
+    "team": "Wolves Esports",
+    "team_slug": "wolves-esports",
+    "league": "china",
+    "vlr_id": 66083,
+    "file": null
+  },
+  "glacier": {
+    "alias": "glacier",
+    "real_name": "Liang Zhekai (\u6881\u54f2\u607a)",
+    "team": "Wolves Esports",
+    "team_slug": "wolves-esports",
+    "league": "china",
+    "vlr_id": 49973,
+    "file": null
+  },
+  "yosemite": {
+    "alias": "yosemite",
+    "real_name": "Wang Lei (\u738b\u78ca)",
+    "team": "Wolves Esports",
+    "team_slug": "wolves-esports",
+    "league": "china",
+    "vlr_id": 6022,
+    "file": "yosemite.png"
+  },
+  "spring": {
+    "alias": "Spring",
+    "real_name": "Liu Jiunting (\u5218\u4fca\u9706)",
+    "team": "Wolves Esports",
+    "team_slug": "wolves-esports",
+    "league": "china",
+    "vlr_id": 14125,
+    "file": "spring.png"
+  },
+  "deryeon": {
+    "alias": "Deryeon",
+    "real_name": "Derrick Yee",
+    "team": "Wolves Esports",
+    "team_slug": "wolves-esports",
+    "league": "china",
+    "vlr_id": 9152,
+    "file": "deryeon.png"
+  },
+  "aluba": {
+    "alias": "aluba",
+    "real_name": "Zhong Haojun (\u949f\u7693\u94a7)",
+    "team": "Wolves Esports",
+    "team_slug": "wolves-esports",
+    "league": "china",
+    "vlr_id": 14441,
+    "file": "aluba.png"
+  },
+  "wsleo": {
+    "alias": "WsLeo",
+    "real_name": "Huang Pinwei (\u9ec4\u54c1\u7ef4)",
+    "team": "Xi Lai Gaming",
+    "team_slug": "xi-lai-gaming",
+    "league": "china",
+    "vlr_id": 24308,
+    "file": "wsleo.png"
+  },
+  "lysoar": {
+    "alias": "Lysoar",
+    "real_name": "Liang Youhao (\u6881\u4f18\u597d)",
+    "team": "Xi Lai Gaming",
+    "team_slug": "xi-lai-gaming",
+    "league": "china",
+    "vlr_id": 37489,
+    "file": "lysoar.png"
+  },
+  "noman": {
+    "alias": "NoMan",
+    "real_name": "James Man",
+    "team": "Xi Lai Gaming",
+    "team_slug": "xi-lai-gaming",
+    "league": "china",
+    "vlr_id": 11527,
+    "file": null
+  },
+  "rarga": {
+    "alias": "Rarga",
+    "real_name": "Arthur Churyumov",
+    "team": "Xi Lai Gaming",
+    "team_slug": "xi-lai-gaming",
+    "league": "china",
+    "vlr_id": 22047,
+    "file": "rarga.png"
+  },
+  "happywei": {
+    "alias": "happywei",
+    "real_name": "Deng Minwei (\u9093\u95f5\u7ef4)",
+    "team": "Xi Lai Gaming",
+    "team_slug": "xi-lai-gaming",
+    "league": "china",
+    "vlr_id": 37927,
+    "file": "happywei.png"
+  },
+  "nicc": {
+    "alias": "Nicc",
+    "real_name": "Shao Yi-qun (\u90b5\u9038\u7fa4)",
+    "team": "Dragon Ranger Gaming",
+    "team_slug": "dragon-ranger-gaming",
+    "league": "china",
+    "vlr_id": 11524,
+    "file": "nicc.png"
+  },
+  "flex1n": {
+    "alias": "Flex1n",
+    "real_name": "Lo Rui (\u7f57\u745e)",
+    "team": "Dragon Ranger Gaming",
+    "team_slug": "dragon-ranger-gaming",
+    "league": "china",
+    "vlr_id": 4705,
+    "file": "flex1n.png"
+  },
+  "life": {
+    "alias": "Life",
+    "real_name": "Qu Donghao (\u77bf\u4e1c\u8c6a)",
+    "team": "Dragon Ranger Gaming",
+    "team_slug": "dragon-ranger-gaming",
+    "league": "china",
+    "vlr_id": 3028,
+    "file": "life.png"
+  },
+  "vo0kashu": {
+    "alias": "vo0kashu",
+    "real_name": "Ilya Ushakov",
+    "team": "Dragon Ranger Gaming",
+    "team_slug": "dragon-ranger-gaming",
+    "league": "china",
+    "vlr_id": 3741,
+    "file": "vo0kashu.png"
+  },
+  "verse": {
+    "alias": "Verse",
+    "real_name": "Zhou Zijun (\u5468\u5b50\u94a7)",
+    "team": "Dragon Ranger Gaming",
+    "team_slug": "dragon-ranger-gaming",
+    "league": "china",
+    "vlr_id": 55817,
+    "file": null
+  },
+  "spiritz1": {
+    "alias": "SpiritZ1",
+    "real_name": "Lin Dingyu (\u6797\u5b9a\u5b87)",
+    "team": "Dragon Ranger Gaming",
+    "team_slug": "dragon-ranger-gaming",
+    "league": "china",
+    "vlr_id": 31753,
+    "file": "spiritz1.png"
+  },
+  "shahzam": {
+    "alias": "shahzam",
+    "real_name": "Shahzeb Khan",
+    "team": "Sentinels",
+    "team_slug": "sentinels",
+    "league": "americas",
+    "vlr_id": 46,
+    "file": "shahzam.png"
+  },
+  "tenz": {
+    "alias": "tenz",
+    "real_name": "Tyson Ngo",
+    "team": "Sentinels",
+    "team_slug": "sentinels",
+    "league": "americas",
+    "vlr_id": 9,
+    "file": "tenz.png"
+  }
+}

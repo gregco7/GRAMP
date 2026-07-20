@@ -1,0 +1,338 @@
+{
+  "evil-geniuses": {
+    "name": "Evil Geniuses",
+    "tag": "EG",
+    "league": "americas",
+    "vlr_id": 5248,
+    "file": "evil-geniuses.png"
+  },
+  "furia": {
+    "name": "FURIA",
+    "tag": "FUR",
+    "league": "americas",
+    "vlr_id": 2406,
+    "file": "furia.png"
+  },
+  "leviat-n": {
+    "name": "LEVIATÁN",
+    "tag": "LEV",
+    "league": "americas",
+    "vlr_id": 2359,
+    "file": "leviat-n.png"
+  },
+  "mibr": {
+    "name": "MIBR",
+    "tag": null,
+    "league": "americas",
+    "vlr_id": 7386,
+    "file": "mibr.png"
+  },
+  "nrg": {
+    "name": "NRG",
+    "tag": "NRG",
+    "league": "americas",
+    "vlr_id": 1034,
+    "file": "nrg.png"
+  },
+  "envy": {
+    "name": "ENVY",
+    "tag": null,
+    "league": "americas",
+    "vlr_id": 427,
+    "file": "envy.png"
+  },
+  "100-thieves": {
+    "name": "100 Thieves",
+    "tag": "100T",
+    "league": "americas",
+    "vlr_id": 120,
+    "file": "100-thieves.png"
+  },
+  "cloud9": {
+    "name": "Cloud9",
+    "tag": "C9",
+    "league": "americas",
+    "vlr_id": 188,
+    "file": "cloud9.png"
+  },
+  "kr-esports": {
+    "name": "KRÜ Esports",
+    "tag": "KRÜ",
+    "league": "americas",
+    "vlr_id": 2355,
+    "file": "kr-esports.png"
+  },
+  "loud": {
+    "name": "LOUD",
+    "tag": "LOUD",
+    "league": "americas",
+    "vlr_id": 6961,
+    "file": "loud.png"
+  },
+  "sentinels": {
+    "name": "Sentinels",
+    "tag": "SEN",
+    "league": "americas",
+    "vlr_id": 2,
+    "file": "sentinels.png"
+  },
+  "g2-esports": {
+    "name": "G2 Esports",
+    "tag": "G2",
+    "league": "americas",
+    "vlr_id": 11058,
+    "file": "g2-esports.png"
+  },
+  "bbl-esports": {
+    "name": "BBL Esports",
+    "tag": "BBL",
+    "league": "emea",
+    "vlr_id": 397,
+    "file": "bbl-esports.png"
+  },
+  "fut-esports": {
+    "name": "FUT Esports",
+    "tag": "FUT",
+    "league": "emea",
+    "vlr_id": 1184,
+    "file": "fut-esports.png"
+  },
+  "gentle-mates": {
+    "name": "Gentle Mates",
+    "tag": "M8",
+    "league": "emea",
+    "vlr_id": 12694,
+    "file": "gentle-mates.png"
+  },
+  "natus-vincere": {
+    "name": "Natus Vincere",
+    "tag": "NAVI",
+    "league": "emea",
+    "vlr_id": 4915,
+    "file": "natus-vincere.png"
+  },
+  "team-vitality": {
+    "name": "Team Vitality",
+    "tag": "VIT",
+    "league": "emea",
+    "vlr_id": 2059,
+    "file": "team-vitality.png"
+  },
+  "pcific-esports": {
+    "name": "PCIFIC Esports",
+    "tag": "PCF",
+    "league": "emea",
+    "vlr_id": 3478,
+    "file": "pcific-esports.png"
+  },
+  "fnatic": {
+    "name": "FNATIC",
+    "tag": "FNC",
+    "league": "emea",
+    "vlr_id": 2593,
+    "file": "fnatic.png"
+  },
+  "giantx": {
+    "name": "GIANTX",
+    "tag": "GX",
+    "league": "emea",
+    "vlr_id": 14419,
+    "file": "giantx.png"
+  },
+  "karmine-corp": {
+    "name": "Karmine Corp",
+    "tag": "KC",
+    "league": "emea",
+    "vlr_id": 8877,
+    "file": "karmine-corp.png"
+  },
+  "team-heretics": {
+    "name": "Team Heretics",
+    "tag": "TH",
+    "league": "emea",
+    "vlr_id": 1001,
+    "file": "team-heretics.png"
+  },
+  "team-liquid": {
+    "name": "Team Liquid",
+    "tag": "TL",
+    "league": "emea",
+    "vlr_id": 474,
+    "file": "team-liquid.png"
+  },
+  "eternal-fire": {
+    "name": "Eternal Fire",
+    "tag": "EF",
+    "league": "emea",
+    "vlr_id": 6392,
+    "file": "eternal-fire.png"
+  },
+  "full-sense": {
+    "name": "FULL SENSE",
+    "tag": "FS",
+    "league": "pacific",
+    "vlr_id": 4050,
+    "file": "full-sense.png"
+  },
+  "gen-g": {
+    "name": "Gen.G",
+    "tag": "GEN",
+    "league": "pacific",
+    "vlr_id": 17,
+    "file": "gen-g.png"
+  },
+  "global-esports": {
+    "name": "Global Esports",
+    "tag": "GE",
+    "league": "pacific",
+    "vlr_id": 918,
+    "file": "global-esports.png"
+  },
+  "rex-regum-qeon": {
+    "name": "Rex Regum Qeon",
+    "tag": "RRQ",
+    "league": "pacific",
+    "vlr_id": 878,
+    "file": "rex-regum-qeon.png"
+  },
+  "zeta-division": {
+    "name": "ZETA DIVISION",
+    "tag": "ZETA",
+    "league": "pacific",
+    "vlr_id": 5448,
+    "file": "zeta-division.png"
+  },
+  "nongshim-redforce": {
+    "name": "Nongshim RedForce",
+    "tag": "NS",
+    "league": "pacific",
+    "vlr_id": 11060,
+    "file": "nongshim-redforce.png"
+  },
+  "detonation-focusme": {
+    "name": "DetonatioN FocusMe",
+    "tag": "DFM",
+    "league": "pacific",
+    "vlr_id": 278,
+    "file": "detonation-focusme.png"
+  },
+  "kiwoom-drx": {
+    "name": "KIWOOM DRX",
+    "tag": "KRX",
+    "league": "pacific",
+    "vlr_id": 8185,
+    "file": "kiwoom-drx.png"
+  },
+  "paper-rex": {
+    "name": "Paper Rex",
+    "tag": "PRX",
+    "league": "pacific",
+    "vlr_id": 624,
+    "file": "paper-rex.png"
+  },
+  "t1": {
+    "name": "T1",
+    "tag": null,
+    "league": "pacific",
+    "vlr_id": 14,
+    "file": "t1.png"
+  },
+  "team-secret": {
+    "name": "Team Secret",
+    "tag": "TS",
+    "league": "pacific",
+    "vlr_id": 6199,
+    "file": "team-secret.png"
+  },
+  "varrel": {
+    "name": "VARREL",
+    "tag": "VL",
+    "league": "pacific",
+    "vlr_id": 11229,
+    "file": "varrel.png"
+  },
+  "edward-gaming": {
+    "name": "EDward Gaming",
+    "tag": "EDG",
+    "league": "china",
+    "vlr_id": 1120,
+    "file": "edward-gaming.png"
+  },
+  "funplus-phoenix": {
+    "name": "FunPlus Phoenix",
+    "tag": "FPX",
+    "league": "china",
+    "vlr_id": 11328,
+    "file": "funplus-phoenix.png"
+  },
+  "jdg-esports": {
+    "name": "JDG Esports",
+    "tag": "JDG",
+    "league": "china",
+    "vlr_id": 13576,
+    "file": "jdg-esports.png"
+  },
+  "nova-esports": {
+    "name": "Nova Esports",
+    "tag": "NOVA",
+    "league": "china",
+    "vlr_id": 12064,
+    "file": "nova-esports.png"
+  },
+  "trace-esports": {
+    "name": "Trace Esports",
+    "tag": "TE",
+    "league": "china",
+    "vlr_id": 12685,
+    "file": "trace-esports.png"
+  },
+  "tyloo": {
+    "name": "TYLOO",
+    "tag": "TYL",
+    "league": "china",
+    "vlr_id": 731,
+    "file": "tyloo.png"
+  },
+  "all-gamers": {
+    "name": "All Gamers",
+    "tag": "AG",
+    "league": "china",
+    "vlr_id": 1119,
+    "file": "all-gamers.png"
+  },
+  "bilibili-gaming": {
+    "name": "Bilibili Gaming",
+    "tag": "BLG",
+    "league": "china",
+    "vlr_id": 12010,
+    "file": "bilibili-gaming.png"
+  },
+  "titan-esports-club": {
+    "name": "Titan Esports Club",
+    "tag": "TEC",
+    "league": "china",
+    "vlr_id": 14137,
+    "file": "titan-esports-club.png"
+  },
+  "wolves-esports": {
+    "name": "Wolves Esports",
+    "tag": "WOL",
+    "league": "china",
+    "vlr_id": 13790,
+    "file": "wolves-esports.png"
+  },
+  "xi-lai-gaming": {
+    "name": "Xi Lai Gaming",
+    "tag": "XLG",
+    "league": "china",
+    "vlr_id": 13581,
+    "file": "xi-lai-gaming.png"
+  },
+  "dragon-ranger-gaming": {
+    "name": "Dragon Ranger Gaming",
+    "tag": "DRG",
+    "league": "china",
+    "vlr_id": 11981,
+    "file": "dragon-ranger-gaming.png"
+  }
+}
