@@ -2133,6 +2133,7 @@ function xBuildPayload(ctx) {
     sources: srcs,
     use_vision: vision ? vision.checked : true,
     vision_count: +val("vcount", 8) || 8,
+    music_gate: chk("music-gate"),   // 🧪 experimental, opt-in (~19% good-clip cost)
     limit: 20,
   };
   return { query: (val("query", "") || "").trim(), filters, opts };

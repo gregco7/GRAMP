@@ -441,8 +441,10 @@ def deep_search(query: str, filters: Optional[dict] = None,
     # 4) VERIFY (top N): deterministic montage gate + vision, on one shared download
     verified = 0
     gated_montage = 0
+    gated_music = 0
     gated_facecam = 0
     require_facecam = bool(opts.get("require_facecam", intent.get("want_facecam")))
+    music_gate = bool(opts.get("music_gate", False))  # experimental, opt-in (~19% false-drop)
     if use_vision and pool:
         top = pool[:vision_count]
         _p(55, f"watching {len(top)} clips (frames + AI)…")
@@ -458,11 +460,14 @@ def deep_search(query: str, filters: Optional[dict] = None,
                 v, media = res.get("vision") or {}, res.get("media") or {}
                 e["media"] = media
                 e["score"] = round(_apply_vision(e, v), 4)
-                # montage gate (hard): cut-density says compilation
-                reason = clipgate.gate(media)
+                # montage gate (always) + music-bed gate (experimental, opt-in)
+                reason = clipgate.gate(media, music_gate=music_gate)
                 if reason:
                     e["gated"] = reason
-                    gated_montage += 1
+                    if reason == "music bed":
+                        gated_music += 1
+                    else:
+                        gated_montage += 1
                 # facecam gate: Twitch always has a cam; a non-Twitch clip that vision
                 # confidently reads as camless fails only when facecam is REQUIRED —
                 # otherwise it's a soft penalty (keeps Pro/VCT observer clips available).
@@ -497,7 +502,8 @@ def deep_search(query: str, filters: Optional[dict] = None,
             "vision_verified": verified,
             "subjects": subjects,
             "gated": {"subject": gated_subject, "montage": gated_montage,
-                      "facecam": gated_facecam},
+                      "music": gated_music, "facecam": gated_facecam},
+            "music_gate": music_gate,
             "twitch_available": twitch.available(),
             "reddit_available": reddit.available(),
             "ai_available": aibrain.available(),

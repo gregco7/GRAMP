@@ -46,10 +46,15 @@ SCENE_THRESH = 0.40          # ffmpeg scene score for a "hard cut"
 MONTAGE_CUTS_PER_SEC = 0.35  # above this AND >= MONTAGE_MIN_CUTS -> compilation
 MONTAGE_MIN_CUTS = 6         # in-game replays give a legit clip a few cuts
 
-# Audio metrics — computed but NOT gated (see module docstring: they do not
-# separate a music bed from raw Valorant audio; calibration false-dropped keepers).
+# Audio metrics for the EXPERIMENTAL, opt-in music-bed gate. These do NOT cleanly
+# separate a music bed from raw Valorant audio (both are near-continuous + Twitch-
+# compressed), so on the keeper set this gate false-drops ~4/21 (~19%). It is OFF by
+# default and only fires when `gate(..., music_gate=True)`; use when a montage-heavy
+# query is worth trading some good clips to strip the obvious music edits.
 SILENCE_NOISE_DB = -30       # what counts as "silence"
 SILENCE_MIN_DUR = 0.30       # seconds
+MUSIC_MAX_SILENCE = 0.045    # music bed ~= no real silence gaps
+MUSIC_MAX_CREST = 9.0        # dB; mastered music has a low peak-vs-RMS crest
 
 
 def _run_ff(args: list[str], timeout: int = 40) -> str:
@@ -124,22 +129,32 @@ def analyze_media(path: str, duration: Optional[float] = None) -> dict:
     else:
         out["is_montage"] = False
 
-    # --- audio metrics (informational only — NOT gated; see module docstring) - #
+    # --- audio metrics + (experimental, opt-in) music-bed verdict ----------- #
     if silence is not None and dur > 0:
-        out["silence_ratio"] = round(min(1.0, silence / dur), 4)
+        ratio = min(1.0, silence / dur)
+        out["silence_ratio"] = round(ratio, 4)
         out["crest_db"] = round(crest, 2) if crest is not None else None
+        low_silence = ratio <= MUSIC_MAX_SILENCE
+        low_crest = crest is not None and crest <= MUSIC_MAX_CREST
+        # music bed = continuous audio (no real silence gaps) AND compressed dynamics
+        out["has_music_bed"] = bool(low_silence and low_crest)
+    else:
+        out["has_music_bed"] = False
 
     return out
 
 
-def gate(media: dict) -> Optional[str]:
-    """Given an analyze_media() result, return a rejection reason string if the
-    clip fails a hard gate, else None. Never gates on un-analyzed media.
+def gate(media: dict, music_gate: bool = False) -> Optional[str]:
+    """Given an analyze_media() result, return a rejection reason string if the clip
+    fails a hard gate, else None. Never gates on un-analyzed media.
 
-    Only the montage (cut-density) gate is a hard drop — the audio metrics do not
-    reliably separate a music bed from raw game audio (calibration finding)."""
+    The montage (cut-density) gate is always on. The music-bed gate is EXPERIMENTAL
+    and only applied when `music_gate=True` — the audio metrics don't reliably
+    separate a music bed from raw game audio, so it costs ~19% of good clips."""
     if not media or not media.get("analyzed"):
         return None
     if media.get("is_montage"):
         return "montage"
+    if music_gate and media.get("has_music_bed"):
+        return "music bed"
     return None
