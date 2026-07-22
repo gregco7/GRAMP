@@ -47,9 +47,17 @@ On-brand for VALDaily (user-confirmed): **pro/VCT AND streamer/ranked both count
    hard-drop. (The signal 3 middle frames can never carry — montage-ness is in the
    time domain.)
 
-2. **Music-bed gate** — `silencedetect` + `astats` on the same file. Near-zero silence
-   + flat loudness variance = music over gameplay → hard-drop. (Audio is currently
-   downloaded then discarded — the axis that most decides usability is never sampled.)
+2. **Music-bed gate** — ATTEMPTED, then CUT after calibration. `silencedetect` +
+   `astats` (silence-ratio + crest factor) do NOT separate a music bed from raw
+   Valorant audio: raw gameplay is also near-continuous (constant gunfire) and also
+   compressed by Twitch's pipeline (crest 4–8 dB). The heuristic false-dropped 4 of
+   the shipped keepers (`GOD MODE`, tarik `HOSPITAL FLICK`, a 1v5, shanks 4k), so it
+   is NOT a hard gate. Audio metrics are still computed (informational). Real
+   single-clip music detection needs beat/tempo analysis (a new dep — `librosa`/
+   `aubio`) = a deferred decision. In practice music arrives WITH a montage, which
+   the validated cut-density gate (#1) already catches. **Calibrated thresholds:
+   montage = cuts/sec ≥ 0.35 AND ≥ 6 cuts (keeper ceiling was 0.25).**
+   See `scripts/calibrate_gates.py` (re-run after any threshold change; no keeper may gate).
 
 3. **Subject gate** — if a player is named, require evidence (title / channel /
    Twitch-broadcaster / vision HUD read) → hard-drop wrong-subject. Pro AND ranked both

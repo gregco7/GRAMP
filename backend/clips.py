@@ -37,22 +37,29 @@ IDEAL_MAX = 90.0     # 15-90s = crop-as-is sweet spot (top score)
 SHORT_MAX = 90.0     # <= this  -> "short" tier (crop-ready)
 MEDIUM_MAX = 600.0   # <= this  -> "medium" tier; above -> "long" (VODs, to the bottom)
 
-# Title tokens that signal a self-contained, croppable highlight (weight = strength).
+# Title tokens that signal a self-contained, SINGLE-PLAY highlight (weight = strength).
+# Note: "highlights"/"montage"/"edit" are deliberately NOT here — for a Shorts source
+# searcher those words summon multi-clip music edits, which are the wrong material. A
+# keeper is one continuous play ("ez ace", "HOSPITAL FLICK", "1v5 clutch"), so the
+# single-play vocabulary is rewarded and compilation vocabulary is penalized (below).
 _POSITIVE_KW = {
     "ace": 3, "clutch": 3, "1v5": 3, "1v4": 2, "1v3": 2, "1v2": 1,
     "flick": 2, "flicks": 2, "wallbang": 2, "200iq": 2, "1-tap": 2, "one tap": 2,
     "insane": 1, "unreal": 1, "unbelievable": 1, "crazy": 1, "nasty": 1, "clean": 1,
     "headshot": 1, "headshots": 1, "op": 1, "operator": 1, "sheriff": 1, "knife": 1,
-    "highlight": 1, "highlights": 1, "clip": 1, "play": 1, "plays": 1,
-    "moment": 1, "moments": 1, "outplay": 2, "pentakill": 2,
+    "clip": 1, "play": 1, "moment": 1, "outplay": 2, "pentakill": 2,
 }
-# Title tokens that signal long-form / non-croppable content (push toward the bottom).
+# Title tokens that signal long-form / compilation / non-croppable content (push to
+# the bottom). Compilation words are strong negatives: a "highlights"/"montage"/"best
+# of"/"top 10" upload is a stitched music edit, the #1 unusable category for this tool.
 _NEGATIVE_KW = {
     "full match": 3, "full game": 3, "vod": 3, "watch party": 3, "watchparty": 3,
     "livestream": 3, "live stream": 3, "podcast": 3, "unboxing": 3, "tier list": 3,
-    "tierlist": 3, "stream": 2, "episode": 2, "ep.": 2, "q&a": 2, "vlog": 2,
+    "tierlist": 3, "montage": 3, "frag movie": 3, "fragmovie": 3, "compilation": 3,
+    "highlights": 2, "highlight reel": 3, "best of": 2, "top 10": 2, "top 5 plays": 2,
+    "stream": 2, "episode": 2, "ep.": 2, "q&a": 2, "vlog": 2,
     "interview": 2, "tutorial": 2, "guide": 2, "how to": 2, "review": 2, "hours": 2,
-    "compilation": 1, "reacts": 1, "reaction": 1, "live": 1,
+    "reacts": 1, "reaction": 1, "live": 1,
 }
 _STOPWORDS = {"the", "a", "an", "of", "in", "on", "and", "or", "to", "for",
               "vs", "with", "valorant", "val", "gameplay"}

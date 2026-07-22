@@ -28,7 +28,7 @@ import re
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Callable, Optional
 
-from . import aibrain, clips, framegrab, reddit, twitch
+from . import aibrain, clipgate, clips, framegrab, reddit, twitch
 
 # --------------------------------------------------------------------------- #
 # Canonical VALORANT vocab — for the rule-based parser + filter matching.
@@ -56,6 +56,72 @@ _PLAY_RE = {p: re.compile(r"\b" + re.escape(p) + r"\b", re.I) for p in PLAYS}
 def _match_terms(title: str, vocab: list[str]) -> list[str]:
     t = (title or "").lower()
     return [v for v in vocab if re.search(r"\b" + re.escape(v.lower()) + r"\b", t)]
+
+
+# Known pro/streamer handles — so "aspas ace" fixes the subject even when the LLM
+# parser is unavailable (the rule parser doesn't extract a creator). Not exhaustive;
+# the LLM parse handles the long tail. Lowercased, word-boundary matched.
+KNOWN_PLAYERS = [
+    "tenz", "aspas", "demon1", "zekken", "yay", "derke", "alfajer", "chronicle",
+    "boaster", "jinggg", "forsaken", "less", "something", "shroud", "tarik",
+    "sinatraa", "wardell", "subroza", "kyedae", "scream", "s0m", "shanks", "buzz",
+    "sylvan", "cned", "leo", "nats", "sacy", "saadhak", "marved", "crashies",
+    "victor", "fns", "ethan", "zellsis", "johnqt", "bang", "n4rrate", "mako",
+    "stax", "rb", "zest", "buzz", "f0rsakeen", "primmie", "trent", "valyn",
+]
+_PLAYER_RE = {p: re.compile(r"\b" + re.escape(p) + r"\b", re.I) for p in KNOWN_PLAYERS}
+
+
+def _subjects(intent: dict) -> list[str]:
+    """The named subject(s) a candidate must evidence, if any. Creator wins; else
+    detect a known player in the free-text terms."""
+    cre = (intent.get("creator") or "").strip()
+    if cre:
+        return [cre]
+    hay = " ".join([intent.get("search_terms") or "", " ".join(intent.get("keywords") or [])])
+    found = [p for p in KNOWN_PLAYERS if _PLAYER_RE[p].search(hay)]
+    return found
+
+
+def _has_subject(e: dict, subjects: list[str]) -> bool:
+    """Does this candidate evidence the requested player? Title or channel name, or
+    a Twitch clip scoped to that broadcaster (its channel is the streamer)."""
+    if not subjects:
+        return True
+    hay = f"{e.get('title') or ''} {e.get('channel') or ''}".lower()
+    return any(re.search(r"\b" + re.escape(s.lower()) + r"\b", hay) for s in subjects)
+
+
+def _intent_text(intent: dict) -> str:
+    """A concise natural-language restatement of the intent for the LLM title-gate."""
+    parts = [intent.get("search_terms") or "",
+             " ".join(intent.get("plays") or []),
+             " ".join(intent.get("agents") or []),
+             " ".join(intent.get("orgs") or [])]
+    cre = intent.get("creator") or ""
+    txt = " ".join(p for p in parts if p).strip()
+    return (f"{cre} — {txt}" if cre else txt) or "valorant single-play clip"
+
+
+def _title_rerank(intent: dict, pool: list[dict], enabled: bool) -> None:
+    """Let the LLM READ the titles (the eyeball pass regex can't do): reward
+    on-intent single plays, sink compilations/off-subject the keyword scorer missed.
+    A RE-RANK, never a hard drop — worst case it's a no-op — so an LLM miss can only
+    reorder, not delete a keeper. Mutates `score` in place. Best-effort."""
+    if not enabled or len(pool) < 4:
+        return
+    head = sorted(pool, key=lambda e: e.get("score", 0), reverse=True)[:30]
+    picks = aibrain.curate(_intent_text(intent), head)
+    if not picks:
+        return
+    for i, e in enumerate(head):
+        p = picks.get(i)
+        if p:  # kept by the LLM — nudge up by its fit score, keep the reason
+            e["score"] = round(e.get("score", 0) + 0.15 * float(p.get("score") or 0), 4)
+            if p.get("reason"):
+                e["curate_reason"] = p["reason"]
+        else:  # omitted by the LLM = likely a montage / off-subject it read in the title
+            e["score"] = round(e.get("score", 0) - 0.10, 4)
 
 
 # --------------------------------------------------------------------------- #
@@ -195,7 +261,10 @@ def _prescore(e: dict, intent: dict) -> float:
     base += clips._valorant_score(e) * 0.18
     pos, neg = clips._keyword_scores(title)
     base += 0.08 * pos - 0.22 * neg
-    base += clips._popularity(e.get("view_count")) * 0.08
+    # View count MISLEADS for a Shorts source search: the keepers sit at 4k-100k
+    # views while over-produced montage channels have far more. Popularity is only
+    # a faint tie-breaker now (was 0.08).
+    base += clips._popularity(e.get("view_count")) * 0.02
     if e.get("source") == "twitch":
         base += 0.06   # raw, facecam-in, one play
     if e.get("is_short_form"):
@@ -234,12 +303,16 @@ def _passes_hard_filters(e: dict, intent: dict) -> bool:
 # Vision verify (top N, concurrent)
 # --------------------------------------------------------------------------- #
 def _verify_one(e: dict) -> dict:
-    frames, work = framegrab.sample_frames(e.get("url"), e.get("duration"), n=3)
+    """Download a low-res copy once, then run BOTH checks on it: the deterministic
+    montage gate (cut density, from the video file) and the vision verdict (from
+    sampled frames). Returns {"vision":..., "media":...}."""
+    frames, work, video = framegrab.sample_frames(e.get("url"), e.get("duration"), n=3)
     try:
-        verdict = aibrain.analyze_clip(frames, title=e.get("title") or "")
+        vision = aibrain.analyze_clip(frames, title=e.get("title") or "")
+        media = clipgate.analyze_media(video, e.get("duration")) if video else {"analyzed": False}
     finally:
         framegrab.cleanup(work)
-    return verdict
+    return {"vision": vision, "media": media}
 
 
 def _apply_vision(e: dict, v: dict) -> float:
@@ -342,10 +415,34 @@ def deep_search(query: str, filters: Optional[dict] = None,
     for e in pool:
         e["score"] = round(_prescore(e, intent), 4)
         e["tier"] = clips._tier(e.get("duration"))
+
+    # 3b) SUBJECT GATE — if a player was named, drop candidates with no evidence of
+    # them (title/channel/Twitch broadcaster). Fixes "aspas ace" -> a JAWGEMO ace.
+    subjects = _subjects(intent)
+    gated_subject = 0
+    if subjects:
+        kept = []
+        for e in pool:
+            if _has_subject(e, subjects):
+                # a raw Twitch clip OF the named subject is the gold seam — boost it.
+                if e.get("source") == "twitch":
+                    e["score"] = round(e["score"] + 0.10, 4)
+                kept.append(e)
+            else:
+                gated_subject += 1
+        pool = kept
+
+    # 3c) TITLE RE-RANK — the LLM reads the titles (reward single plays, sink
+    # compilations the keyword scorer missed) so the vision budget lands on the
+    # right clips. Re-rank only; never deletes.
+    _title_rerank(intent, pool, opts.get("use_title_gate", True) and use_ai)
     pool.sort(key=lambda e: e["score"], reverse=True)
 
-    # 4) VISION VERIFY (top N)
+    # 4) VERIFY (top N): deterministic montage gate + vision, on one shared download
     verified = 0
+    gated_montage = 0
+    gated_facecam = 0
+    require_facecam = bool(opts.get("require_facecam", intent.get("want_facecam")))
     if use_vision and pool:
         top = pool[:vision_count]
         _p(55, f"watching {len(top)} clips (frames + AI)…")
@@ -355,19 +452,37 @@ def deep_search(query: str, filters: Optional[dict] = None,
             for f in as_completed(futs):
                 e = futs[f]
                 try:
-                    v = f.result()
+                    res = f.result()
                 except Exception:
-                    v = {"analyzed": False}
+                    res = {"vision": {"analyzed": False}, "media": {"analyzed": False}}
+                v, media = res.get("vision") or {}, res.get("media") or {}
+                e["media"] = media
                 e["score"] = round(_apply_vision(e, v), 4)
+                # montage gate (hard): cut-density says compilation
+                reason = clipgate.gate(media)
+                if reason:
+                    e["gated"] = reason
+                    gated_montage += 1
+                # facecam gate: Twitch always has a cam; a non-Twitch clip that vision
+                # confidently reads as camless fails only when facecam is REQUIRED —
+                # otherwise it's a soft penalty (keeps Pro/VCT observer clips available).
+                elif (v.get("analyzed") and not v.get("facecam")
+                      and e.get("source") != "twitch" and v.get("confidence", 0) >= 0.5):
+                    if require_facecam:
+                        e["gated"] = "no facecam"
+                        gated_facecam += 1
+                    else:
+                        e["score"] = round(e["score"] - 0.10, 4)
                 done += 1
                 verified += 1 if v.get("analyzed") else 0
                 _p(55 + int(35 * done / len(top)), f"verified {done}/{len(top)} clips…")
         pool.sort(key=lambda e: e["score"], reverse=True)
 
-    # 5) FINALIZE
+    # 5) FINALIZE — drop hard-gated clips (user chose hard-drop), keep the rest.
     _p(95, "finalizing…")
+    survivors = [e for e in pool if not e.get("gated")]
     results = []
-    for e in pool[:limit]:
+    for e in survivors[:limit]:
         e["reason"] = _reason(e, intent)
         results.append(e)
     _p(100, "done")
@@ -380,6 +495,9 @@ def deep_search(query: str, filters: Optional[dict] = None,
             "sources": sources,
             "ai_parse": bool(parse),
             "vision_verified": verified,
+            "subjects": subjects,
+            "gated": {"subject": gated_subject, "montage": gated_montage,
+                      "facecam": gated_facecam},
             "twitch_available": twitch.available(),
             "reddit_available": reddit.available(),
             "ai_available": aibrain.available(),

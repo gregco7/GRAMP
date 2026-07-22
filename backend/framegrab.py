@@ -75,22 +75,31 @@ def _extract(video: Path, ts: float, dest: Path, width: int = 854) -> Optional[s
 
 
 def sample_frames(url: str, duration: Optional[float], n: int = 3,
-                  max_h: int = 360) -> tuple[list[str], Optional[str]]:
-    """Return (frame_paths, workdir). Caller must `cleanup(workdir)` when done.
-    `frame_paths` is [] on failure."""
+                  max_h: int = 360) -> tuple[list[str], Optional[str], Optional[str]]:
+    """Return (frame_paths, workdir, video_path). Caller must `cleanup(workdir)`
+    when done. `frame_paths` is [] on failure; `video_path` is the fully-downloaded
+    low-res clip when one exists (short clips) — for the deterministic montage gate —
+    or None for long clips fetched only as sections. Includes a t≈0 HOOK frame first
+    (the first ~2s decide Shorts retention and expose montage intro/subscribe splashes)."""
     if not url:
-        return [], None
+        return [], None, None
     work = _TMP / uuid.uuid4().hex[:12]
     work.mkdir(parents=True, exist_ok=True)
     dur = float(duration) if duration and duration > 0 else 0.0
     frames: list[str] = []
+    video_path: Optional[str] = None
 
     try:
         if dur == 0.0 or dur <= 120.0:
             vid = _dl(url, str(work / "v.%(ext)s"), max_h)
             if not vid:
-                return [], str(work)
+                return [], str(work), None
+            video_path = str(vid)
             span = dur if dur > 0 else 30.0
+            # hook frame near the very start, then spread the rest across the middle 80%.
+            hook = _extract(vid, min(1.0, span * 0.05), work / "f_hook.jpg")
+            if hook:
+                frames.append(hook)
             lo, hi = span * 0.12, span * 0.88
             if hi <= lo:
                 lo, hi = 0.0, span
@@ -111,7 +120,7 @@ def sample_frames(url: str, duration: Optional[float], n: int = 3,
                         frames.append(f)
     except Exception:
         pass
-    return frames, str(work)
+    return frames, str(work), video_path
 
 
 def cleanup(workdir: Optional[str]) -> None:
