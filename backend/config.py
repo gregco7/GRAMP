@@ -26,6 +26,12 @@ THUMBS_DIR = TMP_DIR / "thumbs"   # cached clip poster frames for the Library br
 YT_CLIENT_SECRET = SECRETS / "client_secret.json"
 YT_TOKEN = SECRETS / "youtube_token.json"
 
+# Per-user app settings (channel identity + optional Claude key). Lives under the
+# gitignored secrets/ dir so a cloner's own config never gets committed. Managed by
+# the in-app Settings screen (/api/settings) and read wherever the channel name /
+# handle / accent are stamped onto output (subscribe CTA, package agent, stats).
+SETTINGS_FILE = SECRETS / "settings.json"
+
 # Review folder: sample renders / template previews Claude drops here for you to
 # eyeball. Git-ignored; safe to clear. See CLAUDE.md ("Review outputs").
 REVIEW_DIR = ROOT / "outputs"
@@ -48,9 +54,43 @@ for d in (CLIPS_DIR, OUTPUT_DIR, TMP_DIR, MUSIC_DIR, PROJECTS_DIR, PACKAGES_DIR,
 VIDIQ_API_KEY = os.environ.get("VIDIQ_API_KEY", "")
 
 # Channel niches shown as the leading overview tabs. Each maps to a channel
-# overview panel (live YouTube stats). Only "valorant" is wired to a channel so
-# far; "cars" is an empty placeholder overview.
+# overview panel (live YouTube stats via youtube.py). "valorant" is the one wired
+# niche; add your own here + a matching entry in youtube.CHANNELS to light up more.
 NICHES = [
     {"id": "valorant", "label": "Valorant", "active": True},
-    {"id": "cars", "label": "Cars", "active": False},
 ]
+
+
+# --------------------------------------------------------------------------- #
+# Per-user settings (channel identity + optional Claude key)
+# --------------------------------------------------------------------------- #
+# Neutral defaults so a fresh clone renders sensibly before the user sets a
+# channel: an empty name/handle degrades to a generic "Subscribe" CTA (no chip).
+SETTINGS_DEFAULTS = {
+    "channel_name": "",       # your channel name — stamped on the subscribe CTA + mark
+    "channel_handle": "",     # your @handle
+    "channel_accent": "#ff0033",
+    "anthropic_api_key": "",  # optional; injected into the `claude` CLI subprocess env
+}
+
+
+def load_settings() -> dict:
+    """Read the user's settings.json, merged over defaults (missing file → defaults)."""
+    data = dict(SETTINGS_DEFAULTS)
+    try:
+        if SETTINGS_FILE.exists():
+            saved = json.loads(SETTINGS_FILE.read_text())
+            if isinstance(saved, dict):
+                data.update({k: v for k, v in saved.items() if k in SETTINGS_DEFAULTS})
+    except Exception:
+        pass
+    return data
+
+
+def save_settings(patch: dict) -> dict:
+    """Merge `patch` into the stored settings and persist. Returns the full settings."""
+    data = load_settings()
+    data.update({k: v for k, v in (patch or {}).items() if k in SETTINGS_DEFAULTS})
+    SETTINGS_FILE.parent.mkdir(parents=True, exist_ok=True)
+    SETTINGS_FILE.write_text(json.dumps(data, indent=2))
+    return data

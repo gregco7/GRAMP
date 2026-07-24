@@ -51,20 +51,20 @@ from . import clips, config, store
 # --------------------------------------------------------------------------- #
 DEFAULT_COUNT = 20
 
-# Seed prompt for the base agent — a Valorant clip curator centred on TenZ. The
-# user can retune this; critiques accumulate into `learnings`.
+# Seed prompt for the base agent — a neutral Valorant clip curator. The user can
+# retune this (e.g. bias it toward their favourite pro); critiques accumulate into
+# `learnings`. The prompt is generic so a fresh clone isn't tied to one creator.
 _SEED_AGENT = {
     "name": "Clip Package Agent",
     "prompt": (
-        "You are a Valorant Shorts clip curator for the VALDaily channel. Given a "
-        "prompt, assemble a package of short, self-contained highlight clips that "
-        "crop cleanly into a 9:16 vertical Short (one ace / clutch / flick / insane "
-        "play each, ~10-60s, facecam present when possible). Search across YouTube "
-        "and the creator's Twitch clips. Prefer recent, high-view, visually clean "
-        "moments; avoid full VODs, montages, podcasts and watch-parties. For each "
-        "clip give a one-line reason it earns its spot. Default to a package centred "
-        "around TenZ clips (Sentinels, Zellsis-era duo plays, Vandal flicks, big "
-        "clutches) unless the prompt says otherwise."
+        "You are a Valorant Shorts clip curator. Given a prompt, assemble a package "
+        "of short, self-contained highlight clips that crop cleanly into a 9:16 "
+        "vertical Short (one ace / clutch / flick / insane play each, ~10-60s, "
+        "facecam present when possible). Search across YouTube and the creator's "
+        "Twitch clips. Prefer recent, high-view, visually clean moments; avoid full "
+        "VODs, montages, podcasts and watch-parties. For each clip give a one-line "
+        "reason it earns its spot. Follow whatever creator / theme the prompt asks "
+        "for; when the prompt is vague, favour well-known pros and viral plays."
     ),
     "default_count": DEFAULT_COUNT,
     "sources": ["youtube", "twitch"],

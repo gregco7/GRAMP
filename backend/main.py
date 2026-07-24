@@ -400,6 +400,87 @@ def get_niches():
     return config.NICHES
 
 
+# --------------------------------------------------------------------------- #
+# Settings — channel identity + integration status (in-app Settings screen).
+# Secret VALUES are never returned; only booleans for whether each is configured.
+# --------------------------------------------------------------------------- #
+class SettingsReq(BaseModel):
+    channel_name: str | None = None
+    channel_handle: str | None = None
+    channel_accent: str | None = None
+    anthropic_api_key: str | None = None     # "" clears it
+    twitch_client_id: str | None = None
+    twitch_client_secret: str | None = None
+    reddit_client_id: str | None = None
+    reddit_client_secret: str | None = None
+
+
+def _settings_payload() -> dict:
+    st = config.load_settings()
+    return {
+        "channel": {
+            "name": st.get("channel_name", ""),
+            "handle": st.get("channel_handle", ""),
+            "accent": st.get("channel_accent", "#ff0033"),
+        },
+        "integrations": {
+            "claude": {
+                "configured": aibrain.available(),
+                "key_saved": bool((st.get("anthropic_api_key") or "").strip()),
+                "env_key": bool(os.environ.get("ANTHROPIC_API_KEY")),
+            },
+            "youtube": youtube.status(),               # {authorized, client_configured}
+            "twitch": {"configured": twitch._creds() is not None},
+            "reddit": {"configured": reddit._creds() is not None},
+        },
+    }
+
+
+def _write_secret_pair(path, client_id: str, client_secret: str):
+    """Write a {client_id, client_secret} secret file (twitch/reddit shape)."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(
+        {"client_id": client_id.strip(), "client_secret": client_secret.strip()},
+        indent=2))
+
+
+@app.get("/api/settings")
+def get_settings():
+    return _settings_payload()
+
+
+@app.post("/api/settings")
+def save_settings(req: SettingsReq):
+    # Channel identity + Claude key → settings.json (only provided fields change).
+    patch = {}
+    for src, dst in (("channel_name", "channel_name"), ("channel_handle", "channel_handle"),
+                     ("channel_accent", "channel_accent"), ("anthropic_api_key", "anthropic_api_key")):
+        v = getattr(req, src)
+        if v is not None:
+            patch[dst] = v.strip()
+    if patch:
+        config.save_settings(patch)
+    # Optional API-key pairs → their gitignored secret files (both halves required).
+    if req.twitch_client_id and req.twitch_client_secret:
+        _write_secret_pair(config.SECRETS / "twitch.json",
+                           req.twitch_client_id, req.twitch_client_secret)
+        twitch._token.update({"access_token": None, "expires_at": 0.0})  # force re-auth
+    if req.reddit_client_id and req.reddit_client_secret:
+        _write_secret_pair(config.SECRETS / "reddit.json",
+                           req.reddit_client_id, req.reddit_client_secret)
+    return _settings_payload()
+
+
+@app.post("/api/settings/youtube/connect")
+def settings_youtube_connect():
+    """Kick off the local Google OAuth browser flow to authorize the YouTube
+    overview (mints secrets/youtube_token.json). Blocks until you click Allow."""
+    res = youtube.connect()
+    if not res.get("ok"):
+        raise HTTPException(400, res.get("error", "connect failed"))
+    return _settings_payload()
+
+
 @app.get("/api/fx")
 def get_fx():
     """Sound effects + visual transitions for the FX picker (with preview URLs)."""
@@ -694,28 +775,17 @@ def youtube_overview(niche: str = "valorant", days: int = 28, refresh: bool = Fa
 
 
 # --------------------------------------------------------------------------- #
-# Nb1 grabber — browse a compilation channel + resolve a scrub-preview stream.
-# Grabbing itself reuses /api/clips/download (it already does section download).
+# Progressive-stream resolver — lets the UI preview a remote clip in-browser
+# (result-card ▶ preview + package candidate previews) without downloading it.
 # --------------------------------------------------------------------------- #
-class Nb1StreamReq(BaseModel):
+class StreamReq(BaseModel):
     url: str
     max_height: int = 720
 
 
-@app.get("/api/nb1/videos")
-def nb1_videos(limit: int = 30, offset: int = 0, sort: str = "recent",
-               query: str = "", force: bool = False):
-    """Page over the Nb1 channel's uploads (cached). See clips.list_channel."""
-    try:
-        return clips.list_channel(limit=limit, offset=offset, sort=sort,
-                                  query=query, force=force)
-    except Exception as e:
-        raise HTTPException(500, f"channel listing failed: {e}")
-
-
-@app.post("/api/nb1/stream")
-def nb1_stream(req: Nb1StreamReq):
-    """Resolve a directly-playable progressive URL for in-browser scrubbing."""
+@app.post("/api/clips/stream")
+def clips_stream(req: StreamReq):
+    """Resolve a directly-playable progressive URL for in-browser preview."""
     try:
         return clips.resolve_stream(req.url, req.max_height)
     except Exception as e:

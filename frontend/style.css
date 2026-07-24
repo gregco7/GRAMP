@@ -415,29 +415,31 @@ button.ghost { padding: 6px 10px; font-size: 12px; font-weight: 500; }
 .upload-lbl { display: flex; align-items: center; gap: 6px; }
 .upload-lbl input[type=file] { max-width: 190px; }
 
-/* ---- Nb1 grabber modal ---- */
+/* ---- Wide modal (clip picker, packages) ---- */
 .modal-wide { width: min(760px, 100%); }
 .modal-ctx { font-size: 12px; font-weight: 600; color: var(--accent-2); margin-left: 6px; }
-#nb1-grid { max-height: 46vh; }
-.nb1-card .res-get { background: var(--card-2); }
-.nb1-grab-title { flex: 1; min-width: 0; font-size: 12px; color: var(--muted);
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.nb1-video { width: 100%; max-height: 42vh; background: #000; border-radius: 8px;
-  border: 1px solid var(--line); display: block; margin: 8px 0; }
-.nb1-scrub { position: relative; height: 30px; margin: 4px 0 10px; border-radius: 6px;
-  background: var(--card-2); border: 1px solid var(--line); cursor: pointer; touch-action: none; }
-.nb1-scrub-sel { position: absolute; top: 0; bottom: 0; background: rgba(79,140,255,.22);
-  border-left: 2px solid var(--accent-2); border-right: 2px solid var(--accent-2); pointer-events: none; }
-.nb1-handle { position: absolute; top: -3px; width: 12px; height: 36px; margin-left: -6px;
-  background: var(--accent-2); border-radius: 4px; cursor: ew-resize; z-index: 2;
-  box-shadow: 0 1px 4px rgba(0,0,0,.4); }
-.nb1-handle::after { content: ""; position: absolute; inset: 0 4px; border-left: 1px solid rgba(255,255,255,.5);
-  border-right: 1px solid rgba(255,255,255,.5); }
-.nb1-playhead { position: absolute; top: -2px; bottom: -2px; width: 2px; margin-left: -1px;
-  background: var(--accent); pointer-events: none; z-index: 1; }
-.nb1-grab-ctrls { flex-wrap: wrap; align-items: center; }
-.nb1-grab-ctrls input { width: 64px; }
-#nb1-play { min-width: 34px; }
+
+/* ---- Settings modal ---- */
+.settings-body { max-height: 66vh; overflow-y: auto; padding-right: 4px; }
+.settings-sec { margin-bottom: 18px; }
+.settings-sec h4 { margin: 0 0 4px; font-size: 14px; }
+.settings-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+.settings-field { display: flex; flex-direction: column; gap: 4px; font-size: 12px;
+  color: var(--muted); flex: 1 1 200px; }
+.settings-field input { width: 100%; }
+.settings-field input[type=color] { height: 34px; padding: 2px; cursor: pointer; }
+.settings-int { padding: 12px; margin-top: 10px; border: 1px solid var(--line);
+  border-radius: 10px; background: var(--card); }
+.settings-int-head { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.settings-int-head b { font-weight: 600; }
+.settings-status { margin-left: auto; font-size: 11px; color: var(--muted); }
+.settings-dot { width: 9px; height: 9px; border-radius: 50%; flex: 0 0 auto;
+  background: var(--muted); box-shadow: 0 0 0 2px rgba(255,255,255,.04); }
+.settings-dot.ok { background: #35c46a; }
+.settings-dot.off { background: #6b7280; }
+.settings-int .hint code, .settings-field code { font-size: 11px; }
+.settings-foot { margin-top: 6px; align-items: center; border-top: 1px solid var(--line);
+  padding-top: 12px; }
 
 /* ---- Formatter music bed ---- */
 .fmt-music { margin: 6px 0 12px; padding: 12px; border: 1px solid var(--line);
@@ -984,8 +986,9 @@ select {
  * ============================================================= */
 
 /* ---- topbar packages button + notification badge ---- */
+.header-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
 .pkg-btn {
-  margin-left: auto; position: relative;
+  position: relative;
   width: 38px; height: 38px; border-radius: 9px;
   background: var(--card); border: 1px solid var(--line);
   color: var(--text); font-size: 18px; cursor: pointer;

@@ -5,7 +5,7 @@ Clips live in **folders** under storage/clips/ (e.g. default/, old/, or any you
 create). A clip's identity is its relative path `folder/name.mp4`. One folder is
 the **download target** (where raw grabs land, default "default"); it is the only
 folder that auto-cleans — the newest EPHEMERAL_LIMIT non-kept clips in it are kept
-and older ones auto-clear, so search/Nb1 spam doesn't pile up. **Every other folder
+and older ones auto-clear, so search-grab spam doesn't pile up. **Every other folder
 is permanent** (never auto-deleted), so anything you file away — including the "old"
 archive — is safe.
 

@@ -22,7 +22,6 @@ from __future__ import annotations
 
 import math
 import re
-import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Optional
@@ -493,88 +492,10 @@ def download(url: str, dest_dir: str, max_height: int = 1080,
 
 
 # --------------------------------------------------------------------------- #
-# Channel browse — the "Nb1 grabber" source
+# Progressive-stream resolver — lets a browser <video> preview a remote source
+# without downloading it first (used by the result-card ▶ preview + package
+# candidate previews via previewRemoteClip / POST /api/clips/stream).
 # --------------------------------------------------------------------------- #
-# The compilation channel this BETA is built around: "Im_Nb1 أمين". It samples
-# streamer reactions to the same clip into 7-10 min montages; the workflow is to
-# browse his uploads and grab just the moment (or one reaction) you want.
-# Parameterized (channel_id) so the phase-2 "straight from the source" streamer
-# lookup can reuse the same list/grab plumbing against a streamer's own VODs.
-NB1_CHANNEL_ID = "UCK16a1sUUqribbZfyHAYeyg"
-NB1_CHANNEL_NAME = "Im_Nb1"
-
-_CHANNEL_TTL = 600.0  # seconds — flat listing is cheap but we page/sort over it a lot
-_CHANNEL_CACHE: dict[str, tuple[float, list[dict]]] = {}
-
-
-def _fetch_channel(channel_id: str) -> list[dict]:
-    """Flat-list a channel's uploads (newest first). No dates in flat mode — YouTube
-    returns the /videos tab in reverse-chronological order, so list order *is* recency
-    (see enrich_dates() to fill exact upload dates lazily for a visible page)."""
-    url = f"https://www.youtube.com/channel/{channel_id}/videos"
-    opts = {
-        "quiet": True,
-        "no_warnings": True,
-        "extract_flat": "in_playlist",
-        "skip_download": True,
-        "playlistend": 300,
-    }
-    out: list[dict] = []
-    with yt_dlp.YoutubeDL(opts) as ydl:
-        info = ydl.extract_info(url, download=False)
-        for i, e in enumerate((info or {}).get("entries", []) or []):
-            if not e:
-                continue
-            vid = e.get("id")
-            out.append({
-                "id": vid,
-                "title": e.get("title"),
-                "url": e.get("url") or (f"https://www.youtube.com/watch?v={vid}" if vid else None),
-                "duration": e.get("duration"),
-                "view_count": e.get("view_count"),
-                "thumbnail": _yt_thumb(e),
-                "index": i,  # channel order == recency (0 = newest)
-            })
-    return out
-
-
-def list_channel(channel_id: str = NB1_CHANNEL_ID, limit: int = 30, offset: int = 0,
-                 sort: str = "recent", query: str = "", force: bool = False) -> dict:
-    """
-    Browse a channel's uploads for the grabber (cached ~10 min).
-
-    `sort`: "recent" (channel order, newest first) | "views" | "longest" | "shortest".
-    `query`: case-insensitive title substring filter (the montage titles name the
-    play + streamers, e.g. "...NS Dambi CRAZY 4k...", so this doubles as a play search).
-    Returns {channel, total, offset, limit, sort, videos:[...]} — `videos` is one page.
-    """
-    now = time.time()
-    cached = _CHANNEL_CACHE.get(channel_id)
-    if force or not cached or (now - cached[0]) > _CHANNEL_TTL:
-        entries = _fetch_channel(channel_id)
-        _CHANNEL_CACHE[channel_id] = (now, entries)
-    entries = _CHANNEL_CACHE[channel_id][1]
-
-    rows = list(entries)
-    q = (query or "").strip().lower()
-    if q:
-        rows = [e for e in rows if q in (e.get("title") or "").lower()]
-
-    if sort == "views":
-        rows.sort(key=lambda e: e.get("view_count") or 0, reverse=True)
-    elif sort == "longest":
-        rows.sort(key=lambda e: e.get("duration") or 0, reverse=True)
-    elif sort == "shortest":
-        rows.sort(key=lambda e: e.get("duration") if e.get("duration") else 1e9)
-    # "recent" keeps channel order (already newest-first).
-
-    total = len(rows)
-    offset = max(0, int(offset))
-    page = rows[offset:offset + max(1, int(limit))]
-    return {"channel": channel_id, "total": total, "offset": offset,
-            "limit": limit, "sort": sort, "videos": page}
-
-
 def resolve_stream(url: str, max_height: int = 720) -> dict:
     """
     Resolve a directly-playable *progressive* (single-file, audio+video) URL so a
@@ -604,13 +525,3 @@ def resolve_stream(url: str, max_height: int = 720) -> dict:
         info = ydl.extract_info(url, download=False)
         return {"url": info.get("url"), "duration": info.get("duration"),
                 "title": info.get("title"), "id": info.get("id")}
-
-
-# --- phase 2 (not wired): "straight from the source" streamer-reaction lookup -----
-# The montage titles already name the streamers/orgs ("NS Dambi", "TH benjyfishy").
-# Assisted lookup will resolve a streamer handle -> list_channel(their Twitch/YT VODs)
-# and reuse resolve_stream()/download() with the SAME grab panel. Auto-discovery
-# (identify which streamers appear in a given Nb1 clip + locate the moment in their
-# VODs) is a later step. Left as a documented seam, intentionally unimplemented.
-def find_source(title: str) -> list[dict]:  # noqa: D401  (phase-2 stub)
-    raise NotImplementedError("phase 2: streamer-source lookup")

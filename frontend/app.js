@@ -23,7 +23,7 @@ const fmtSize = (b) => b > 1e9 ? (b/1e9).toFixed(1)+" GB" : (b/1e6).toFixed(1)+"
 
 // ------------------------------------------------------------------ tabs
 // Top tabs, in order: channel overviews (from /api/niches) → Search → Library →
-// Formatter. "valorant"/"cars" are channel-overview panels; "search" holds the
+// Formatter. "valorant" is the channel-overview panel; "search" holds the
 // clip searcher + Auto-Layout editor; "library" is the file-management system.
 async function initTabs() {
   const niches = await api("/api/niches");
@@ -38,7 +38,7 @@ async function initTabs() {
     AL.tabBtns[id] = b;
     return b;
   };
-  niches.forEach(n => addTab(n.id, n.label, !n.active));   // Valorant, Cars
+  niches.forEach(n => addTab(n.id, n.label, !n.active));   // Valorant (+ any you add)
   addTab("search", "Search");
   addTab("library", "Library");
   addTab("formatter", "Formatter");
@@ -50,7 +50,7 @@ function selectTab(id, btn) {
   if (btn) btn.classList.add("active");
   $$(".panel").forEach(p => p.classList.toggle("hidden", p.dataset.niche !== id));
   if (location.hash.slice(1) !== id) history.replaceState(null, "", "#" + id);
-  if (id === "valorant" || id === "cars") loadOverview(id);
+  if (id === "valorant") loadOverview(id);
   if (id === "library") loadLibraryTab();
   if (id === "formatter") loadFormatter();
 }
@@ -199,228 +199,6 @@ async function keepClip(name, keep = true) {
   } catch { /* non-fatal */ }
 }
 
-// ------------------------------------------------------------------ Nb1 grabber
-// Browse the Im_Nb1 compilation channel, scrub a video, and grab just a section.
-// Reusable: openNb1(onGrab, label) is launched from Find clips (-> library) and
-// the rank finder (-> a rank). The grab reuses /api/clips/download (section aware).
-function nb1FmtT(t) { return fmtDur(t) || "0:00"; }   // fmtDur("")s a falsy 0
-function nb1Pct(t) { const d = AL.nb1.dur || 1; return Math.max(0, Math.min(1, t / d)) * 100; }
-
-function openNb1(onGrab, label) {
-  AL.nb1.ctx = { onGrab, label: label || "" };
-  $("#nb1-ctx").textContent = label ? `→ ${label}` : "";
-  nb1ShowBrowse();
-  $("#nb1-modal").classList.remove("hidden");
-  nb1Load(true);
-}
-function closeNb1() {
-  const v = $("#nb1-video");
-  try { v.pause(); v.removeAttribute("src"); v.load(); } catch { /* ignore */ }
-  $("#nb1-modal").classList.add("hidden");
-  AL.nb1.ctx = null; AL.nb1.cur = null;
-}
-function nb1ShowBrowse() {
-  $("#nb1-browse").classList.remove("hidden");
-  $("#nb1-grab").classList.add("hidden");
-}
-
-async function nb1Load(reset, force) {
-  const n = AL.nb1;
-  if (n.loading) return;
-  if (reset) { n.offset = 0; $("#nb1-grid").innerHTML = `<div class="hint">Loading…</div>`; }
-  n.loading = true;
-  try {
-    const qs = new URLSearchParams();
-    qs.set("limit", n.limit); qs.set("offset", n.offset); qs.set("sort", n.sort);
-    if (n.filter) qs.set("query", n.filter);
-    if (force) qs.set("force", "true");
-    const r = await api(`/api/nb1/videos?${qs.toString()}`);
-    n.total = r.total || 0;
-    if (reset) $("#nb1-grid").innerHTML = "";
-    const vids = r.videos || [];
-    vids.forEach(v => $("#nb1-grid").appendChild(nb1Card(v)));
-    if (reset && !vids.length) $("#nb1-grid").innerHTML = `<div class="hint">No videos match.</div>`;
-    n.offset += vids.length;
-    $("#nb1-count").textContent = `${n.total} video${n.total === 1 ? "" : "s"}`;
-    $("#nb1-more").classList.toggle("hidden", n.offset >= n.total);
-  } catch (e) {
-    $("#nb1-grid").innerHTML = `<div class="hint">Error: ${e.message}</div>`;
-  } finally { n.loading = false; }
-}
-
-function nb1Card(v) {
-  const el = document.createElement("div");
-  el.className = "result nb1-card";
-  const dur = fmtDur(v.duration), views = fmtViews(v.view_count);
-  el.innerHTML = `
-    <img src="${v.thumbnail || ""}" onerror="this.style.visibility='hidden'"/>
-    <div class="meta">
-      <div class="title">${v.title || "(untitled)"}</div>
-      <div class="sub">
-        ${dur ? `<span class="dur dur-medium">${dur}</span>` : ""}
-        ${views ? `<span class="vc">${views} views</span>` : ""}
-      </div>
-    </div>
-    <div class="res-actions"><button class="res-get">Scrub ✂</button></div>`;
-  el.querySelector(".res-get").onclick = () => nb1OpenGrab(v);
-  return el;
-}
-
-async function nb1OpenGrab(v) {
-  const n = AL.nb1;
-  n.cur = v; n.in = 0; n.out = v.duration || null; n.dur = v.duration || 0; n.drag = null;
-  $("#nb1-grab-title").textContent = v.title || "";
-  $("#nb1-browse").classList.add("hidden");
-  $("#nb1-grab").classList.remove("hidden");
-  const vid = $("#nb1-video");
-  vid.removeAttribute("src"); vid.poster = v.thumbnail || "";
-  $("#nb1-sel-len").textContent = "Loading stream…";
-  nb1Layout(); nb1SyncFields();
-  try {
-    const s = await api("/api/nb1/stream", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url: v.url }),
-    });
-    if (n.cur !== v) return;                       // user backed out while resolving
-    n.dur = s.duration || v.duration || 0;
-    if (n.out == null || n.out > n.dur) n.out = n.dur;
-    vid.src = s.url; vid.load();
-    nb1Layout(); nb1SyncFields();
-  } catch (e) {
-    if (n.cur === v) $("#nb1-sel-len").textContent = "Stream failed: " + e.message;
-  }
-}
-
-function nb1Layout() {
-  const n = AL.nb1;
-  const out = n.out ?? n.dur;
-  const inP = nb1Pct(n.in), outP = nb1Pct(out);
-  $("#nb1-scrub .nb1-handle-in").style.left = inP + "%";
-  $("#nb1-scrub .nb1-handle-out").style.left = outP + "%";
-  const sel = $("#nb1-scrub .nb1-scrub-sel");
-  sel.style.left = inP + "%"; sel.style.width = Math.max(0, outP - inP) + "%";
-  const len = Math.max(0, out - n.in);
-  $("#nb1-sel-len").textContent =
-    `Selection: ${nb1FmtT(len)}  (${nb1FmtT(n.in)} → ${nb1FmtT(out)})`;
-}
-function nb1SyncFields() {
-  $("#nb1-in").value = nb1FmtT(AL.nb1.in);
-  $("#nb1-out").value = AL.nb1.out == null ? "" : nb1FmtT(AL.nb1.out);
-}
-
-// Scrub bar: drag the in/out handles (video preview follows the drag); a plain
-// click on the track just seeks the playhead.
-function initNb1Scrub() {
-  const bar = $("#nb1-scrub"), vid = $("#nb1-video");
-  const timeAt = (clientX) => {
-    const r = bar.getBoundingClientRect();
-    return Math.max(0, Math.min(1, (clientX - r.left) / r.width)) * (AL.nb1.dur || 0);
-  };
-  bar.addEventListener("pointerdown", (e) => {
-    const h = e.target.closest(".nb1-handle");
-    if (h) {
-      AL.nb1.drag = h.dataset.h;
-      bar.setPointerCapture(e.pointerId);
-      e.preventDefault();
-    } else {
-      const t = timeAt(e.clientX);
-      if (isFinite(t)) vid.currentTime = t;        // seek only
-    }
-  });
-  bar.addEventListener("pointermove", (e) => {
-    const n = AL.nb1;
-    if (!n.drag) return;
-    let t = timeAt(e.clientX);
-    if (n.drag === "in") n.in = Math.max(0, Math.min(t, (n.out ?? n.dur) - 0.1));
-    else n.out = Math.min(n.dur, Math.max(t, n.in + 0.1));
-    if (isFinite(t)) vid.currentTime = t;          // preview follows the handle
-    nb1Layout(); nb1SyncFields();
-  });
-  const end = (e) => {
-    if (AL.nb1.drag) { AL.nb1.drag = null; try { bar.releasePointerCapture(e.pointerId); } catch { /* */ } }
-  };
-  bar.addEventListener("pointerup", end);
-  bar.addEventListener("pointercancel", end);
-
-  vid.addEventListener("timeupdate", () => {
-    $("#nb1-scrub .nb1-playhead").style.left = nb1Pct(vid.currentTime) + "%";
-  });
-  vid.addEventListener("play", () => { $("#nb1-play").textContent = "❚❚"; });
-  vid.addEventListener("pause", () => { $("#nb1-play").textContent = "▶"; });
-}
-
-async function nb1DoGrab() {
-  const n = AL.nb1;
-  if (!n.cur || !n.ctx) return;
-  const btn = $("#nb1-do-grab");
-  let s = n.in, e = n.out;
-  // whole-video selection -> full download (null/null); else validate the span
-  if (s <= 0.05 && (e == null || e >= n.dur - 0.05)) { s = null; e = null; }
-  else if (e != null && e <= s) return toast("Out must be after In", true);
-  btn.disabled = true; btn.textContent = "Grabbing…";
-  try {
-    await n.ctx.onGrab({ url: n.cur.url, start: s, end: e, title: n.cur.title }, btn);
-    closeNb1();
-  } catch { btn.disabled = false; btn.textContent = "Grab section"; }
-}
-
-// Destination callbacks -------------------------------------------------------
-function nb1GrabToLibrary({ url, start, end }, btn) {
-  return downloadClip(url, btn, start, end, $("#nb1-keep").checked);
-}
-function nb1GrabToRank({ url, start, end }, btn) {
-  return downloadAndAssign({ url }, btn, start, end);   // uses rankSearchIndex
-}
-
-function initNb1() {
-  AL.nb1 = { sort: "recent", filter: "", offset: 0, limit: 24, total: 0,
-             loading: false, ctx: null, cur: null, dur: 0, in: 0, out: null, drag: null };
-
-  $("#v-nb1").onclick = () => openNb1(nb1GrabToLibrary, "Library");
-  $("#rs-nb1").onclick = () => {
-    if (rankSearchIndex == null) return;
-    openNb1(nb1GrabToRank, `Rank #${rankSearchIndex + 1}`);
-  };
-
-  $("#nb1-close").onclick = closeNb1;
-  $("#nb1-modal").addEventListener("click", e => { if (e.target.id === "nb1-modal") closeNb1(); });
-  document.addEventListener("keydown", e => {
-    if (e.key === "Escape" && !$("#nb1-modal").classList.contains("hidden")) closeNb1();
-  });
-  $("#nb1-back").onclick = () => { try { $("#nb1-video").pause(); } catch { /* */ } nb1ShowBrowse(); };
-  $("#nb1-sort").onchange = () => { AL.nb1.sort = $("#nb1-sort").value; nb1Load(true); };
-  $("#nb1-refresh").onclick = () => nb1Load(true, true);
-  $("#nb1-more").onclick = () => nb1Load(false);
-  let ft;
-  $("#nb1-filter").addEventListener("input", () => {
-    clearTimeout(ft);
-    ft = setTimeout(() => { AL.nb1.filter = $("#nb1-filter").value.trim(); nb1Load(true); }, 250);
-  });
-
-  $("#nb1-play").onclick = () => { const v = $("#nb1-video"); if (v.paused) v.play(); else v.pause(); };
-  $("#nb1-set-in").onclick = () => {
-    AL.nb1.in = Math.max(0, Math.min($("#nb1-video").currentTime, (AL.nb1.out ?? AL.nb1.dur) - 0.1));
-    nb1Layout(); nb1SyncFields();
-  };
-  $("#nb1-set-out").onclick = () => {
-    AL.nb1.out = Math.min(AL.nb1.dur, Math.max($("#nb1-video").currentTime, AL.nb1.in + 0.1));
-    nb1Layout(); nb1SyncFields();
-  };
-  $("#nb1-in").addEventListener("change", () => {
-    const t = parseTime($("#nb1-in").value) ?? 0;
-    AL.nb1.in = Math.max(0, Math.min(t, (AL.nb1.out ?? AL.nb1.dur) - 0.1));
-    nb1Layout(); nb1SyncFields();
-  });
-  $("#nb1-out").addEventListener("change", () => {
-    const t = parseTime($("#nb1-out").value);
-    AL.nb1.out = t == null ? AL.nb1.dur : Math.min(AL.nb1.dur, Math.max(t, AL.nb1.in + 0.1));
-    nb1Layout(); nb1SyncFields();
-  });
-  $("#nb1-do-grab").onclick = nb1DoGrab;
-
-  initNb1Scrub();
-}
-
 // ------------------------------------------------------------------ music bed
 // Formatter background music: pick from the license-checked catalog, grab a
 // track into local storage, preview it, and lay it under the built render.
@@ -459,8 +237,8 @@ function initFmtMusic() {
   };
 }
 
-// Subscribe prompt: a clean, audioless VALDaily chip on the last X seconds of the
-// finished ranking video. Mirrors the music-bed control pattern.
+// Subscribe prompt: an animated channel CTA on the last X seconds of the finished
+// ranking video (channel identity from ⚙ Settings). Mirrors the music-bed control pattern.
 function initFmtSub() {
   AL.fmtSub = { on: false, style: "classic", dur: 4.0, scale: 1.0, anim: 0.7, sound: "pop",
                 accent: "#ff0033", matchTitle: false };
@@ -1054,16 +832,11 @@ function loadLibraryTab() {
 }
 
 // ==================================================================
-// Channel overview (Valorant = live YouTube stats; Cars = placeholder)
+// Channel overview (Valorant = live YouTube stats for your connected channel)
 // ==================================================================
 async function loadOverview(niche) {
   const box = $(`#ov-${niche}`);
   if (!box) return;
-  if (niche === "cars") {
-    box.innerHTML = `<div class="ov-blank"><div class="ov-blank-ico">🚗</div><h2>Cars</h2>
-      <p>No channel connected yet. This overview lights up once a Cars channel is wired in.</p></div>`;
-    return;
-  }
   if (!box._loaded) box.innerHTML = `<div class="ov-loading">Loading channel stats…</div>`;
   try {
     const d = await api(`/api/youtube/overview?niche=${niche}`);
@@ -1244,7 +1017,7 @@ const AL = {
       new_item: { motion: "pop", sound: "pop", volume: 1.0, speed: 1.0 },
     },
     resize: true, overClip: false, phone: false, bake: true,
-    title: "Top 5 s0m Moments",
+    title: "Top 5 Plays",
     titleLines: 2,                         // 1 = force single line (auto-shrink); 2 = wrap up to 2 (backend title.max_lines)
     // per-style accent colour (title accent-words + list numbers), the pill
     // background colour (pill style only), and which title words are accented
@@ -2332,12 +2105,12 @@ function xCard(ctx, r) {
 }
 
 // Preview a not-yet-downloaded remote clip (YouTube/Twitch/etc.) in the shared player.
-// Resolves a progressive stream URL via the Nb1 resolver — same path as pkgPreviewClip.
+// Resolves a progressive stream URL via /api/clips/stream — same path as pkgPreviewClip.
 async function previewRemoteClip(url, title, btn) {
   if (btn) btn.disabled = true;
   toast("Resolving preview…");
   try {
-    const r = await api("/api/nb1/stream", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url, max_height: 720 }) });
+    const r = await api("/api/clips/stream", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url, max_height: 720 }) });
     openPlayer(r.url, title || r.title);
   } catch (e) { toast("Can't preview this source — grab it first. (" + e.message + ")", true); }
   finally { if (btn) btn.disabled = false; }
@@ -5313,10 +5086,10 @@ async function pkgPreviewClip(c) {
   if (c.downloaded && c.clip_path) {
     return openPlayer(`/storage/clips/${c.clip_path}`, c.title);
   }
-  // resolve a progressive stream URL (reuses the Nb1 stream resolver)
+  // resolve a progressive stream URL (shared /api/clips/stream resolver)
   toast("Resolving preview…");
   try {
-    const r = await api("/api/nb1/stream", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url: c.url, max_height: 720 }) });
+    const r = await api("/api/clips/stream", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url: c.url, max_height: 720 }) });
     openPlayer(r.url, c.title || r.title);
   } catch (e) { toast("Can't preview this source — grab it first. (" + e.message + ")", true); }
 }
@@ -5444,6 +5217,87 @@ function initPackages() {
   setInterval(refreshPkgBadge, 30000);          // pick up newly-delivered packages
 }
 
+// ------------------------------------------------------------------ settings
+// Channel identity + integration status/keys. GET /api/settings paints the form
+// (never exposes secret values); POST saves. Values a cloner fills once.
+function setDot(id, ok) {
+  const el = $(id);
+  if (el) el.className = "settings-dot " + (ok ? "ok" : "off");
+}
+async function loadSettings() {
+  let d;
+  try { d = await api("/api/settings"); } catch { return; }
+  AL.settings = d;
+  $("#set-channel-name").value = d.channel.name || "";
+  $("#set-channel-handle").value = d.channel.handle || "";
+  $("#set-channel-accent").value = d.channel.accent || "#ff0033";
+  const it = d.integrations;
+  const claudeOk = it.claude.configured || it.claude.key_saved || it.claude.env_key;
+  setDot("#set-dot-claude", claudeOk);
+  $("#set-status-claude").textContent = it.claude.configured
+    ? (it.claude.key_saved ? "CLI ready · key saved" : "CLI ready")
+    : (it.claude.key_saved || it.claude.env_key ? "API key set" : "not detected");
+  setDot("#set-dot-youtube", it.youtube.authorized);
+  $("#set-status-youtube").textContent = it.youtube.authorized ? "connected"
+    : (it.youtube.client_configured ? "client added — connect" : "no client_secret.json");
+  setDot("#set-dot-twitch", it.twitch.configured);
+  $("#set-status-twitch").textContent = it.twitch.configured ? "configured" : "not set";
+  setDot("#set-dot-reddit", it.reddit.configured);
+  $("#set-status-reddit").textContent = it.reddit.configured ? "configured" : "not set";
+}
+function openSettings() {
+  $("#settings-modal").classList.remove("hidden");
+  $("#settings-msg").textContent = "";
+  // clear the secret inputs each open (placeholders say "leave blank to keep")
+  ["#set-anthropic-key", "#set-twitch-id", "#set-twitch-secret",
+   "#set-reddit-id", "#set-reddit-secret"].forEach(s => { $(s).value = ""; });
+  loadSettings();
+}
+function closeSettings() { $("#settings-modal").classList.add("hidden"); }
+async function saveSettingsForm() {
+  const body = {
+    channel_name: $("#set-channel-name").value,
+    channel_handle: $("#set-channel-handle").value,
+    channel_accent: $("#set-channel-accent").value,
+  };
+  const key = $("#set-anthropic-key").value.trim();
+  if (key) body.anthropic_api_key = key;
+  const ti = $("#set-twitch-id").value.trim(), ts = $("#set-twitch-secret").value.trim();
+  if (ti && ts) { body.twitch_client_id = ti; body.twitch_client_secret = ts; }
+  const ri = $("#set-reddit-id").value.trim(), rs = $("#set-reddit-secret").value.trim();
+  if (ri && rs) { body.reddit_client_id = ri; body.reddit_client_secret = rs; }
+  const btn = $("#settings-save"); btn.disabled = true;
+  $("#settings-msg").textContent = "Saving…";
+  try {
+    await api("/api/settings", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    $("#settings-msg").textContent = "Saved ✓";
+    ["#set-anthropic-key", "#set-twitch-id", "#set-twitch-secret",
+     "#set-reddit-id", "#set-reddit-secret"].forEach(s => { $(s).value = ""; });
+    loadSettings();
+  } catch (e) { $("#settings-msg").textContent = "Error: " + e.message; }
+  finally { btn.disabled = false; }
+}
+async function connectYouTube() {
+  const btn = $("#set-youtube-connect"); btn.disabled = true;
+  $("#settings-msg").textContent = "Opening Google sign-in in your browser…";
+  try {
+    await api("/api/settings/youtube/connect", { method: "POST" });
+    $("#settings-msg").textContent = "YouTube connected ✓";
+    loadSettings();
+  } catch (e) { $("#settings-msg").textContent = "Connect failed: " + e.message; }
+  finally { btn.disabled = false; }
+}
+function initSettings() {
+  $("#settings-btn").onclick = openSettings;
+  $("#settings-close").onclick = closeSettings;
+  $("#settings-modal").addEventListener("click", e => { if (e.target.id === "settings-modal") closeSettings(); });
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape" && !$("#settings-modal").classList.contains("hidden")) closeSettings();
+  });
+  $("#settings-save").onclick = saveSettingsForm;
+  $("#set-youtube-connect").onclick = connectYouTube;
+}
+
 function init() {
   wireEmojiButtons();
   // deep-linkable tabs; "#search:experimental" also selects a sub-tab
@@ -5458,7 +5312,6 @@ function init() {
   loadLibrary();
   initFx();
   initFormatter();
-  initNb1();
   initFmtMusic();
   initFmtSub();
   initFmtHook();
@@ -5466,6 +5319,7 @@ function init() {
   initBroll();
   initMoment();
   initPackages();
+  initSettings();
   initBoxDrag("facecam");
   initBoxDrag("mousecam");
   initBoxDrag("killfeed");

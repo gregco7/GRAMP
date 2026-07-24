@@ -27,8 +27,32 @@ from . import config
 # niche id -> channel selector. "mine" == the authorized owner channel.
 CHANNELS = {"valorant": "mine"}
 
+# Read-only: private analytics for owned channels + public metadata.
+SCOPES = [
+    "https://www.googleapis.com/auth/yt-analytics.readonly",
+    "https://www.googleapis.com/auth/youtube.readonly",
+]
+
 _TTL = 600  # seconds
 _cache: dict[tuple, tuple[float, dict]] = {}
+
+
+def connect() -> dict:
+    """Run the Desktop OAuth InstalledAppFlow to mint the cached token — opens a
+    browser on the local machine, the user clicks Allow once. Requires
+    client_secret.json to be present. Used by the in-app Settings screen."""
+    if not config.YT_CLIENT_SECRET.exists():
+        return {"ok": False, "error": "client_secret.json missing — add your Google "
+                "Desktop OAuth client to secrets/client_secret.json first."}
+    try:
+        from google_auth_oauthlib.flow import InstalledAppFlow
+        flow = InstalledAppFlow.from_client_secrets_file(str(config.YT_CLIENT_SECRET), SCOPES)
+        creds = flow.run_local_server(port=0)
+        config.YT_TOKEN.write_text(creds.to_json())
+        _cache.clear()
+        return {"ok": True}
+    except Exception as e:
+        return {"ok": False, "error": str(e)[:300]}
 
 
 # --------------------------------------------------------------------------- #

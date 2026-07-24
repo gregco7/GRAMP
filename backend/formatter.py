@@ -149,7 +149,7 @@ TEMPLATES = {
     "valorant_clip_ranking": {
         "label": "Valorant Clip Ranking",
         "style": "pill",
-        "title": {"text": "Top 5 s0m Moments", "max_lines": 2},
+        "title": {"text": "Top 5 Plays", "max_lines": 2},
         "list": {"count": 5, "items": ["", "", "", "", ""], "highlight": -1},
         "offsets": None,               # falls back to the style's drag defaults
         "widgets": [],                 # per-rank: None | {src, kind, name}

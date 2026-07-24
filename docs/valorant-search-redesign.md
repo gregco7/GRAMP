@@ -16,7 +16,7 @@ being disqualifying. A great ace by the wrong player still wins.
 gather → GATE (binary, fatal, hard-drop) → RANK (among survivors only) → vision → finalize
 ```
 
-Gates are relational ("is this good *as source for a VALDaily short about X*?"), which
+Gates are relational ("is this good *as source for a Valorant short about X*?"), which
 is exactly what intrinsic frame/keyword scoring can't measure.
 
 ## What "good" means (derived from shipped clips, not assumed)
@@ -37,8 +37,8 @@ player** — with **real game audio** + a **facecam**, showing one discrete high
 - The one junk package — "top 10 odin clips" — returned freestyles / ASMR / warships
   (off-subject drift, no gate).
 
-On-brand for VALDaily (user-confirmed): **pro/VCT AND streamer/ranked both count**;
-**facecam required**; failed gates **hard-drop** (not sink).
+On-brand for a Valorant highlights channel: **pro/VCT AND streamer/ranked both
+count**; **facecam required**; failed gates **hard-drop** (not sink).
 
 ## Solutions (priority order)
 

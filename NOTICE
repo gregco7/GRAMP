@@ -1,0 +1,57 @@
+Content Tool Manager — third-party asset & trademark notice
+===========================================================
+
+The MIT LICENSE in this repository covers the project's own SOURCE CODE only.
+The bundled media under assets/ is third-party material with its own terms, and
+is included here to make the tool usable out of the box — NOT as a grant of any
+rights to it. If you clone, fork, or redistribute this project, you are
+responsible for your own compliance with the terms below.
+
+
+1. VALORANT / Riot Games intellectual property
+----------------------------------------------
+The following bundled assets are © Riot Games, Inc. and are NOT owned by or
+licensed to this project:
+
+  assets/plrs/      pro-player headshots
+  assets/weapons/   VALORANT weapon-skin renders
+  assets/orgs/      esports team / organization logos
+  assets/vct-icon.png, assets/valorant.png
+
+VALORANT and Riot Games are trademarks or registered trademarks of Riot Games,
+Inc. This project is an unofficial, fan-made tool and is not endorsed by,
+sponsored by, or affiliated with Riot Games. These assets are used only as
+in-app reference imagery for building fan highlight content, consistent with
+Riot's "Legal Jibber Jabber" fan-content policy
+(https://www.riotgames.com/en/legal). Do not redistribute these assets as
+standalone downloads or use them commercially outside of that policy.
+
+
+2. Fonts (assets/fonts/)
+------------------------
+Bundled TrueType fonts are licensed under the SIL Open Font License (OFL) and
+are free for commercial and non-commercial use. Each font retains its own OFL
+notice from its upstream source.
+
+
+3. Sound effects (assets/sfx/)
+------------------------------
+See assets/sfx/README.md for the per-file breakdown. In brief: the "whoosh"
+effects are from mixkit.co (Envato) under the Mixkit Free Sound Effects License
+(free use, no attribution required, no standalone redistribution); the impact /
+riser effects are synthesized procedurally with ffmpeg and are unencumbered.
+
+
+4. Background music (music/, storage/music/)
+--------------------------------------------
+Music is NOT bundled with this repository. The Formatter downloads tracks into
+gitignored local storage at your request; those files are for your own local use
+and are never committed. Redistribution depends on each track's individual
+license (see backend/music.py) — only CC-BY / CC0 tracks are redistributable.
+
+
+5. Downloaded clips
+-------------------
+Any gameplay/stream clips you download via yt-dlp / the searchers belong to
+their respective creators. You are responsible for respecting their rights and
+YouTube's / Twitch's terms when using them.

@@ -120,8 +120,8 @@ def list_uploads(yt) -> list[dict]:
 
 def main() -> None:
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--from", dest="start", default="2024-04-07",
-                   help="start date YYYY-MM-DD (default: channel creation)")
+    p.add_argument("--from", dest="start", default=None,
+                   help="start date YYYY-MM-DD (default: your channel's creation date)")
     p.add_argument("--to", dest="end",
                    default=dt.date.today().isoformat(),
                    help="end date YYYY-MM-DD (default: today)")
@@ -131,6 +131,19 @@ def main() -> None:
     creds = get_credentials()
     yta = build("youtubeAnalytics", "v2", credentials=creds)
     yt = build("youtube", "v3", credentials=creds)
+
+    # Authorized channel's own title + creation date (for the header + default
+    # start date) — no channel or date is hardcoded.
+    try:
+        chan = yt.channels().list(part="snippet", mine=True).execute()
+        snip = chan["items"][0]["snippet"]
+        channel_title = snip["title"]
+        if not args.start:
+            args.start = snip["publishedAt"][:10]
+    except Exception:
+        channel_title = "Your channel"
+    if not args.start:
+        args.start = "2005-02-14"   # YouTube's own launch date — safe lower bound
 
     # 1) EVERY upload with LIVE public counts (near-real-time — this is the
     #    channel odometer, ahead of the Analytics pipeline during a surge).
@@ -159,7 +172,7 @@ def main() -> None:
         v["subs"] = r[col["subscribersGained"]] if r else 0
     videos.sort(key=lambda v: v["pubViews"], reverse=True)
 
-    print(f"\nVALDaily — per-video  (public = live; analytics {args.start} → {args.end})\n")
+    print(f"\n{channel_title} — per-video  (public = live; analytics {args.start} → {args.end})\n")
     print(f"{'PubViews':>9}  {'AnaViews':>8}  {'Watch(min)':>10}  {'Ret%':>4}  "
           f"{'Likes':>6}  {'Cmts':>4}  {'Lag':>5}  Title")
     print("-" * 108)

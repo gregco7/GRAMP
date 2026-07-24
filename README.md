@@ -1,115 +1,116 @@
-# Content Tool Manager
+# VALORANT Ranking Template — YouTube Shorts builder
 
-A local Claude-assisted app for content-creation prerequisites and editing gimmicks.
-Runs entirely on your machine.
+A local, Claude-assisted tool for turning landscape VALORANT gameplay/stream
+clips into polished vertical **YouTube Shorts** (9:16, 1080×1920) — including
+progressive-reveal **"Top N" ranking** videos. It runs entirely on your own
+machine: a small FastAPI server drives `ffmpeg` / `yt-dlp` / OpenCV and serves a
+no-build static frontend at `http://127.0.0.1:8000`. No cloud, no accounts, no
+telemetry — clone it, add your own keys, and start building your channel.
 
-## Run
+Two tools sit on one rendering engine:
+
+1. **Auto-Layout** (single clip) — reflow one landscape clip into a 9:16 vertical
+   (facecam on top, gameplay below), with trim, mid-clip cuts, speed, swipe/SFX
+   transitions, B-roll punch effects, an animated Subscribe CTA, and optional
+   template overlay.
+2. **Video Formatter** (many clips) — a ranking builder: drop a clip into each
+   rank, edit each with the full Auto-Layout toolset, and assemble them into one
+   "Top N" short with a progressive-reveal template, per-join transitions, and a
+   background music bed.
+
+> This is an **unofficial fan-made tool**. VALORANT and Riot Games are trademarks
+> of Riot Games, Inc.; the bundled game art is Riot's IP and is not covered by
+> this project's license. See [NOTICE](NOTICE).
+
+---
+
+## Prerequisites
+
+- **Python 3.13** (a `.venv` is used for all deps).
+- **ffmpeg** and **ffprobe** on your `PATH` (`brew install ffmpeg` on macOS).
+- *(Optional, for AI features)* **[Claude Code](https://claude.com/claude-code)**
+  signed in, **or** an **Anthropic API key** you paste in Settings.
+- Built and tested on macOS. Linux should work; Windows is untested.
+
+## Install & run
 
 ```bash
-./run.sh
+git clone https://github.com/gregco7/Content_Tool_Manager.git
+cd Content_Tool_Manager
+
+python3.13 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+
+./run.sh                 # serves http://127.0.0.1:8000
+./run.sh --reload        # dev mode: auto-reload backend on edits
 ```
 
-Then open **http://127.0.0.1:8000**
+Open **http://127.0.0.1:8000** and you're running. Everything below is optional
+configuration to unlock more features.
 
-(First run needs the venv, which is already set up in `.venv/`. To rebuild it:
-`python3.13 -m venv .venv && .venv/bin/pip install fastapi "uvicorn[standard]" python-multipart opencv-python-headless yt-dlp numpy`)
+> **Restart after backend edits.** `run.sh` does **not** auto-reload — a server
+> started earlier keeps running the old `backend/*.py`. Stop it and start again,
+> or use `./run.sh --reload`:
+> ```bash
+> pkill -f "uvicorn backend.main:app"   # stops only the server, not your browser
+> ./run.sh
+> ```
 
-## Restart / stop
+## First-run setup (⚙ Settings)
 
-The whole app is **one process**: the uvicorn server on port **8000**. If starting it
-prints `ERROR: [Errno 48] ... address already in use`, an old server is still running
-(often a detached/background one you can't Ctrl-C). **Kill whatever owns the port, then
-start fresh** — this is the reliable "restart everything":
+Click the **⚙** button (top-right) to open Settings. Nothing is required, but each
+integration you configure lights up more of the app:
 
-```bash
-pkill -f "uvicorn backend.main:app"   # stop the server (matches only uvicorn — NOT your browser)
-./run.sh                              # start it again
-```
+| Set this | To get | Where to get the keys |
+|----------|--------|-----------------------|
+| **Channel name / handle / accent** | Your own channel on the animated Subscribe CTA + as the clip-agent's default | — (just type it) |
+| **Claude** (CLI or API key) | AI clip search + the clip-package agent | Install Claude Code, or paste an Anthropic API key |
+| **YouTube** (Connect button) | The channel-overview stats tab for **your** channel | A Google Desktop OAuth client — see [secrets/README.md](secrets/README.md) |
+| **Twitch** client id/secret | Twitch as a clip-search source | Free app at [dev.twitch.tv](https://dev.twitch.tv/console/apps) |
+| **Reddit** client id/secret | Reddit as a clip-search source | Free "script" app at [reddit.com/prefs/apps](https://www.reddit.com/prefs/apps) |
 
-Then hard-refresh the browser tab (**⌘⇧R**) at http://127.0.0.1:8000.
+All credentials live in the gitignored `secrets/` folder and are **never
+committed**. Copy the `secrets/*.example.json` templates if you'd rather set them
+by hand. Full details: [secrets/README.md](secrets/README.md).
 
-Handy extras:
+## How it works
 
-- **Port-based stop** (if it was launched some other way): kill only the process *listening*
-  on 8000 — `lsof -nP -iTCP:8000 -sTCP:LISTEN -t | xargs kill -9`.
-  ⚠️ Do **not** use plain `lsof -ti tcp:8000 | xargs kill` — that also matches your browser's
-  connection to the server and would kill Chrome.
-- **See what's on the port:** `lsof -i tcp:8000` — the `LISTEN` row is the server; the other
-  rows are just browser connections (leave those alone).
-- If you launched `./run.sh` in a terminal window you can see, **Ctrl-C** there also stops it.
-  The commands above are for when it's running detached (no window to Ctrl-C).
-- **After changing backend code** (`backend/*.py`) you *must* restart — the server does
-  **not** auto-reload. Either restart as above, or run `./run.sh --reload` (dev mode) —
-  but stop the old server first, or `--reload` hits the same "address already in use".
+- **Find clips** — search YouTube (and, if configured, Twitch/Reddit) by creator +
+  query, or import a local video. A 🧪 **Experimental** searcher adds AI parsing +
+  vision verification when Claude is available.
+- **Auto-Layout** — pick a clip, click **Auto-detect facecam** (OpenCV YuNet),
+  fine-tune the box, and render a vertical short. Toggle blurred edges, a mousecam
+  overlay, audio fade; add speed changes, mid-clip cuts, swipe transitions, B-roll
+  punch effects, and an animated Subscribe CTA.
+- **Formatter** — build a "Top N": one clip per rank, each editable with the full
+  Auto-Layout toolset, assembled with a progressive-reveal ranking template,
+  per-join transitions, and a licensed music bed.
+- **Library** — folder + thumbnail file management: favorites, #tags, per-clip
+  creator tagging, duplicate/move, retention.
 
-## Niches
-
-- **Valorant** — active, with the tools below.
-- **Cars** — reserved empty tab.
-- **Bodybuilding / Motivation** — reserved empty tab.
-
-## Valorant tools
-
-### Find clips
-Search by creator + query (YouTube via `yt-dlp`) and pull a clip into your local
-library. Or **import** a local video file.
-
-### Auto-Layout (9:16)
-Turns a landscape gameplay/stream clip into a vertical short:
-
-- **Top 35%** — the facecam, shown **fully** (fit, with a blurred fill behind it).
-- **Bottom 65%** — the gameplay, **cropped to fill** (never stretched).
-
-Workflow:
-1. Pick a clip from the library.
-2. Click **Auto-detect facecam** — finds the face (OpenCV YuNet) and drops the red box on it.
-3. Drag / resize the red box (or edit X/Y/W/H) so it frames the actual facecam window.
-   The preview updates automatically.
-4. **Render vertical clip** → download the result.
-
-**Toggles:**
-
-- **Facecam (top pane)** — on = facecam-over-gameplay split; off = gameplay fills the
-  whole frame (pair with *Blurred edges* for the no-facecam look). The top pane
-  auto-sizes to the facecam's own aspect ratio, so the facecam fills it edge-to-edge
-  with no blurred strips.
-- **Blurred edges** — the gameplay stays large (zoomed to fill the width) sitting on a
-  blurred backdrop that spans the whole render, leaving slim blurred bars at the
-  top/bottom edges (the style in the reference image). The **Edge blur %** slider
-  controls how thick those bars are (0% = full-bleed, no bars).
-- **Mousecam overlay** — for clips that also have a mouse/keyboard/hand cam. Turn it
-  on to get a second (green) box; drag it over the mousecam in the source, then choose
-  which corner it lands in and its size. It's composited onto the vertical output.
-  (Mousecam is manual-position — it isn't a face, so it can't be auto-detected.)
-- **Fade audio out** — fades the audio down over the last moments of the clip. Use the
-  **Fade length** slider to set how long the fade takes.
-
-**Length / pacing:**
-
-- **Speed** — speed the clip up (or slow it down), 0.5×–3×. Both video and audio are
-  retimed and kept in sync; the output gets shorter as you speed up.
-- **✂ Cut out** — "trim the fat." Click **Add cut @ playhead** to drop a removable span
-  (shown as a hatched band on the scrubber), then fine-tune its from/to seconds. Every
-  cut is removed from the render and the gap is closed. Add as many as you like.
-- The **final length** readout reflects trim window − cuts, divided by speed.
-
-## Layout / structure
+## Project layout
 
 ```
-backend/
-  main.py         FastAPI server + routes
-  autolayout.py   facecam detection (YuNet) + ffmpeg compositing
-  clips.py        yt-dlp search / download
-  config.py       paths, niches, vidiq key
-  models/         YuNet ONNX face-detection model
-frontend/         static UI (no build step)
-storage/          clips/ (inputs), output/ (renders), tmp/ (previews)
+backend/     FastAPI server + the ffmpeg/Pillow rendering engine
+  main.py         routes + request models (incl. /api/settings)
+  config.py       paths, niches, per-user settings (load/save_settings)
+  autolayout.py   facecam detection + the ffmpeg filter_complex + B-roll effects
+  formatter.py    the "Valorant Clip Ranking" overlay template
+  animate.py      baked reveal animations (Pillow PNG sequences)
+  cta.py          animated Subscribe call-to-action (uses your channel identity)
+  clips.py        yt-dlp search / download + progressive-stream resolver
+  twitch.py reddit.py search2.py aibrain.py framegrab.py   experimental searcher
+  youtube.py      channel-overview stats (your own channel, via OAuth)
+  music.py packages.py store.py hook.py killtimes.py       supporting features
+frontend/    index.html + app.js + style.css (served statically, no build step)
+assets/      fonts (OFL), sfx, and VALORANT picker art — see NOTICE
+scripts/     youtube_stats.py + asset/catalog build helpers
+secrets/     your gitignored credentials (+ *.example.json templates)
+storage/     clips, renders, music, tmp (all gitignored, per-user)
 ```
 
-## Notes
+## License
 
-- **vidiq key**: stored in `config.py` for future YouTube SEO/keyword tooling
-  (titles, tags, trend research). It is *not* a clip-download source — clip
-  retrieval uses `yt-dlp`.
-- Face detection gives a strong starting box centered on the face; fine-tune the
-  box to the facecam borders before rendering for best framing.
+Source code: **MIT** — see [LICENSE](LICENSE). Bundled game art / fonts / SFX
+carry their own separate terms — see [NOTICE](NOTICE). This project is not
+affiliated with or endorsed by Riot Games.

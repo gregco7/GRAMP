@@ -121,11 +121,15 @@ backend/
                   a one-shot SFX. `render_frames()` bakes a transparent PNG sequence
                   (Pillow, same reasoning as animate.py — no drawtext, no eased
                   xfade); `overlay()` stamps it onto a clip at a start second + mixes
-                  the click SFX. Two looks: `classic` (VD mark + pill) / `card` (glass
-                  card w/ VALDaily handle). REPLACES the old static subscribe chip in
-                  BOTH surfaces: the editor B-roll marker (autolayout EFFECTS_CATALOG
-                  `subscribe` → `_apply_subscribe`) and the Formatter's last-X-seconds
-                  (main `_run_formatter_build`). Reuses subscribe._vd_mark for the mark.
+                  the click SFX. Two looks: `classic` (monogram mark + pill) / `card`
+                  (glass card w/ channel handle). Channel name / handle / accent come
+                  from the user's settings (config.load_settings — the ⚙ Settings
+                  screen); the monogram derives from the channel name (subscribe.
+                  channel_initials), with a neutral play-triangle fallback when unset.
+                  REPLACES the old static subscribe chip in BOTH surfaces: the editor
+                  B-roll marker (autolayout EFFECTS_CATALOG `subscribe` →
+                  `_apply_subscribe`) and the Formatter's last-X-seconds (main
+                  `_run_formatter_build`). Reuses subscribe._vd_mark for the mark.
                   META surfaced at /api/fx (`subscribe`) + /api/formatter/meta.
   hook.py         **Clip Hook** cold-open (Formatter-only, ported from the design's
                   "Clip Hook" mock): opens on a chosen MOMENT from any clip playing in
@@ -162,16 +166,15 @@ backend/
                   B-roll effects). Ground-truthed against the user's hand-placed money
                   markers on rWkSo-i746Y (marker 59.4s == detected 59.37s), 2026-07.
   subscribe.py    Legacy static subscribe chip (render_chip) — kept only for its
-                  `_vd_mark` VALDaily channel-mark helper, reused by cta.py. The chip
-                  itself is no longer wired (cta.py's animated CTA replaced it).
-  clips.py        yt-dlp search / download (section-aware). Also the **Nb1 grabber**:
-                  list_channel() browses the Im_Nb1 compilation channel
-                  (UCK16a1sUUqribbZfyHAYeyg, cached ~10min; sort recent/views/len +
-                  title filter) and resolve_stream() resolves a progressive URL for
-                  in-browser scrubbing. find_source() is a documented phase-2 stub
-                  (streamer-VOD "straight from the source" lookup — not wired).
-  youtube.py      Channel-overview stats for the overview tabs (Valorant = live
-                  ValDaily data; Cars = placeholder). Pure YouTube Data API v3 +
+                  `channel_initials` + `_vd_mark` channel-mark helpers, reused by
+                  cta.py. The chip itself is no longer wired (cta.py's animated CTA
+                  replaced it).
+  clips.py        yt-dlp search / download (section-aware). Also resolve_stream():
+                  resolves a directly-playable progressive URL so the UI can preview a
+                  remote clip in-browser (POST /api/clips/stream — used by the result-
+                  card ▶ preview + package candidate previews) without downloading it.
+  youtube.py      Channel-overview stats for the overview tabs (Valorant = live data
+                  for your connected channel). Pure YouTube Data API v3 +
                   YouTube Analytics API v2 — **NOT vidiq** (do not wire vidiq into
                   any app feature). Auth is a Desktop OAuth client at
                   secrets/client_secret.json with a cached, auto-refreshing token
@@ -228,7 +231,10 @@ backend/
                   [{name, src}] with headshots, deduped case-insensitively).
                   `.creators.json` stores ONLY custom (non-roster) names the user
                   typed; add_creator() skips roster names so it never bloats.
-  config.py       paths (STORAGE/CLIPS/OUTPUT/TMP/MUSIC, ASSETS, REVIEW_DIR), NICHES, vidiq key.
+  config.py       paths (STORAGE/CLIPS/OUTPUT/TMP/MUSIC, ASSETS, REVIEW_DIR), NICHES,
+                  vidiq key, and per-user settings: load_settings()/save_settings()
+                  read/write secrets/settings.json (channel name/handle/accent +
+                  optional Anthropic key) — driven by the ⚙ Settings screen.
 frontend/         index.html + app.js + style.css, served statically. No bundler, no framework.
 assets/           sfx/ (SFX, served at /assets/sfx), fonts/ (OFL TTFs),
                   streamer_icons/ (streamer-reaction headshots; keys in
@@ -253,10 +259,9 @@ outputs/          review artifacts Claude drops for you (see "Review outputs"). 
 - Formatter: frontend `buildFmtPayload()` → `POST /api/formatter/build` →
   `_run_formatter_build` (job) → per-rank `compose()` (with a progressive overlay PNG)
   → `autolayout.join_segments()` → one final mp4.
-- Nb1 grabber (BETA): `openNb1()` modal → `GET /api/nb1/videos` (browse) +
-  `POST /api/nb1/stream` (scrub preview) → grab reuses `POST /api/clips/download`
-  (section download). Launched from **Find clips** (📺 Nb1 → library) and the
-  **rank finder** (📺 Nb1 → a rank); an `onGrab` callback picks the destination.
+- Remote-clip preview: result-card ▶ / package candidate → `previewRemoteClip()` →
+  `POST /api/clips/stream` (`clips.resolve_stream` → progressive URL) → shared
+  `openPlayer` modal (no download).
 
 ## The ffmpeg pipeline (autolayout.py)
 
@@ -461,7 +466,7 @@ is fetched once and shared. HTML lives in `index.html` (`data-sub="experimental"
 the Search tab, `data-mode="deep"` inside `#rank-search` for the Formatter) + `.x-*`
 styles. Result cards (`xCard`, and the basic searcher's `resultRowEl`) have a **▶
 preview** button — `previewRemoteClip(url, title)` resolves a progressive stream via
-`/api/nb1/stream` and plays it in the shared `openPlayer` modal (no download). Sub-tabs
+`/api/clips/stream` and plays it in the shared `openPlayer` modal (no download). Sub-tabs
 are deep-linkable (`#search:experimental`) for headless screenshots.
 
 ### Search feature parity (IMPORTANT)
@@ -471,8 +476,8 @@ Any capability added to the **Search tab** searcher (the normal Valorant searche
 into the Formatter** (the per-rank `#rank-search` finder — Basic + 🧪 Deep panes) — and
 they must **call the same thing**, not a forked copy. The two surfaces already share the
 same primitives: `resultRowEl(r, onGet)` + `downloadClip()` for basic search, the
-`xEl`/`ctx` experimental engine (`p="x"` vs `p="rx"`) for deep search, `previewRemoteClip`
-for preview, and `openNb1(onGrab)` for the Nb1 grabber. When you extend the searcher,
+`xEl`/`ctx` experimental engine (`p="x"` vs `p="rx"`) for deep search, and
+`previewRemoteClip` for preview. When you extend the searcher,
 extend the shared function and instantiate it in both places (the destination — library
 vs. rank — is injected via the `onGet`/callback), rather than duplicating logic.
 
@@ -561,20 +566,22 @@ In rough priority order — interview before building each:
 1. ~~**Animated text / list reveals.**~~ **Done** — `animate.py` bakes reveals + idle
    motion into builds; the Formatter editor previews them live on the canvas.
 2. **More templates & niches.** More ranking styles (tier-list, versus, stat-card…),
-   and wire up the `cars` / `bodybuilding` niches (currently placeholder tabs).
+   and support additional niches (add to `config.NICHES` + `youtube.CHANNELS`).
 3. **YouTube SEO / titles.** Use `config.VIDIQ_API_KEY` (currently unused) for
    title/tag/keyword/hook suggestions per clip.
 4. **In-app template builder.** A UI to create & save custom templates (not just
    code-defined `TEMPLATES` presets) — implies persisting user templates somewhere.
 
-## Channel analytics (VALDaily YouTube data)
+## Channel analytics (your YouTube data)
 
-The channel this tool feeds is **VALDaily** — a Valorant Shorts channel, ID
-`UC3yUgtPuNAWgfPQD6J0YlGg`. Two ways to read its performance data; **prefer the
-first** (free, richer, no credit ceiling):
+The overview tab + stats script read **the authorized account's own channel** (via
+`youtube.CHANNELS = {"valorant": "mine"}` — "mine" resolves to whatever channel the
+OAuth account owns; nothing is hardcoded). Two ways to read its performance data;
+**prefer the first** (free, richer, no credit ceiling):
 
 **1. `scripts/youtube_stats.py` — direct Google API pull (preferred).**
-Pulls VALDaily's own stats straight from Google, free, no VidIQ credits.
+Pulls your channel's own stats straight from Google, free, no VidIQ credits. The
+report header + default start date come from the authorized channel itself.
 
 ```bash
 .venv/bin/python scripts/youtube_stats.py            # all uploads, since channel start
@@ -586,8 +593,9 @@ Pulls VALDaily's own stats straight from Google, free, no VidIQ credits.
   A Desktop OAuth client JSON lives at `secrets/client_secret.json`; the token is
   cached at `secrets/youtube_token.json` after the first run. **`secrets/` is
   gitignored — never commit it.** First run opens a browser to authorize (sign in as
-  the VALDaily-owning Google account); every run after is silent. If the token is
-  missing/expired the script re-opens the browser. Deps: `google-api-python-client`,
+  the channel-owning Google account); every run after is silent. If the token is
+  missing/expired the script re-opens the browser. (The ⚙ Settings screen's "Connect
+  YouTube" button runs the same flow.) Deps: `google-api-python-client`,
   `google-auth-oauthlib`, `google-auth-httplib2` (already in `.venv`).
 - **Two number streams, different latencies — this matters:**
   - **Public counts** (views/likes/comments via the *Data API* `videos.list`,
@@ -608,11 +616,11 @@ Pulls VALDaily's own stats straight from Google, free, no VidIQ credits.
   retroactively queryable for free. Extend the script rather than reaching for VidIQ.
 
 **2. VidIQ MCP (`mcp__vidiq__*`) — fallback / competitor research.**
-Deferred tools (load schemas via ToolSearch `select:mcp__vidiq__…`). Authed as
-`gregcopersonal@gmail.com` (which manages VALDaily). **Free plan: 150 credits/cycle,
-~5 credits per data call, resets monthly** — runs dry fast, so don't burn it on
-own-channel numbers the script gives you free. `vidiq_balance` and
-`vidiq_user_channels` cost 0. VidIQ's real edge is what the Analytics API can't do:
+Deferred tools (load schemas via ToolSearch `select:mcp__vidiq__…`), authed via your
+own VidIQ account if you connect one. **Free plan: 150 credits/cycle, ~5 credits per
+data call, resets monthly** — runs dry fast, so don't burn it on own-channel numbers
+the script gives you free. `vidiq_balance` and `vidiq_user_channels` cost 0. VidIQ's
+real edge is what the Analytics API can't do:
 competitor/outlier discovery, keyword research, trending videos, thumbnail/title
 scoring. Save credits for that.
 
@@ -651,7 +659,7 @@ When the user asks to "save/seed the clips from the past N YouTube videos" into 
 (the `usable: raw` / `usable: edited` pattern), here's the whole recipe — it's driven from
 plain Python (no running server needed; `autolayout.compose()` is a pure function):
 
-- **Match videos → projects by TITLE.** There is **no stored link** between a VALDaily
+- **Match videos → projects by TITLE.** There is **no stored link** between a channel
   upload and a project/render (uploads have no `youtube_id` on projects; output mp4s are
   random-hex named). List uploads via `backend/youtube.py` (read-only OAuth, token in
   `secrets/`), then fuzzy-match against `storage/projects/*.json` names/`state.vce.title`.
@@ -684,12 +692,11 @@ plain Python (no running server needed; `autolayout.compose()` is a pure functio
 ## Notes
 
 - `VIDIQ_API_KEY` in `config.py` is for future YouTube SEO tooling, **not** clip download
-  (that's yt-dlp). Prefer the `VIDIQ_API_KEY` env var over the hardcoded fallback.
-- **Tabs (as of 2026-07-10 redesign):** `Valorant` · `Cars` · `Search` · `Library`
-  · `Formatter`. Valorant/Cars are **channel-overview** panels (live YouTube stats
-  via `youtube.py`; Cars is an empty placeholder). **Search** holds the clip
-  searcher + Auto-Layout editor (a sub-tab, `data-niche="search"` / `data-sub`,
-  expandable to more niches) — this was the old "Valorant" tab. **Library** is the
+  (that's yt-dlp). Set it via the `VIDIQ_API_KEY` env var (defaults to unset/off).
+- **Tabs:** `Valorant` · `Search` · `Library` · `Formatter`. Valorant is a
+  **channel-overview** panel (live YouTube stats via `youtube.py` for the connected
+  channel). **Search** holds the clip searcher + Auto-Layout editor (a sub-tab,
+  `data-niche="search"` / `data-sub`, expandable to more niches). **Library** is the
   file-management system. Formatter wraps the ranking template in a formatter-type
   selector (only one type today). The old **Videos** tab + `bodybuilding` niche were
   removed. Tabs are deep-linkable via `#hash` (used for headless screenshots).
@@ -706,7 +713,7 @@ plain Python (no running server needed; `autolayout.compose()` is a pure functio
   bundled assets license-clear and note the source (see `assets/sfx/README.md`).
 - **Clip packages** live behind the top-right **📦** button (a red badge = unseen packages).
   It opens a list → detail modal (`openPackages`/`openPkgDetail` in app.js): preview a
-  candidate (streams it via the Nb1 resolver, or plays the local file once grabbed), tick the
+  candidate (streams it via `/api/clips/stream`, or plays the local file once grabbed), tick the
   ones you want, **Open selected in Formatter** downloads them (`/api/packages/{id}/select`
   job) and fills `AL.fmt.ranks`. The critiques box POSTs to `/api/packages/{id}/critique`,
   which trains the agent (see `packages.py`). Badge polls `/api/packages` every 30s.

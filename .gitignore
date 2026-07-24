@@ -5,7 +5,11 @@ __pycache__/
 *.pyo
 
 # ── Secrets (OAuth clients, cached tokens, API creds) ────
-secrets/
+# Ignore everything in secrets/ EXCEPT the example templates + the readme, so a
+# cloner sees the shape of each file without ever exposing real credentials.
+secrets/*
+!secrets/*.example.json
+!secrets/README.md
 *.env
 .env
 

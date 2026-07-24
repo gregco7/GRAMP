@@ -13,20 +13,18 @@
       <span>Content&nbsp;Tool&nbsp;Manager</span>
     </div>
     <nav id="tabs" class="tabs"></nav>
-    <button id="pkg-btn" class="pkg-btn" type="button" title="Clip packages from the agent">
-      📦<span id="pkg-badge" class="pkg-badge hidden">0</span>
-    </button>
+    <div class="header-actions">
+      <button id="pkg-btn" class="pkg-btn" type="button" title="Clip packages from the agent">
+        📦<span id="pkg-badge" class="pkg-badge hidden">0</span>
+      </button>
+      <button id="settings-btn" class="pkg-btn" type="button" title="Settings — channel identity + API keys">⚙</button>
+    </div>
   </header>
 
   <main id="panels">
     <!-- ===== Valorant channel overview (live YouTube stats) ===== -->
     <section class="panel" data-niche="valorant">
       <div id="ov-valorant" class="overview"></div>
-    </section>
-
-    <!-- ===== Cars channel overview (empty placeholder) ===== -->
-    <section class="panel hidden" data-niche="cars">
-      <div id="ov-cars" class="overview"></div>
     </section>
 
     <!-- ===== Library: folder + file management system ===== -->
@@ -53,7 +51,6 @@
             </div>
             <div class="row">
               <button id="v-search" class="primary">Search</button>
-              <button id="v-nb1" class="ghost" type="button" title="Browse Im_Nb1 compilations and grab a section">📺 Nb1</button>
               <span class="hint">Ranked for shorts · YouTube + Twitch</span>
             </div>
             <div class="row search-tools">
@@ -654,7 +651,7 @@
               <div class="vce-sec vce-topline">
                 <label class="vce-lab">Title text</label>
                 <div class="emoji-field">
-                  <input id="vce-title" type="text" class="vce-in" placeholder="Top 5 s0m Moments" />
+                  <input id="vce-title" type="text" class="vce-in" placeholder="Top 5 Plays" />
                   <button type="button" class="emoji-btn" data-emoji-for="vce-title" title="Add emoji">😀</button>
                 </div>
                 <div class="vce-box" id="vce-colorbox" style="margin-top:10px">
@@ -859,13 +856,12 @@
         <label class="mini chk"><input type="checkbox" id="rs-open" checked /> Open editor after adding</label>
       </div>
 
-      <!-- Basic clip searcher (clips.search + Nb1 + upload) -->
+      <!-- Basic clip searcher (clips.search + upload) -->
       <div class="rs-pane" data-mode="basic">
         <div class="row">
           <input id="rs-creator" placeholder="Creator (e.g. TenZ)" />
           <input id="rs-query" placeholder="Query (e.g. ace clutch)" />
           <button id="rs-search" class="primary" type="button">Search</button>
-          <button id="rs-nb1" class="ghost" type="button" title="Grab from an Im_Nb1 compilation">📺 Nb1</button>
         </div>
         <div class="row search-tools">
           <label class="mini chk"><input type="checkbox" id="rs-twitch" checked /> Twitch clips</label>
@@ -939,68 +935,6 @@
     </div>
   </div>
 
-  <!-- Nb1 grabber: browse the Im_Nb1 compilation channel, scrub a video, and grab
-       just the moment (or one reaction). Launched from Find clips + the rank finder;
-       the destination (library vs. rank) is decided by whoever opened it. -->
-  <div id="nb1-modal" class="modal-backdrop hidden">
-    <div class="modal modal-wide">
-      <div class="modal-head">
-        <h3>📺 Nb1 compilations <span id="nb1-ctx" class="modal-ctx"></span></h3>
-        <button id="nb1-close" class="ghost" type="button" title="Close">✕</button>
-      </div>
-
-      <!-- BROWSE view: sort/filter + a grid of the channel's uploads -->
-      <div id="nb1-browse">
-        <div class="row search-tools">
-          <input id="nb1-filter" placeholder="Filter titles (e.g. TenZ, ace, benjyfishy)" />
-          <label class="mini">Sort
-            <select id="nb1-sort">
-              <option value="recent">Newest first</option>
-              <option value="views">Most viewed</option>
-              <option value="longest">Longest</option>
-              <option value="shortest">Shortest</option>
-            </select>
-          </label>
-          <button id="nb1-refresh" class="ghost" type="button" title="Re-fetch the channel">⟳</button>
-          <span id="nb1-count" class="hint"></span>
-        </div>
-        <p class="hint">Newest uploads first · titles name the play + streamers. Click a video to scrub and grab a section.</p>
-        <div id="nb1-grid" class="results"></div>
-        <div class="row">
-          <button id="nb1-more" class="ghost hidden" type="button">Load more</button>
-        </div>
-      </div>
-
-      <!-- GRAB view: scrub the streamed source, set in/out, grab the section -->
-      <div id="nb1-grab" class="hidden">
-        <div class="row">
-          <button id="nb1-back" class="ghost" type="button">← Back</button>
-          <div class="nb1-grab-title" id="nb1-grab-title"></div>
-        </div>
-        <video id="nb1-video" class="nb1-video" playsinline preload="auto"></video>
-        <div id="nb1-scrub" class="nb1-scrub">
-          <div class="nb1-scrub-sel"></div>
-          <div class="nb1-handle nb1-handle-in" data-h="in"></div>
-          <div class="nb1-handle nb1-handle-out" data-h="out"></div>
-          <div class="nb1-playhead"></div>
-        </div>
-        <div class="row nb1-grab-ctrls">
-          <button id="nb1-play" class="ghost" type="button" title="Play / pause">▶</button>
-          <label class="mini">In <input id="nb1-in" type="text" placeholder="0:00" /></label>
-          <button id="nb1-set-in" class="ghost mini" type="button" title="Set in-point to playhead">⇤ set</button>
-          <label class="mini">Out <input id="nb1-out" type="text" placeholder="end" /></label>
-          <button id="nb1-set-out" class="ghost mini" type="button" title="Set out-point to playhead">set ⇥</button>
-          <span id="nb1-sel-len" class="hint"></span>
-        </div>
-        <div class="row">
-          <button id="nb1-do-grab" class="primary" type="button">Grab section</button>
-          <label class="mini chk"><input type="checkbox" id="nb1-keep" checked /> Keep long-term</label>
-          <span class="hint">Grabs only the selected span into your library.</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Music-bed picker: browse the license-checked catalog, grab a track locally,
        preview it, and use it as the Formatter's background bed. -->
   <div id="music-modal" class="modal-backdrop hidden">
@@ -1036,6 +970,102 @@
       </div>
       <video id="player-video" class="player-video" controls playsinline preload="metadata"></video>
       <div id="player-actions" class="row player-actions"></div>
+    </div>
+  </div>
+
+  <!-- Settings: channel identity (name/handle/accent → subscribe CTA + agent) and
+       integration status/keys (Claude, YouTube, Twitch, Reddit). -->
+  <div id="settings-modal" class="modal-backdrop hidden">
+    <div class="modal modal-wide">
+      <div class="modal-head">
+        <h3>⚙ Settings</h3>
+        <button id="settings-close" class="ghost" type="button" title="Close">✕</button>
+      </div>
+
+      <div class="settings-body">
+        <!-- Channel identity -->
+        <section class="settings-sec">
+          <h4>Your channel</h4>
+          <p class="hint">Stamped on the animated Subscribe CTA and used to seed the clip-package agent. Leave blank for a neutral CTA.</p>
+          <div class="settings-grid">
+            <label class="settings-field">Channel name
+              <input id="set-channel-name" type="text" placeholder="e.g. My Channel" />
+            </label>
+            <label class="settings-field">Handle
+              <input id="set-channel-handle" type="text" placeholder="e.g. @mychannel" />
+            </label>
+            <label class="settings-field">Accent
+              <input id="set-channel-accent" type="color" value="#ff0033" />
+            </label>
+          </div>
+        </section>
+
+        <!-- Integrations -->
+        <section class="settings-sec">
+          <h4>Integrations</h4>
+
+          <div class="settings-int">
+            <div class="settings-int-head">
+              <span class="settings-dot" id="set-dot-claude"></span>
+              <b>Claude (AI search &amp; packages)</b>
+              <span class="settings-status" id="set-status-claude"></span>
+            </div>
+            <p class="hint">Uses the local <code>claude</code> CLI (Claude Code) if installed. Or paste an Anthropic API key to use that instead.</p>
+            <label class="settings-field">Anthropic API key (optional)
+              <input id="set-anthropic-key" type="password" placeholder="sk-ant-… (leave blank to keep current)" autocomplete="off" />
+            </label>
+          </div>
+
+          <div class="settings-int">
+            <div class="settings-int-head">
+              <span class="settings-dot" id="set-dot-youtube"></span>
+              <b>YouTube overview (your channel stats)</b>
+              <span class="settings-status" id="set-status-youtube"></span>
+            </div>
+            <p class="hint">Needs a Google Desktop OAuth client at <code>secrets/client_secret.json</code>, then a one-time browser authorize.</p>
+            <button id="set-youtube-connect" class="ghost" type="button">Connect YouTube…</button>
+          </div>
+
+          <div class="settings-int">
+            <div class="settings-int-head">
+              <span class="settings-dot" id="set-dot-twitch"></span>
+              <b>Twitch clip search (optional)</b>
+              <span class="settings-status" id="set-status-twitch"></span>
+            </div>
+            <p class="hint">A free app at <a href="https://dev.twitch.tv/console/apps" target="_blank" rel="noopener">dev.twitch.tv</a>. Saved to <code>secrets/twitch.json</code>.</p>
+            <div class="settings-grid">
+              <label class="settings-field">Client ID
+                <input id="set-twitch-id" type="text" placeholder="leave blank to keep current" autocomplete="off" />
+              </label>
+              <label class="settings-field">Client secret
+                <input id="set-twitch-secret" type="password" placeholder="…" autocomplete="off" />
+              </label>
+            </div>
+          </div>
+
+          <div class="settings-int">
+            <div class="settings-int-head">
+              <span class="settings-dot" id="set-dot-reddit"></span>
+              <b>Reddit clip search (optional)</b>
+              <span class="settings-status" id="set-status-reddit"></span>
+            </div>
+            <p class="hint">A free "script" app at <a href="https://www.reddit.com/prefs/apps" target="_blank" rel="noopener">reddit.com/prefs/apps</a>. Saved to <code>secrets/reddit.json</code>.</p>
+            <div class="settings-grid">
+              <label class="settings-field">Client ID
+                <input id="set-reddit-id" type="text" placeholder="leave blank to keep current" autocomplete="off" />
+              </label>
+              <label class="settings-field">Client secret
+                <input id="set-reddit-secret" type="password" placeholder="…" autocomplete="off" />
+              </label>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="row settings-foot">
+        <button id="settings-save" class="primary" type="button">Save settings</button>
+        <span id="settings-msg" class="hint"></span>
+      </div>
     </div>
   </div>
 

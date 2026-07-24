@@ -50,6 +50,23 @@ def available() -> bool:
     return _claude_bin() is not None
 
 
+def _subprocess_env() -> dict:
+    """Env for the `claude` subprocess: inherit the parent, then layer in the user's
+    saved ANTHROPIC_API_KEY (Settings screen) when the CLI isn't already
+    subscription-authed via the environment. Lets a cloner "insert their Claude key"
+    without an interactive Claude Code login."""
+    env = os.environ.copy()
+    if not env.get("ANTHROPIC_API_KEY"):
+        try:
+            from . import config
+            key = (config.load_settings().get("anthropic_api_key") or "").strip()
+            if key:
+                env["ANTHROPIC_API_KEY"] = key
+        except Exception:
+            pass
+    return env
+
+
 def _extract_json(text: str):
     """Parse the CLI stdout into JSON — tolerant of stray prose / code fences."""
     text = (text or "").strip()
@@ -97,7 +114,7 @@ def _run(prompt: str, schema: Optional[dict] = None, model: str = MODEL_FAST,
     try:
         proc = subprocess.run(
             cmd, cwd=str(_PROJECT), capture_output=True, text=True,
-            timeout=timeout, env=os.environ.copy(),
+            timeout=timeout, env=_subprocess_env(),
         )
     except Exception:
         return None

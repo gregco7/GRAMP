@@ -5,7 +5,9 @@ Ports the Claude Design mock ("Subscribe CTA" widget in Shorts Ranking
 Templates.dc.html): a mouse cursor slides in, presses a YouTube-red **Subscribe**
 button, the button flips to **Subscribed** (bell icon), and a ripple ring + gold
 sparkles burst on the click while a one-shot SFX fires. Two looks: `classic`
-(VALDaily mark + pill, side by side) and `card` (glass card with channel handle).
+(channel monogram mark + pill, side by side) and `card` (glass card with handle).
+The channel name / handle / accent come from the user's settings (see
+config.load_settings / the in-app Settings screen).
 
 Why a baked sequence and not a static chip: this ffmpeg build has no `drawtext`
 and can't ease `xfade`, so — exactly like `animate.py`'s reveals — we render each
@@ -151,10 +153,11 @@ def _shadowed(block: Image.Image, blur: int, alpha: int, dy: int) -> Image.Image
     return out, (pad, pad)
 
 
-def _classic_block(size: float, subscribed: bool, accent: str = VD_ACCENT):
+def _classic_block(size: float, subscribed: bool, accent: str = VD_ACCENT,
+                   monogram: str = "VD"):
     """(image, button_rect, origin_pad) for the mark + pill layout."""
     acc = _f._hex(accent)
-    mark = _sub._vd_mark(int(122 * size), acc, "#ffffff")
+    mark = _sub._vd_mark(int(122 * size), acc, "#ffffff", monogram)
     gap = int(34 * size)
     if subscribed:
         pill = _pill("Subscribed", int(42 * size), int(52 * size), int(24 * size),
@@ -173,10 +176,11 @@ def _classic_block(size: float, subscribed: bool, accent: str = VD_ACCENT):
 
 
 def _card_block(size: float, subscribed: bool, accent: str = VD_ACCENT,
-                name: str = "VALDaily", handle: str = "@VALDaily"):
+                name: str = "Your Channel", handle: str = "",
+                monogram: str = ""):
     acc = _f._hex(accent)
     pad = int(38 * size)
-    mark = _sub._vd_mark(int(94 * size), acc, "#ffffff")
+    mark = _sub._vd_mark(int(94 * size), acc, "#ffffff", monogram)
     name_font = _f._font("poppins-extrabold", int(36 * size))
     handle_font = _f._font("poppins-extrabold", int(24 * size))
     name_img = _crop(_f._text_sprite(name, name_font, (255, 255, 255, 255),
@@ -223,20 +227,37 @@ def _card_block(size: float, subscribed: bool, accent: str = VD_ACCENT,
 # --- frame baking ------------------------------------------------------------ #
 def render_frames(frames_dir, style: str = "classic", size: float = 1.0,
                   anim: float = 0.7, dur: float = 4.0,
-                  cx: float = 540, cy: float = 960, accent: str = VD_ACCENT,
+                  cx: float = 540, cy: float = 960, accent: str | None = None,
+                  name: str | None = None, handle: str | None = None,
                   W: int = 1080, H: int = 1920, fps: int = FPS) -> dict:
     """Bake the CTA animation to `frames_dir/f_%05d.png` (transparent RGBA stage
     frames). Returns {n, total, click_t} — click_t (s) is when the SFX fires.
-    `accent` tints the VD mark's ring + "D" (defaults to red)."""
+
+    `name`/`handle`/`accent` default to the user's channel settings (config.
+    load_settings); the mark's monogram is derived from the channel name (or a
+    neutral play triangle when unset). `accent` tints the mark ring + 2nd letter."""
+    from . import config
+    st = config.load_settings()
+    if name is None:
+        name = st.get("channel_name") or ""
+    if handle is None:
+        handle = st.get("channel_handle") or ""
+    accent = accent or st.get("channel_accent") or VD_ACCENT
+    monogram = _sub.channel_initials(name)
+
     style = style if style in STYLES else "classic"
     size = max(0.4, min(float(size), 2.5))
     anim = max(0.3, min(float(anim), 2.5))
     dur = max(1.0, min(float(dur), 12.0))
-    accent = accent or VD_ACCENT
 
-    build = _card_block if style == "card" else _classic_block
-    before, brect = build(size, False, accent)
-    after, arect = build(size, True, accent)  # after may differ in width (Subscribed)
+    if style == "card":
+        before, brect = _card_block(size, False, accent, name or "Subscribe",
+                                    handle, monogram)
+        after, arect = _card_block(size, True, accent, name or "Subscribe",
+                                   handle, monogram)
+    else:
+        before, brect = _classic_block(size, False, accent, monogram)
+        after, arect = _classic_block(size, True, accent, monogram)  # after width may differ
 
     move_start, t_move = _MOVE_START, anim
     press_at = move_start + t_move

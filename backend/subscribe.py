@@ -1,11 +1,11 @@
 """
-Branded "Subscribe" prompt chip — a clean, audioless VALDaily call-out that eases
+Branded "Subscribe" prompt chip — a clean, audioless channel call-out that eases
 in and out over the video without interrupting it.
 
-The chip is a dark glass rounded pill: the VALDaily "VD" channel mark (reused from
-the formatter's house style), the channel name, and a small red SUBSCRIBE tag. It
-is rendered once as an RGBA PNG here; `autolayout._overlay_chips()` does the eased
-fade/slide overlay in ffmpeg.
+The chip is a dark glass rounded pill: the channel monogram mark (reused from the
+formatter's house style — see `channel_initials`/`_vd_mark`), the channel name, and
+a small red SUBSCRIBE tag. It is rendered once as an RGBA PNG here;
+`autolayout._overlay_chips()` does the eased fade/slide overlay in ffmpeg.
 
 Two places use it:
   - the single-clip editor, as a placeable B-roll marker (type "subscribe" in
@@ -22,7 +22,7 @@ from PIL import Image, ImageDraw, ImageFilter
 # Reuse the formatter's Pillow helpers so the chip matches the house style exactly.
 from . import formatter as _f
 
-# Default channel-red accent (VALDaily). Bright, YouTube-adjacent.
+# Default channel-red accent. Bright, YouTube-adjacent.
 ACCENT = "#ff2740"
 BG = (16, 17, 23, 224)          # dark glass fill (rgba)
 BORDER = (255, 255, 255, 40)    # hairline top border
@@ -43,11 +43,25 @@ def _crop(img: Image.Image) -> Image.Image:
     return img.crop(img.getbbox() or (0, 0, 1, 1))
 
 
-def _vd_mark(diam: int, accent: tuple, text_hex: str = "#ffffff") -> Image.Image:
-    """A tighter, properly-centred VD channel mark for the chip. Same look as the
-    formatter's card mark (red ring, italic V white + D accent, soft glow) but with
-    the letters optically centred in the ring and only a slim glow pad — so the name
-    that follows sits close, not floating far right."""
+def channel_initials(name: str) -> str:
+    """A ≤2-char uppercase monogram from a channel name (e.g. "Top Frag"→"TF",
+    "AceHub"→"AC"). Empty → "" (the mark then draws a neutral play triangle)."""
+    import re
+    words = [w for w in re.split(r"[^0-9A-Za-z]+", name or "") if w]
+    if len(words) >= 2:
+        return (words[0][0] + words[1][0]).upper()
+    if words:
+        return words[0][:2].upper()
+    return ""
+
+
+def _vd_mark(diam: int, accent: tuple, text_hex: str = "#ffffff",
+             letters: str = "VD") -> Image.Image:
+    """A tighter, properly-centred channel mark for the chip. Same look as the
+    formatter's card mark (accent ring, first letter in text_hex + second in accent,
+    soft glow) but with the letters optically centred in the ring and only a slim
+    glow pad — so the name that follows sits close, not floating far right.
+    `letters` is the 1-2 char monogram; empty → a neutral play triangle."""
     ss = 4
     d = max(10, int(diam))
     border = max(2, int(round(d * 3 / 51)))
@@ -66,25 +80,41 @@ def _vd_mark(diam: int, accent: tuple, text_hex: str = "#ffffff") -> Image.Image
     out.alpha_composite(glow.filter(ImageFilter.GaussianBlur(max(2, int(d * 0.12)))))
     out.alpha_composite(circ, (glowpad, glowpad))
 
+    cy = glowpad + d // 2
+    letters = (letters or "").strip()[:2]
+    if not letters:
+        # neutral fallback: a small accent play triangle centred in the ring
+        tri = Image.new("RGBA", out.size, (0, 0, 0, 0))
+        r = d * 0.22
+        cx = glowpad + d // 2 + int(round(d * 0.03))
+        ImageDraw.Draw(tri).polygon(
+            [(cx - r * 0.7, cy - r), (cx - r * 0.7, cy + r), (cx + r, cy)],
+            fill=accent)
+        out.alpha_composite(tri)
+        return out
+
     lf = _f._font("poppins-black", max(8, int(round(d * 22.8 / 51))))
-    v_img, _p = _f._text_sprite("V", lf, _f._hex(text_hex), 0, (0, 0, 0, 0), False, True)
-    d_img, _q = _f._text_sprite("D", lf, accent, 0, (0, 0, 0, 0), False, True)
-    v_img = _crop(v_img)
-    d_img = _crop(d_img)
+    first, _p = _f._text_sprite(letters[0], lf, _f._hex(text_hex), 0, (0, 0, 0, 0), False, True)
+    first = _crop(first)
+    imgs = [first]
+    if len(letters) > 1:
+        second, _q = _f._text_sprite(letters[1], lf, accent, 0, (0, 0, 0, 0), False, True)
+        imgs.append(_crop(second))
     overlap = max(1, int(round(d * 1.0 / 51)))          # letter-spacing:-1px
-    lw = v_img.width + d_img.width - overlap
-    lh = max(v_img.height, d_img.height)
-    letters = Image.new("RGBA", (max(1, lw), max(1, lh)), (0, 0, 0, 0))
-    letters.alpha_composite(v_img, (0, (lh - v_img.height) // 2))
-    letters.alpha_composite(d_img, (v_img.width - overlap, (lh - d_img.height) // 2))
+    lw = sum(im.width for im in imgs) - overlap * (len(imgs) - 1)
+    lh = max(im.height for im in imgs)
+    block = Image.new("RGBA", (max(1, lw), max(1, lh)), (0, 0, 0, 0))
+    x = 0
+    for im in imgs:
+        block.alpha_composite(im, (x, (lh - im.height) // 2))
+        x += im.width - overlap
     # centre the letter block in the ring — nudge a few px right to sit dead-centre
     cx = glowpad + d // 2 + int(round(d * 1.5 / 51))
-    cy = glowpad + d // 2
-    out.alpha_composite(letters, (cx - lw // 2, cy - lh // 2))
+    out.alpha_composite(block, (cx - lw // 2, cy - lh // 2))
     return out
 
 
-def render_chip(dst: str, scale: float = 1.0, name: str = "VALDaily",
+def render_chip(dst: str, scale: float = 1.0, name: str = "",
                 accent: str = ACCENT) -> str:
     """Render the branded subscribe chip to `dst` (RGBA PNG). Supersampled 2x for
     crisp edges, then downscaled to the requested `scale`."""
