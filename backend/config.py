@@ -67,8 +67,10 @@ NICHES = [
 # Neutral defaults so a fresh clone renders sensibly before the user sets a
 # channel: an empty name/handle degrades to a generic "Subscribe" CTA (no chip).
 SETTINGS_DEFAULTS = {
-    "channel_name": "",       # your channel name — stamped on the subscribe CTA + mark
-    "channel_handle": "",     # your @handle
+    # Ships pointed at this repo's own channel (VALDaily / @valclips4u); cloners
+    # override it in the ⚙ Settings screen to stamp their own channel instead.
+    "channel_name": "VALDaily",       # stamped on the subscribe CTA + mark
+    "channel_handle": "@valclips4u",  # the channel's @handle
     "channel_accent": "#ff0033",
     "anthropic_api_key": "",  # optional; injected into the `claude` CLI subprocess env
 }
