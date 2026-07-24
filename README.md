@@ -8,9 +8,14 @@ no-build static frontend at `http://127.0.0.1:8000`. No cloud, no accounts, no
 telemetry — clone it, add your own keys, and start building your channel.
 
 <p align="center">
-  <img src="docs/media/proof-778k.png" alt="A Short made with this tool — 778K views on YouTube" width="300">
+  <a href="https://www.youtube.com/shorts/SsYV3RI4y2E">
+    <img src="docs/media/proof-778k.png" alt="A Short made with this tool — 778K views on YouTube" width="300">
+  </a>
 </p>
-<p align="center"><em>Made with this tool · <strong>778K views</strong> on YouTube Shorts</em></p>
+<p align="center">
+  <em>Made with this tool · <strong>778K views</strong> on YouTube Shorts</em><br>
+  ▶ <a href="https://www.youtube.com/@valclips4u/shorts">More Shorts made with this tool → @valclips4u</a>
+</p>
 
 Two tools sit on one rendering engine:
 
@@ -36,12 +41,22 @@ easing/timing mirror the render engine exactly:
 
 ![The Formatter editor](docs/media/formatter-editor.png)
 
-A rendered 9:16 Short — the progressive-reveal ranking overlay baked over the
-gameplay, ready to upload:
+Rendered 9:16 Shorts — the progressive-reveal ranking overlay baked over the
+gameplay, with per-rank **widgets** (player headshots or weapon skins) and a
+"Now Playing" clip card that can **credit the original streamer**:
 
-<p align="center">
-  <img src="docs/media/rendered-short.png" alt="A rendered 9:16 ranking Short" width="300">
-</p>
+<table>
+<tr>
+<td align="center" width="50%">
+  <img src="docs/media/widgets-players.png" alt="Player-headshot widgets + credited streamer" width="300"><br>
+  <em>Player-headshot widgets + a credited streamer (@GOFNS)</em>
+</td>
+<td align="center" width="50%">
+  <img src="docs/media/widgets-weapons.png" alt="Weapon-skin widgets" width="300"><br>
+  <em>Weapon-skin widgets + a team "Now Playing" card</em>
+</td>
+</tr>
+</table>
 
 ---
 
