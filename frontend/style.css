@@ -494,6 +494,19 @@ button.ghost { padding: 6px 10px; font-size: 12px; font-weight: 500; }
 }
 .facecam-box .handle { border: 2px solid var(--accent); }
 .mousecam-box .handle { border: 2px solid var(--ok); }
+.killfeed-box { border: 2px solid #ffc43c; background: rgba(255,196,60,.10); }
+.killfeed-box .box-label { background: #ffc43c; color: #3a2a00; }
+.killfeed-box .handle { border: 2px solid #ffc43c; }
+/* live playhead clock — precise current/total time over the source stage */
+.al-clock {
+  position: absolute; top: 8px; right: 8px; pointer-events: none;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 13px; font-weight: 700; letter-spacing: .3px;
+  color: #fff; background: rgba(0,0,0,.62); backdrop-filter: blur(2px);
+  padding: 4px 9px; border-radius: 6px; border: 1px solid rgba(255,255,255,.14);
+  font-variant-numeric: tabular-nums;
+}
+.al-clock b { color: var(--accent); font-weight: 800; }
 
 .toggles { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
 .tg { display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; cursor: pointer; }
@@ -1072,6 +1085,58 @@ select {
 }
 .trim-fx-grip:hover { background: rgba(0,0,0,.32); }
 .trim-bar.fx-dragover { outline: 2px dashed #46d39a; outline-offset: 2px; }
+
+/* ---- 🧪 Experimental — Seed Kill Timers ---- */
+.xp-tag { background: rgba(186,110,255,.16); color: #c58aff; }
+.xp-controls { align-items: flex-start; }
+.xp-tool { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 0; }
+.xp-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.xp-head strong { font-size: 13px; }
+.xp-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.xp-player input { width: 130px; }
+.xp-kill-list { display: flex; flex-direction: column; gap: 5px; width: 100%; }
+.xp-kill-list:empty { display: none; }
+.xp-kill {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 5px 10px; border-radius: 8px; font-size: 12px;
+  background: var(--card-2); border: 1px solid var(--line); color: var(--muted);
+}
+.xp-kill.mine {                    /* the highlight player's kill */
+  background: rgba(255,196,60,.10); border-color: rgba(255,196,60,.45); color: #ffd27a;
+}
+.xp-kill .xk-n { font-weight: 700; min-width: 26px; }
+.xp-kill .xk-t {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums;
+}
+.xp-kill.mine .xk-t { color: #ffd27a; }
+.xp-kill .xk-who { flex: 1; min-width: 180px; display: inline-flex; align-items: center; gap: 4px; }
+.xp-kill .xk-who i { font-style: normal; opacity: .6; padding: 0 3px; }
+.xp-kill .xk-who input {
+  width: 110px; min-width: 60px; padding: 2px 6px; font-size: 12px;
+  background: var(--card); border: 1px solid var(--line); color: var(--text); border-radius: 5px;
+}
+.xp-kill .xk-who input::placeholder { color: var(--muted); opacity: .6; }
+.xp-kill.mine .xk-who input { border-color: rgba(255,196,60,.45); color: #ffd27a; }
+.xp-kill .xk-conf { font-weight: 700; }
+.xp-kill .xk-seek, .xp-kill .xk-seed { padding: 2px 9px; }
+.xp-kill .xk-del { border: none; background: none; color: var(--muted); cursor: pointer; font-size: 14px; }
+.xp-kill .xk-del:hover { color: var(--accent); }
+
+/* kill ticks on the scrubber: gold = the highlight player's, dim = others */
+.trim-kills { position: absolute; inset: 0; pointer-events: none; }
+.trim-kill {
+  position: absolute; top: -3px; width: 2px; height: calc(100% + 6px);
+  background: rgba(139,149,167,.75); transform: translateX(-1px);
+  pointer-events: auto; cursor: pointer;
+}
+.trim-kill::after {                 /* diamond head so ticks read at a glance */
+  content: ""; position: absolute; top: -4px; left: -3px;
+  width: 8px; height: 8px; transform: rotate(45deg);
+  background: inherit; border-radius: 1px;
+}
+.trim-kill.mine { background: #ffc43c; box-shadow: 0 0 6px rgba(255,196,60,.8); z-index: 2; }
+.trim-kill:hover { background: #fff; }
 
 /* ---- packages modal ---- */
 .pkg-request { gap: 8px; }

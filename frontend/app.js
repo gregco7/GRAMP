@@ -1212,10 +1212,11 @@ async function deleteClipFile(path) {
 const BOXES = {
   facecam:  { elId: "al-box",    coord: "al-",    color: "red" },
   mousecam: { elId: "al-box-mc", coord: "al-mc-", color: "green" },
+  killfeed: { elId: "al-box-kf", coord: "al-kf-", color: "gold" },  // 🧪 Seed Kill Timers scan region (no coord inputs)
 };
 const AL = {
   natW: 0, natH: 0, duration: 0,
-  rect: { facecam: null, mousecam: null }, cuts: [],
+  rect: { facecam: null, mousecam: null, killfeed: null }, cuts: [],
   // scrubber zoom: view = {start,end} sub-window shown on the bar (null = whole
   // clip); zoomFull = user chose to show the whole clip despite a small trim.
   view: null, zoomFull: false,
@@ -1223,6 +1224,8 @@ const AL = {
   fx: { autoApply: true, sound: "whoosh", visual: "swipeleft", volume: 1.0, speed: 2.0 },
   fxData: { sounds: [], visuals: [], effects: [] },  // catalog from /api/fx
   effects: [],                             // B-roll point effects on the current clip: {type, t}
+  killTimes: [], killJob: null,            // 🧪 Seed Kill Timers: detected kills + running job id
+  kfPlaced: false,                         // 🧪 killfeed box dropped on the stage (press Detect again to run)
   moment: { on: false, start: 0, end: 0 }, // "render just this span" window (source secs)
   pkg: { cur: null, sel: new Set(), unseen: 0 },     // clip-package viewer state
   // Video Formatter state (separate tool)
@@ -1389,6 +1392,7 @@ function drawTrimBar() {
   drawCutBands();
   drawEffectMarkers();
   drawMomentBand();
+  drawKillTicks();
   drawPlayhead();
 }
 // red bands over each cut span on the scrubber
@@ -1415,6 +1419,33 @@ function drawPlayhead() {
     $("#al-trim-playhead").style.left = tToPct(t) + "%";
   }
   drawPending();
+  updateClock();
+}
+// M:SS.cc — sub-second precise so B-roll markers / cuts can be placed exactly
+function fmtClock(t) {
+  t = Math.max(0, t || 0);
+  const m = Math.floor(t / 60);
+  const s = Math.floor(t % 60);
+  const cs = Math.floor((t - Math.floor(t)) * 100);
+  return `${m}:${String(s).padStart(2, "0")}.${String(cs).padStart(2, "0")}`;
+}
+function updateClock() {
+  const el = $("#al-clock");
+  if (!el) return;
+  const v = $("#al-video");
+  el.innerHTML = `<b>${fmtClock(v ? v.currentTime : 0)}</b> / ${fmtClock(AL.duration || (v && v.duration) || 0)}`;
+}
+// keep the readout smooth while playing (timeupdate is only ~4Hz)
+let _clockRAF = null;
+function startClockLoop() {
+  if (_clockRAF) return;
+  const tick = () => {
+    updateClock();
+    const v = $("#al-video");
+    if (v && !v.paused && !v.ended) { _clockRAF = requestAnimationFrame(tick); }
+    else { _clockRAF = null; }
+  };
+  _clockRAF = requestAnimationFrame(tick);
 }
 // live band from an armed quick-cut start to the current playhead
 function drawPending() {
@@ -1481,7 +1512,11 @@ function initTrimBar() {
       if (v.currentTime >= e - 0.03) v.currentTime = start;
     }
   });
-  v.addEventListener("pause", () => { selPlaying = false; });
+  v.addEventListener("pause", () => { selPlaying = false; updateClock(); });
+  // precise clock: update on every seek/scrub, run a smooth loop while playing
+  v.addEventListener("seeked", updateClock);
+  v.addEventListener("loadedmetadata", updateClock);
+  v.addEventListener("play", startClockLoop);
 }
 function playSelection() {
   const v = $("#al-video");
@@ -1682,6 +1717,14 @@ function selectClip(c, onReady) {
   if (!onReady && AL.editingSlot !== null) { AL.editingSlot = null; updateSlotEditorUI(); }
   selectedClip = c.path || c.name;              // identity is folder/name
   AL.effects = [];                              // B-roll markers are per-clip
+  AL.killTimes = []; AL.killJob = null;         // detected kill times too
+  AL.kfPlaced = false; AL.rect.killfeed = null; // killfeed box re-aims per clip
+  const kfb = $("#al-box-kf"); if (kfb) kfb.classList.add("hidden");
+  const kbtn = $("#xp-kill-run"); if (kbtn) kbtn.textContent = "⌖ Detect kill times";
+  const kp = $("#xp-kill-player");
+  if (kp) kp.value = parsePlayerFromClip(c.path || c.name || "");
+  const ks = $("#xp-kill-status"); if (ks) ks.textContent = "";
+  renderKillList(); drawKillTicks();
   AL.moment = { on: false, start: 0, end: 0 };  // moment window is per-clip
   if (typeof momentControlsSync === "function") momentControlsSync();
   renderBrollList();
@@ -1736,8 +1779,12 @@ function setRect(name, r) {
   };
   AL.rect[name] = rect;
   const p = BOXES[name].coord;
-  $("#" + p + "x").value = rect.x; $("#" + p + "y").value = rect.y;
-  $("#" + p + "w").value = rect.w; $("#" + p + "h").value = rect.h;
+  // some boxes (killfeed) have no coord input fields — skip quietly
+  const cx = $("#" + p + "x");
+  if (cx) {
+    cx.value = rect.x; $("#" + p + "y").value = rect.y;
+    $("#" + p + "w").value = rect.w; $("#" + p + "h").value = rect.h;
+  }
   drawBox(name);
   if (name === "mousecam") { clampMcPos(); drawMcGhost(); }   // aspect changed → resize ghost
 }
@@ -1790,7 +1837,8 @@ function initBoxDrag(name) {
     mode = null;
     window.removeEventListener("mousemove", onMove);
     window.removeEventListener("mouseup", onUp);
-    refreshPreview(); // auto-update preview when a box is released
+    // killfeed box is detector-only — it doesn't change the composed frame
+    if (name !== "killfeed") refreshPreview();
   };
 
   box.addEventListener("mousedown", (e) => onDown(e, "move"));
@@ -2301,6 +2349,7 @@ async function initFx() {
   renderFxSoundGrid();
   renderFxSwipeGrid();
   renderBrollTray();
+  killEffectSel();          // populate the 🧪 "Seed as" picker from the same catalog
 
   // mini-tab switching (Sound / Swipe)
   $$(".fx-mtab").forEach(btn => btn.onclick = () => {
@@ -4810,6 +4859,206 @@ function initBroll() {
 }
 
 // ============================================================= //
+// 🧪 Experimental — Seed Kill Timers: detect the player's kill
+// moments (kill banner + killfeed, backend killtimes.py) and seed
+// them as B-roll markers. Detect-then-confirm: the list + gold
+// scrubber ticks let you audit each time before seeding.
+// ============================================================= //
+function killEffectSel() {
+  const sel = $("#xp-kill-effect");
+  if (!sel) return null;
+  if (!sel.options.length) {                       // populate once from /api/fx
+    brollCatalog().forEach(e => {
+      const o = document.createElement("option");
+      o.value = e.key; o.textContent = `${e.emoji || "✨"} ${e.label}`;
+      sel.appendChild(o);
+    });
+  }
+  return sel;
+}
+
+// "Aspas 5k insane clutch.mp4" -> "Aspas": first name-looking token of the stem
+function parsePlayerFromClip(identity) {
+  const stem = (identity || "").split("/").pop().replace(/\.[a-z0-9]+$/i, "");
+  const stop = /^(\d+k?s?|ace|clutch|insane|crazy|best|top|vs|the|a|new|epic|valorant|kill|kills|highlight|highlights|clip|clips|rank(ed)?|radiant|immortal|pro|montage|moments?)$/i;
+  for (const tok of stem.split(/[\s_\-.]+/)) {
+    if (tok.length >= 3 && !stop.test(tok) && !/^\d/.test(tok)) return tok;
+  }
+  return "";
+}
+
+function drawKillTicks() {
+  const layer = $("#al-trim-kills");
+  if (!layer) return;
+  layer.innerHTML = "";
+  const dur = AL.duration || 0;
+  if (!dur || !(AL.killTimes || []).length) return;
+  AL.killTimes.forEach((k, i) => {
+    const pct = tToPct(k.t);
+    if (pct < 0 || pct > 100) return;              // outside the zoomed view
+    const el = document.createElement("div");
+    el.className = "trim-kill" + (k.mine ? " mine" : "");
+    el.style.left = pct + "%";
+    const who = k.killer ? `${k.killer} ⚔ ${k.victim || "?"}` : `Kill ${i + 1}`;
+    el.title = `${who} @ ${fmtClock(k.t)} (${Math.round(k.conf * 100)}%) — click to seek`;
+    el.addEventListener("mousedown", ev => ev.stopPropagation());
+    el.addEventListener("click", ev => {
+      ev.stopPropagation();
+      $("#al-video").currentTime = k.t;
+    });
+    layer.appendChild(el);
+  });
+}
+
+// client-side mirror of the backend's fuzzy handle match (killtimes._names_match)
+function killNamesMatch(a, b) {
+  const norm = s => (s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+  const na = norm(a), nb = norm(b);
+  if (!na || !nb) return false;
+  return na.includes(nb) || nb.includes(na);
+}
+// re-evaluate `mine` after the user edits a killer name; the backend's POV
+// highlight-box verdict (k.pov) stays as a floor
+function killReMatch(k) {
+  const player = ($("#xp-kill-player").value || "").trim();
+  k.mine = killNamesMatch(k.killer, player) || !!k.pov;
+}
+
+function renderKillList() {
+  const box = $("#xp-kill-list");
+  if (!box) return;
+  box.innerHTML = "";
+  const ks = AL.killTimes || [];
+  $("#xp-kill-seed-all").classList.toggle("hidden", !ks.length);
+  $("#xp-kill-clear").classList.toggle("hidden", !ks.length);
+  ks.forEach((k, i) => {
+    const chip = document.createElement("div");
+    chip.className = "xp-kill" + (k.mine ? " mine" : "");
+    chip.innerHTML = `
+      <span class="xk-n">#${i + 1}</span>
+      <span class="xk-t">${fmtClock(k.t)}</span>
+      <span class="xk-who" title="Blank = OCR couldn't read the row — fill it in and matching names go gold">
+        <input class="xk-killer" type="text" placeholder="killer?" value="${esc(k.killer || "")}">
+        <i>⚔</i>
+        <input class="xk-victim" type="text" placeholder="victim?" value="${esc(k.victim || "")}">
+      </span>
+      <span class="xk-conf">${Math.round(k.conf * 100)}%</span>
+      <button class="xk-seek ghost" type="button" title="Seek to this kill">▶</button>
+      <button class="xk-seed ghost" type="button" title="Drop a B-roll marker here">⊕</button>
+      <button class="xk-del" type="button" title="Dismiss this time">✕</button>`;
+    chip.querySelector(".xk-killer").addEventListener("change", ev => {
+      k.killer = ev.target.value.trim();
+      killReMatch(k);
+      renderKillList(); drawKillTicks();
+    });
+    chip.querySelector(".xk-victim").addEventListener("change", ev => {
+      k.victim = ev.target.value.trim();
+    });
+    chip.querySelector(".xk-seek").onclick = () => { $("#al-video").currentTime = k.t; };
+    chip.querySelector(".xk-seed").onclick = () => {
+      const sel = killEffectSel();
+      addEffect((sel && sel.value) || "money", k.t);
+    };
+    chip.querySelector(".xk-del").onclick = () => {
+      AL.killTimes.splice(i, 1);
+      renderKillList(); drawKillTicks();
+    };
+    box.appendChild(chip);
+  });
+}
+
+// Drop the orange killfeed box onto the stage (default: ranked top-right) so
+// the user aims the detector before it runs.
+function showKillfeedBox() {
+  if (!AL.rect.killfeed) {
+    const W = AL.natW || 1920, H = AL.natH || 1080;
+    setRect("killfeed", { x: W * 0.62, y: H * 0.02, w: W * 0.36, h: H * 0.26 });
+  }
+  $("#al-box-kf").classList.remove("hidden");
+  drawBox("killfeed");
+}
+
+async function runKillDetect() {
+  if (!selectedClip) return toast("Load a clip first", true);
+  if (AL.killJob) return;                          // one scan at a time
+  const btn = $("#xp-kill-run"), status = $("#xp-kill-status");
+  // FIRST press: place the killfeed box and wait — the scan runs on the next press
+  if (!AL.kfPlaced) {
+    showKillfeedBox();
+    AL.kfPlaced = true;
+    btn.textContent = "⌖ Detect now";
+    status.textContent = "drag the orange box TIGHT around the killfeed rows (avoid cams/ads), then press again";
+    return;
+  }
+  btn.disabled = true;
+  status.textContent = "starting…";
+  // mask the cam boxes out of the scan region if they overlap it
+  const exclude = [];
+  if ($("#al-fc-on").checked && AL.rect.facecam) exclude.push(AL.rect.facecam);
+  if ($("#al-mc-on").checked && AL.rect.mousecam) exclude.push(AL.rect.mousecam);
+  const player = ($("#xp-kill-player").value || "").trim();
+  try {
+    const { job } = await api("/api/experimental/killtimes", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ clip: selectedClip, feed: AL.rect.killfeed, exclude, player }),
+    });
+    AL.killJob = job;
+    const poll = async () => {
+      if (AL.killJob !== job) return;              // superseded (clip changed)
+      let j;
+      try { j = await api(`/api/jobs/${job}`); }
+      catch { AL.killJob = null; btn.disabled = false; status.textContent = "job lost"; return; }
+      if (j.status === "done") {
+        AL.killJob = null; btn.disabled = false;
+        AL.killTimes = j.times || [];
+        const mine = AL.killTimes.filter(k => k.mine).length;
+        status.textContent = AL.killTimes.length
+          ? `${AL.killTimes.length} kill${AL.killTimes.length === 1 ? "" : "s"} found`
+            + (mine ? ` · ${mine} highlighted` : "")
+            + (j.ocr === false ? " · names off (claude CLI unavailable)" : "")
+            + (j.warning ? ` · ⚠ ${j.warning}` : "")
+          : "no kills detected — check the killfeed box placement";
+        renderKillList(); drawKillTicks();
+      } else if (j.status === "error") {
+        AL.killJob = null; btn.disabled = false;
+        status.textContent = "failed: " + (j.error || "unknown");
+      } else {
+        status.textContent = `${j.stage || "scanning"}… ${j.progress || 0}%`;
+        setTimeout(poll, 700);
+      }
+    };
+    poll();
+  } catch (e) {
+    AL.killJob = null; btn.disabled = false;
+    status.textContent = "";
+    toast("Kill detect failed: " + e.message, true);
+  }
+}
+
+function initKillTimers() {
+  const run = $("#xp-kill-run");
+  if (!run) return;
+  run.onclick = runKillDetect;
+  $("#xp-kill-seed-all").onclick = () => {
+    const sel = killEffectSel();
+    const type = (sel && sel.value) || "money";
+    // seed the highlight player's kills when we know them; otherwise everything
+    const ks = AL.killTimes || [];
+    const mine = ks.filter(k => k.mine);
+    const seed = mine.length ? mine : ks;
+    seed.forEach(k => addEffect(type, k.t));
+    toast(mine.length && mine.length < ks.length
+      ? `Seeded ${mine.length} highlighted kills (of ${ks.length})`
+      : `Seeded ${seed.length} markers`);
+  };
+  $("#xp-kill-clear").onclick = () => {
+    AL.killTimes = [];
+    $("#xp-kill-status").textContent = "";
+    renderKillList(); drawKillTicks();
+  };
+}
+
+// ============================================================= //
 // Render one moment — highlight a span on the scrubber (or render
 // around a B-roll marker) and render just that into the popup player.
 // ============================================================= //
@@ -5219,6 +5468,7 @@ function init() {
   initPackages();
   initBoxDrag("facecam");
   initBoxDrag("mousecam");
+  initBoxDrag("killfeed");
   initMcGhostDrag();
   window.addEventListener("resize", drawAllBoxes);
 
@@ -5297,6 +5547,7 @@ function init() {
     applyAutoZoom(); drawTrimBar();
   };
   initTrimBar();
+  initKillTimers();
   window.addEventListener("resize", drawTrimBar);
 
   // sliders (label + debounced preview)

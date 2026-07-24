@@ -138,6 +138,29 @@ backend/
                   segment's reveal is delayed via bake_reveal(reveal_delay) so nothing
                   competes with the cold-open. main `_apply_hook` + `HookCfg`;
                   `hook_preview` renders only the cold-open + first reveal beat.
+  killtimes.py    🧪 **Seed Kill Timers** (editor "Experimental" section): detects kill
+                  moments in a VALORANT clip so B-roll markers can be seeded on them.
+                  Candidates→verify pipeline (like search2): (1) killfeed MOTION inside
+                  the user-aimed orange **killfeed box** (first ⌖ Detect press drops the
+                  box on the stage, second press scans; default = ranked top-right),
+                  coarse ~10fps + full-fps onset snap; (2) a cheap changed-then-frozen
+                  "row test" (kill rows are UI: pixels change then HOLD; world motion
+                  keeps changing); (3) **aibrain (claude CLI) vision over ALL candidate
+                  crops** (batched 12/call, 4 concurrent) — per crop `has_row` verdict
+                  + killer/victim read. has_row=false → dropped (that's the precision
+                  gate: pixel heuristics CANNOT survive edited comps that zoom/cut the
+                  footage — a "Top 4" comp false-fired 181 motion events, vision cut it
+                  to the 42 real rows); row present but unreadable → kept with BLANK
+                  names the user fills in (UI inputs re-evaluate gold on edit).
+                  `mine` = POV-highlight verdict OR name fuzzy-match (per-token, so
+                  team tags/OCR typos like "MIBR asas"≈"Aspas" still hit) vs the Player
+                  field (auto-parsed from the clip name). There is deliberately NO
+                  bottom-center kill-banner signal (muzzle-flash noise in ranked, a
+                  player cam sits there in broadcasts) — no-killfeed clips are seeded
+                  manually. POST /api/experimental/killtimes {clip, feed, exclude,
+                  player} (background job). Times are SOURCE seconds (same clock as
+                  B-roll effects). Ground-truthed against the user's hand-placed money
+                  markers on rWkSo-i746Y (marker 59.4s == detected 59.37s), 2026-07.
   subscribe.py    Legacy static subscribe chip (render_chip) — kept only for its
                   `_vd_mark` VALDaily channel-mark helper, reused by cta.py. The chip
                   itself is no longer wired (cta.py's animated CTA replaced it).
@@ -621,6 +644,42 @@ pipeline (`main._run_formatter_build`) has always applied **separate** `anim.int
 `anim.new_item` configs per segment, so the app **extends** the mock: the editor's Reveal
 toggle is *toggle-scoped* — Motion/Sound/Volume/Speed edit whichever phase is selected, and
 `buildFmtPayload()` sends the two phases independently. This is intentional and should stay.
+
+## Seeding "usable" clips from published videos
+
+When the user asks to "save/seed the clips from the past N YouTube videos" into folders
+(the `usable: raw` / `usable: edited` pattern), here's the whole recipe — it's driven from
+plain Python (no running server needed; `autolayout.compose()` is a pure function):
+
+- **Match videos → projects by TITLE.** There is **no stored link** between a VALDaily
+  upload and a project/render (uploads have no `youtube_id` on projects; output mp4s are
+  random-hex named). List uploads via `backend/youtube.py` (read-only OAuth, token in
+  `secrets/`), then fuzzy-match against `storage/projects/*.json` names/`state.vce.title`.
+  Several projects share near-identical titles (multiple TenZ/s0m/Aspas) and a few are
+  mis-titled — **show the user the mapping and flag the shaky rows** before committing.
+- **Where the clips live.** A project's `state.fmt.ranks[i]` holds `clip` (source identity
+  `folder/name.mp4`) + `layout` (the full per-clip edit: trim/cuts/effects/speed/facecam…).
+  Verify each `store.resolve(clip)` exists first — `default/` auto-cleans, so older
+  references can be gone.
+- **`usable: raw`** = the source files. `store.create_folder("usable: raw")`, `shutil.copy2`
+  each resolved source in (don't move — keep originals + project refs intact).
+- **`usable: edited`** = the per-clip edit, which **does not exist as a file** — render it:
+  `LayoutReq(**rank["layout"])` → `main._to_opts(req)` → set `opts.overlay_png = None`
+  (pure clip edit, **no** ranking-template overlay — that's added at Formatter assembly, not
+  per-clip) → `autolayout.compose(src, dst, opts)`. ~1080×1920, ~20–220 s each; run ~3 at a
+  time. This reproduces exactly what "Load project → Open editor" shows.
+- **⚠ Strip the Subscribe CTA for `usable: edited`.** A subscribe CTA baked into a clip is a
+  `{"type":"subscribe", …}` entry in `layout["effects"]`. The ranking title/list can't be
+  composited over a pre-rendered CTA, so usable edited clips must **omit** it: drop only the
+  `subscribe`-type effects (keep `money`/`sfx`/`face_zoom`) and render with
+  `compose(..., skip_subscribe=True)`. Removing it does not change duration (it's an overlay).
+- **Tag players.** `store.set_meta("usable: …/<name>.mp4", creator=<player>)` on both copies.
+  Single-player videos → tag every clip with that player; weapon/event videos (Operator /
+  Spectre / World Cup) have a different pro per rank → leave untagged unless a label names one.
+- **Naming.** `<video-key>_r<rank>_<sourceStem>.mp4`, identical in both folders so raw↔edited
+  pair 1:1 (e.g. `aspas_r1_rWkSo-i746Y.mp4`).
+- Done 2026-07-22: seeded the last 10 uploads (37 clips) this way; 5 had a subscribe CTA
+  stripped. Drop review frames/a sample in `outputs/` as usual.
 
 ## Notes
 

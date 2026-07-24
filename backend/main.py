@@ -25,7 +25,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from . import (aibrain, animate, autolayout, clips, config, cta, formatter, hook,
-               music, packages, reddit, search2, store, twitch, youtube)
+               killtimes, music, packages, reddit, search2, store, twitch, youtube)
 
 app = FastAPI(title="Content Tool Manager")
 
@@ -843,6 +843,52 @@ def autolayout_moment(req: MomentReq):
     threading.Thread(
         target=_run_moment,
         args=(job_id, path, dst, opts),
+        daemon=True,
+    ).start()
+    return {"job": job_id}
+
+
+# ----------------------------------------------------------------------------- #
+# 🧪 Experimental — Seed Kill Timers (killtimes.py)
+# ----------------------------------------------------------------------------- #
+class KillTimesReq(BaseModel):
+    """Detect the player's kill moments in a clip (background job).
+
+    `feed` = the user-placed killfeed box (source-px rect {x,y,w,h}) — THE scan
+    region; omitted → the default ranked top-right ROI.
+    `exclude` = source-px rects (facecam/mousecam boxes) masked out of the scan
+    region so a cam overlay can't pollute the motion signal.
+    `player` = the highlight player's username (e.g. "Aspas" from "Aspas 5k") —
+    OCR'd killfeed killer names are fuzzy-matched against it to mark `mine`."""
+    clip: str
+    feed: dict | None = None
+    exclude: list[dict] | None = None
+    player: str = ""
+
+
+def _run_killtimes(job_id: str, src: str, feed, exclude, player: str):
+    JOBS[job_id]["status"] = "running"
+
+    def progress(pct, msg):
+        JOBS[job_id].update(progress=pct, stage=msg)
+
+    try:
+        out = killtimes.detect(src, feed=feed, exclude=exclude,
+                               progress=progress, player=player)
+        JOBS[job_id].update(status="done", progress=100, finished=time.time(), **out)
+    except Exception as e:
+        JOBS[job_id].update(status="error", error=str(e), finished=time.time())
+
+
+@app.post("/api/experimental/killtimes")
+def experimental_killtimes(req: KillTimesReq):
+    path = str(_clip_path(req.clip))
+    job_id = uuid.uuid4().hex
+    JOBS[job_id] = {"status": "queued", "started": time.time(), "kind": "killtimes",
+                    "progress": 0, "stage": "queued", "clip": req.clip}
+    threading.Thread(
+        target=_run_killtimes,
+        args=(job_id, path, req.feed, req.exclude, (req.player or "").strip()),
         daemon=True,
     ).start()
     return {"job": job_id}

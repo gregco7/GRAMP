@@ -110,6 +110,11 @@
                       <span class="box-label">mousecam</span>
                       <div class="handle"></div>
                     </div>
+                    <div id="al-box-kf" class="killfeed-box cam-box hidden" title="Drag tight around the killfeed rows — this is the kill-detector's scan region">
+                      <span class="box-label">killfeed</span>
+                      <div class="handle"></div>
+                    </div>
+                    <div id="al-clock" class="al-clock" title="Current playhead · total length">0:00.00 / 0:00.00</div>
                   </div>
                   <div id="al-trim-bar" class="trim-bar hidden" title="Click to seek · drag the handles to trim">
                     <div id="al-trim-range" class="trim-sel"></div>
@@ -118,6 +123,7 @@
                     <div id="al-trim-h-end" class="trim-handle" data-edge="end"></div>
                     <div id="al-trim-playhead" class="trim-ph"></div>
                     <div id="al-trim-fx" class="trim-fx"></div>
+                    <div id="al-trim-kills" class="trim-kills"></div>
                     <div id="al-trim-moment" class="trim-moment hidden" title="Moment to render — drag to move, drag the edges to resize">
                       <div class="trim-moment-h" data-edge="start"></div>
                       <div class="trim-moment-h" data-edge="end"></div>
@@ -230,6 +236,30 @@
                 <div id="broll-tray" class="broll-tray"></div>
                 <span class="hint">Drag a moment onto the scrubber (or ⊕ to drop it at the playhead). It fires a flash + sound at that point.</span>
                 <div id="broll-list" class="broll-list"></div>
+              </div>
+
+              <!-- 🧪 Experimental — detector-assisted editing tools -->
+              <div class="controls xp-controls" id="xp-controls">
+                <span class="coord-tag xp-tag">🧪 Experimental</span>
+                <div class="xp-tool" id="xp-killtimes">
+                  <div class="xp-head">
+                    <strong>Seed Kill Timers</strong>
+                    <span class="hint">First press drops an orange <b>killfeed box</b> on the video — drag it tight around the feed rows, press again to scan. Every kill row becomes a listed time (names OCR'd; blanks are editable) and the highlight player's kills go gold. Click to seek, ⊕ to drop a B-roll marker.</span>
+                  </div>
+                  <div class="xp-row">
+                    <button id="xp-kill-run" class="ghost" type="button">⌖ Detect kill times</button>
+                    <label class="ctrl xp-player" title="The clip's highlight player — their killfeed kills get highlighted (parsed from the clip name, edit if wrong)">Player
+                      <input id="xp-kill-player" type="text" placeholder="auto from name" />
+                    </label>
+                    <label class="ctrl xp-seed-as">Seed as
+                      <select id="xp-kill-effect"></select>
+                    </label>
+                    <button id="xp-kill-seed-all" class="ghost hidden" type="button" title="Drop a marker at every detected kill">⊕ Seed all</button>
+                    <button id="xp-kill-clear" class="ghost hidden" type="button" title="Clear detected times">✕</button>
+                    <span id="xp-kill-status" class="hint"></span>
+                  </div>
+                  <div id="xp-kill-list" class="xp-kill-list"></div>
+                </div>
               </div>
 
               <!-- Render just one moment (e.g. to eyeball a B-roll punch) -->
