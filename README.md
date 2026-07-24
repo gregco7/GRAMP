@@ -7,6 +7,11 @@ machine: a small FastAPI server drives `ffmpeg` / `yt-dlp` / OpenCV and serves a
 no-build static frontend at `http://127.0.0.1:8000`. No cloud, no accounts, no
 telemetry — clone it, add your own keys, and start building your channel.
 
+<p align="center">
+  <img src="docs/media/proof-778k.png" alt="A Short made with this tool — 778K views on YouTube" width="300">
+</p>
+<p align="center"><em>Made with this tool · <strong>778K views</strong> on YouTube Shorts</em></p>
+
 Two tools sit on one rendering engine:
 
 1. **Auto-Layout** (single clip) — reflow one landscape clip into a 9:16 vertical
@@ -21,6 +26,22 @@ Two tools sit on one rendering engine:
 > This is an **unofficial fan-made tool**. VALORANT and Riot Games are trademarks
 > of Riot Games, Inc.; the bundled game art is Riot's IP and is not covered by
 > this project's license. See [NOTICE](NOTICE).
+
+---
+
+## What it looks like
+
+The **Formatter** editor — build a "Top N" with a live in-browser preview whose
+easing/timing mirror the render engine exactly:
+
+![The Formatter editor](docs/media/formatter-editor.png)
+
+A rendered 9:16 Short — the progressive-reveal ranking overlay baked over the
+gameplay, ready to upload:
+
+<p align="center">
+  <img src="docs/media/rendered-short.png" alt="A rendered 9:16 ranking Short" width="300">
+</p>
 
 ---
 
