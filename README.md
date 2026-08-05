@@ -9,7 +9,7 @@ telemetry — clone it, add your own keys, and start building your channel.
 
 <p align="center">
   <a href="https://www.youtube.com/shorts/SsYV3RI4y2E">
-    <img src="docs/media/proof-778k.png" alt="A Short made with this tool — 1.2M views on YouTube" width="300">
+    <img src="docs/media/proof-1-2m.png" alt="A Short made with this tool — 1.2M views on YouTube" width="300">
   </a>
 </p>
 <p align="center">
