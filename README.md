@@ -9,11 +9,11 @@ telemetry — clone it, add your own keys, and start building your channel.
 
 <p align="center">
   <a href="https://www.youtube.com/shorts/SsYV3RI4y2E">
-    <img src="docs/media/proof-778k.png" alt="A Short made with this tool — 778K views on YouTube" width="300">
+    <img src="docs/media/2mviews-proof.png" alt="A Short made with this tool — 2 Million views on YouTube" width="300">
   </a>
 </p>
 <p align="center">
-  <em>Made with this tool · <strong>778K views</strong> on YouTube Shorts</em><br>
+  <em>Made with this tool · <strong>2M views</strong> on YouTube Shorts</em><br>
   ▶ <a href="https://www.youtube.com/@valclips4u/shorts">More Shorts made with this tool → @valclips4u</a>
 </p>
 
