@@ -1,6 +1,6 @@
-# VALORANT Ranking Template — YouTube Shorts builder
-
 # GRAMP - Gameplay Retrieval & Rendering Pipeline
+
+# VALORANT Ranking Template — YouTube Shorts builder
 
 A local, Claude-assisted tool for turning landscape VALORANT gameplay/stream
 clips into polished vertical **YouTube Shorts** (9:16, 1080×1920) — including
